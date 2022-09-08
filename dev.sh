@@ -1,3 +1,3 @@
 clear;
 export NODE_ENV=development;
-npm run start:dev
+npx lerna run start:dev --stream
