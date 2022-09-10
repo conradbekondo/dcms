@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { AppService } from './app.service';
+import { UsersController } from './controllers/users/users.controller';
+import { UsersService } from './services/users/users.service';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -16,7 +16,7 @@ const options: TypeOrmModuleOptions = {
   imports: [
     TypeOrmModule.forRoot(options)
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [UsersController],
+  providers: [UsersService],
 })
 export class AppModule { } 
