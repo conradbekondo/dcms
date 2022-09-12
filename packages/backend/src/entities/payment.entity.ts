@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Order } from "./order.entity";
 import { PaymentStatus } from "./payment-status";
+import { Transaction } from "./transaction.entity";
 import { User } from "./user.entity";
 
 @Entity('payments')
@@ -34,4 +35,7 @@ export class Payment {
 
     @Column()
     price: number;
+
+    @OneToMany(() => Transaction, t => t.payment)
+    transactions: Promise<Transaction[]>;
 }

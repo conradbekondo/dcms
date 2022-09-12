@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Transaction } from "./transaction.entity";
 
 @Entity('accounts')
 export class Account {
@@ -14,4 +15,10 @@ export class Account {
 
     @Column()
     initialBalance: number;
+
+    @OneToMany(() => Transaction, t => t.destAccount)
+    incomingTransactions: Promise<Transaction[]>;
+
+    @OneToMany(() => Transaction, t => t.srcAccount)
+    outgoingTransactions: Promise<Transaction[]>;
 }

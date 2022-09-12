@@ -11,6 +11,7 @@ import { Permission } from './entities/permission.entity';
 import { Policy } from './entities/policy.entity';
 import { Profile } from './entities/profile.entity';
 import { Role } from './entities/role.entity';
+import { Transaction } from './entities/transaction.entity';
 import { User } from './entities/user.entity';
 import { UsersService } from './services/users/users.service';
 
@@ -31,7 +32,8 @@ const options: TypeOrmModuleOptions = {
     Policy,
     Role,
     OfferedService,
-    User
+    User,
+    Transaction
   ],
   namingStrategy: new SnakeNamingStrategy()
 };
