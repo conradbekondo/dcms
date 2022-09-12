@@ -15,6 +15,7 @@ import { Policy } from './entities/policy.entity';
 import { Profile } from './entities/profile.entity';
 import { Role } from './entities/role.entity';
 import { Transaction } from './entities/transaction.entity';
+import { UserActivity } from './entities/user-activity.entity';
 import { User } from './entities/user.entity';
 import { UsersService } from './services/users/users.service';
 
@@ -36,6 +37,7 @@ const options: TypeOrmModuleOptions = {
     Role,
     OfferedService,
     User,
+    UserActivity,
     Transaction,
     OrderEntry,
     OrderItemAppliedPolicy,
