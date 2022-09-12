@@ -5,6 +5,9 @@ import { UsersController } from './controllers/users/users.controller';
 import { Account } from './entities/account.entity';
 import { Item } from './entities/item.entity';
 import { OfferedService } from './entities/offered-service.entity';
+import { OrderItemAttribute } from './entities/order-entry-attribute.entity';
+import { OrderItemAppliedPolicy } from './entities/order-entry-item-applied-policy.entity';
+import { OrderEntry } from './entities/order-entry.entity';
 import { Order } from './entities/order.entity';
 import { Payment } from './entities/payment.entity';
 import { Permission } from './entities/permission.entity';
@@ -33,7 +36,10 @@ const options: TypeOrmModuleOptions = {
     Role,
     OfferedService,
     User,
-    Transaction
+    Transaction,
+    OrderEntry,
+    OrderItemAppliedPolicy,
+    OrderItemAttribute
   ],
   namingStrategy: new SnakeNamingStrategy()
 };

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Order } from "./order.entity";
 import { PaymentStatus } from "./payment-status";
 import { Transaction } from "./transaction.entity";
@@ -29,7 +29,7 @@ export class Payment {
     @Column()
     dateCanceled?: Date;
 
-    @ManyToOne(() => Order)
+    @OneToOne(() => Order)
     @JoinColumn({ name: 'order_id' })
     order?: Promise<Order>;
 
