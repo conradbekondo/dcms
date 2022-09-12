@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UsersController } from './controllers/users/users.controller';
 import { Account } from './entities/account.entity';
+import { Item } from './entities/item.entity';
 import { UsersService } from './services/users/users.service';
 
 const options: TypeOrmModuleOptions = {
@@ -12,7 +13,8 @@ const options: TypeOrmModuleOptions = {
   password: process.env.DB_PWD,
   database: process.env.DB_NAME,
   entities: [
-    Account
+    Account,
+    Item
   ]
 };
 
