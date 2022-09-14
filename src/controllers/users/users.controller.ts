@@ -1,11 +1,15 @@
-import { Controller, Render, Get } from '@nestjs/common';
+import { Controller, Render, Get, Query } from '@nestjs/common';
 
 @Controller('users')
 export class UsersController {
 
-    @Render('users')
-    @Get()
-    public usersPage() {
-        return { message: 'World' };
+    @Render('login')
+    @Get('login')
+    login(@Query('returnUrl') returnUrl: string) {
+        const data = {
+            returnUrl,
+            errors: []
+        };
+        return data;
     }
 }

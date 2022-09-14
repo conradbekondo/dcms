@@ -8,6 +8,8 @@ import { Role } from "./entities/Role";
 import { NotFoundFilter } from './filters/not-found.filter';
 import { UsersService } from './services/users/users.service';
 import { LoginEntry } from './entities/user-login-entry.entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -29,7 +31,10 @@ const options: TypeOrmModuleOptions = {
 @Module({
   imports: [
     TypeOrmModule.forRoot(options),
-
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'public'),
+      serveRoot: '/static'
+    })
   ],
   controllers: [UsersController],
   providers: [UsersService,

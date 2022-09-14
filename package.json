@@ -28,7 +28,6 @@
     "@nestjs/serve-static": "^3.0.0",
     "@nestjs/typeorm": "^9.0.1",
     "dotenv": "^16.0.2",
-    "dto": "^1.0.0",
     "ejs": "^3.1.8",
     "mysql2": "^2.3.3",
     "reflect-metadata": "^0.1.13",
