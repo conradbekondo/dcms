@@ -1,6 +1,5 @@
-import { Entity, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany } from "typeorm";
 import { BaseEntity } from "./base.entity";
-import { LoginEntry } from "./user-login-entry.entity";
 import { User } from "./user.entity";
 
 
@@ -10,9 +9,6 @@ export class Role extends BaseEntity {
     roleName: string;
 
     @ManyToMany(() => User)
-    @JoinTable({ name: 'user_roles', joinColumn: { name: 'role_id' }, inverseJoinColumn: { name: 'user_id' } })
+    // @JoinTable({ name: 'user_roles', joinColumn: { name: 'role_id' }, inverseJoinColumn: { name: 'user_id' } })
     members: Promise<User[]>;
-
-    @OneToMany(() => LoginEntry, l => l.user)
-    logins: Promise<LoginEntry[]>;
 }
