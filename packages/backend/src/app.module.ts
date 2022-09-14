@@ -1,23 +1,13 @@
 import { Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UsersController } from './controllers/users/users.controller';
-import { Account } from './entities/account.entity';
-import { Item } from './entities/item.entity';
-import { OfferedService } from './entities/offered-service.entity';
-import { OrderItemAttribute } from './entities/order-entry-attribute.entity';
-import { OrderItemAppliedPolicy } from './entities/order-entry-item-applied-policy.entity';
-import { OrderEntry } from './entities/order-entry.entity';
-import { Order } from './entities/order.entity';
-import { Payment } from './entities/payment.entity';
-import { Permission } from './entities/permission.entity';
-import { Policy } from './entities/policy.entity';
-import { Profile } from './entities/profile.entity';
-import { Role } from './entities/role.entity';
-import { Transaction } from './entities/transaction.entity';
-import { UserActivity } from './entities/user-activity.entity';
 import { User } from './entities/user.entity';
+import { Role } from "./entities/Role";
+import { NotFoundFilter } from './filters/not-found.filter';
 import { UsersService } from './services/users/users.service';
+import { LoginEntry } from './entities/user-login-entry.entity';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -27,23 +17,13 @@ const options: TypeOrmModuleOptions = {
   password: process.env.DB_PWD,
   database: process.env.DB_NAME,
   entities: [
-    Account,
-    Item,
-    Order,
-    Profile,
-    Payment,
-    Permission,
-    Policy,
-    Role,
-    OfferedService,
     User,
-    UserActivity,
-    Transaction,
-    OrderEntry,
-    OrderItemAppliedPolicy,
-    OrderItemAttribute
+    Role,
+    LoginEntry
   ],
-  namingStrategy: new SnakeNamingStrategy()
+  namingStrategy: new SnakeNamingStrategy(),
+  synchronize: true,
+  dropSchema: true
 };
 
 @Module({
@@ -51,6 +31,10 @@ const options: TypeOrmModuleOptions = {
     TypeOrmModule.forRoot(options)
   ],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService,
+    {
+      provide: APP_FILTER,
+      useClass: NotFoundFilter
+    }],
 })
 export class AppModule { } 
