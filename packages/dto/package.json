@@ -22,5 +22,8 @@
   },
   "bugs": {
     "url": "https://github.com/conradbekondo/dcms/issues"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.1"
   }
 }

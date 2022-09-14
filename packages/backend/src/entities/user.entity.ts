@@ -1,34 +1,20 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Permission } from "./permission.entity";
-import { Profile } from "./profile.entity";
-import { Role } from "./role.entity";
+import { Column, Entity, JoinTable, ManyToMany } from "typeorm";
+import { BaseEntity } from "./base.entity";
+import { Role } from "./Role";
 
 @Entity('users')
-export class User {
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @Column()
+export class User extends BaseEntity {
+    @Column({ nullable: false, unique: true })
     username: string;
 
-    @Column()
+    @Column({ nullable: false, length: 255 })
     passwordHash: string;
 
-    @Column()
-    isActive: boolean;
-
-    @Column()
+    @Column({ default: true })
     isLocked: boolean;
 
-    @OneToOne(() => Profile, { lazy: false })
-    profile: Profile;
-
-    @ManyToMany(() => Role, { eager: true })
-    @JoinTable({ name: 'user_roles', joinColumn: { name: 'user_id' } })
-    roles: Role[];
-
-    @ManyToMany(() => Permission, { eager: true })
-    @JoinTable({ name: 'user_granted_permissions', joinColumn: { name: 'user_id' } })
-    grantedPermissions: Permission[];
+    @ManyToMany(() => Role)
+    // @JoinTable({ name: 'user_roles', joinColumn: { name: 'user_id' } })
+    roles: Promise<Role[]>;
 }
 
