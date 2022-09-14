@@ -28,7 +28,8 @@ const options: TypeOrmModuleOptions = {
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(options)
+    TypeOrmModule.forRoot(options),
+
   ],
   controllers: [UsersController],
   providers: [UsersService,
