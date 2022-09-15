@@ -22,6 +22,8 @@ import { AuthFailedFilter } from './filters/auth-failed.filter';
 import { NotFoundFilter } from './filters/not-found.filter';
 import injectionTokenKeys from './injection-tokens';
 import { UsersService } from './services/users/users.service';
+import { OrdersService } from './services/orders/orders.service';
+import { ServicesController } from './controllers/services/services.controller';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -57,7 +59,7 @@ const options: TypeOrmModuleOptions = {
     }),
     JwtModule.register({ secret: process.env.E_KEY })
   ],
-  controllers: [UsersController, OrdersController],
+  controllers: [UsersController, OrdersController, ServicesController],
   providers: [
     UsersService,
     {
@@ -74,8 +76,9 @@ const options: TypeOrmModuleOptions = {
     },
     {
       provide: injectionTokenKeys.identityMaxAge,
-      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '50000')
-    }
+      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '3600') * 1000
+    },
+    OrdersService
   ],
 })
 export class AppModule {
