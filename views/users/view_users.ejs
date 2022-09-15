@@ -1,0 +1,132 @@
+<%- include('partials/head.ejs') %>
+
+<body id="app-container" class="menu-default show-spinner">
+    <%- include('../partials/navbar.ejs') %>
+        <%- include('../partials/menu.ejs') %>
+
+                <main>
+                    <div class="modal fade modal-right" id="exampleModalRight" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title"> Add User</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form id="basic-form">
+                                    <div class="modal-body">
+                                        <div id="savebtm_result" class="form-group text-success"></div>
+                                        <input type="hidden" name="idclt" id="idclt" value="">
+                
+                                        <div class="form-group position-relative error-l-50">
+                                            <label>Num</label>
+                                                                        <input type="text" class="form-control" placeholder="" name="num" id="num" autocomplete="off" value="#" readonly="readonly">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Name <span class="text-danger error_lastname">*</span></label>
+                                            <input type="text" class="form-control" placeholder="" name="name" id="name" autocomplete="off">
+                                        </div>
+                
+                                        <div class="form-group">
+                                            <label>Phone<span class="text-danger error_lastname">*</span></label>
+                                            <input type="text" class="form-control" placeholder="" name="phone " id="phone" autocomplete="off">
+                                        </div>
+                                        
+                                        
+                                        <div class="form-group">
+                                            <label>Password <span class="text-danger error_lastname">*</span></label>
+                                            <input type="password" class="form-control" placeholder="" name="password" id="password">
+                                        </div>
+                                        <div class="form-group">
+                                            <label> Role <span class="text-danger error_lastname">*</span> </label>
+                                            <select class="form-control" name="roleid" id="roleid">
+                                                                                    <option value="1">admin</option>
+                                                                                    <option value="2">user</option>
+                                                
+                                            </select>
+                                        </div>
+                                        <div class="error_validateclt text-danger"></div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                        <button type="button" id="savebtn" onclick="savebtm()" class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade modal-right" id="updateclt" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title"> Update </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form class="needs-validation">
+                                    <div class="modal-body">
+                                        <div class="fetcheupdate">
+                
+                                        </div>
+                                        <div id="savebtm_result" class="form-group"></div>
+                
+                
+                
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                        <button type="button" id="savebtn" onclick="updatebtm()" class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="row">
+                        <div class="col-12">
+                            <h1>Users List</h1>
+                            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                                <ol class="breadcrumb pt-0">
+                                    <li class="breadcrumb-item">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-target="#exampleModalRight">Add User <i class="simple-icon-user-follow"></i> </button>
+                                    </li>
+                
+                                </ol>
+                            </nav>
+                            <div class="separator mb-1"></div>
+                        </div>
+                    </div>
+                
+                    <div class="row mb-4">
+                        <div class="col-12 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                
+                                    <table id="table" class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Num </th>
+                                                <th>Name </th>
+                                                <th> Phone </th>
+                                                <th> Role </th>
+                                                <th>Action</th>
+                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                
+                                        </tbody>
+                                    </table>
+                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                </main>
+
+</body>
+</html>
