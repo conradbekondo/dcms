@@ -1,18 +1,18 @@
-import { Body, Controller, Get, Logger, Post, Query, Render, Res } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post, Query, Render, Res } from '@nestjs/common';
 import { Response } from 'express';
-import { of, timeout } from 'rxjs';
 import { ILoginDto } from 'src/dto/login.dto';
+import injectionTokenKeys from 'src/injection-tokens';
 import { UsersService } from 'src/services/users/users.service';
+import { BaseController } from '../base/base.controller';
 
 @Controller('users')
-export class UsersController {
-
-    private readonly logger = new Logger(UsersController.name);
-
-    constructor (private readonly userService: UsersService) {
+export class UsersController extends BaseController {
+    constructor (private readonly userService: UsersService,
+        @Inject(injectionTokenKeys.appName) appName: string) {
+        super(appName);
     }
 
-    @Render('login')
+    @Render('login/login')
     @Get('login')
     login(@Query('returnUrl') returnUrl: string) {
         const data = {
@@ -20,7 +20,8 @@ export class UsersController {
             errors: [],
             formData: {}
         };
-        return { data };
+        this.viewBag.pageTitle = 'Sign in to Your Account';
+        return { data, view: this.viewBag };
     }
 
 
@@ -29,7 +30,7 @@ export class UsersController {
         const errors: string[] = [];
         if ((!loginDto.username || loginDto.username.length == 0) && (!loginDto.password || loginDto.password.length == 0)) {
             errors.push('Username & password required');
-            res.render('login', { data: { formData: loginDto, errors, returnUrl } });
+            res.render('login/login', { data: { formData: loginDto, errors, returnUrl }, view: this.viewBag });
             return;
         }
 
@@ -38,6 +39,8 @@ export class UsersController {
             return res.redirect(returnUrl ? returnUrl : '/');
         }
         errors.push(loginResult.error);
-        res.render('login', { data: { formData: loginDto, errors, returnUrl } });
+        res.render('login/login', {
+            data: { formData: loginDto, errors, returnUrl }, view: this.viewBag
+        });
     }
 }

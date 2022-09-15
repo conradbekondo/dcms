@@ -3,7 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>DCMS</title>
+    <title>
+        <%= view.appName%>
+            <%= view?.pageTitle ? ` - ${view.pageTitle}` : '' %>
+    </title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <link rel="stylesheet" href="/static/font/iconsmind-s/css/iconsminds.css" />
