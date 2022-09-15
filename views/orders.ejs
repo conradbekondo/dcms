@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dore jQuery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="font/iconsmind-s/css/iconsminds.css" />
+    <link rel="stylesheet" href="font/simple-line-icons/css/simple-line-icons.css" />
+
+    <link rel="stylesheet" href="css/vendor/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/vendor/bootstrap.rtl.only.min.css" />
+    <link rel="stylesheet" href="css/vendor/fullcalendar.min.css" />
+    <link rel="stylesheet" href="css/vendor/dataTables.bootstrap4.min.css" />
+    <link rel="stylesheet" href="css/vendor/datatables.responsive.bootstrap4.min.css" />
+    <link rel="stylesheet" href="css/vendor/select2.min.css" />
+    <link rel="stylesheet" href="css/vendor/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="css/vendor/glide.core.min.css" />
+    <link rel="stylesheet" href="css/vendor/bootstrap-stars.css" />
+    <link rel="stylesheet" href="css/vendor/nouislider.min.css" />
+    <link rel="stylesheet" href="css/vendor/bootstrap-datepicker3.min.css" />
+    <link rel="stylesheet" href="css/vendor/component-custom-switch.min.css" />
+    <link rel="stylesheet" href="css/main.css" />
+</head>
+
+<body id="app-container" class="menu-default show-spinner">
+    <nav class="navbar fixed-top">
+        <div class="d-flex align-items-center navbar-left">
+            <a href="#" class="menu-button d-none d-md-block">
+                <svg class="main" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 17">
+                    <rect x="0.48" y="0.5" width="7" height="1" />
+                    <rect x="0.48" y="7.5" width="7" height="1" />
+                    <rect x="0.48" y="15.5" width="7" height="1" />
+                </svg>
+                <svg class="sub" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 17">
+                    <rect x="1.56" y="0.5" width="16" height="1" />
+                    <rect x="1.56" y="7.5" width="16" height="1" />
+                    <rect x="1.56" y="15.5" width="16" height="1" />
+                </svg>
+            </a>
+
+            <a href="#" class="menu-button-mobile d-xs-block d-sm-block d-md-none">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 17">
+                    <rect x="0.5" y="0.5" width="25" height="1" />
+                    <rect x="0.5" y="7.5" width="25" height="1" />
+                    <rect x="0.5" y="15.5" width="25" height="1" />
+                </svg>
+            </a>
+
+        </div>
+
+        <a class="navbar-logo" href="Dashboard.Default.html">
+            <span class="logo d-none d-xs-block"></span>
+            <span class="logo-mobile d-block d-xs-none"></span>
+        </a>
+
+        <div class="navbar-right">
+            <div class="header-icons d-inline-block align-middle">
+                <div class="d-none d-md-inline-block align-text-bottom mr-3">
+                    <div class="custom-switch custom-switch-primary-inverse custom-switch-small pl-1"
+                         data-toggle="tooltip" data-placement="left" title="Dark Mode">
+                        <input class="custom-switch-input" id="switchDark" type="checkbox" checked>
+                        <label class="custom-switch-btn" for="switchDark"></label>
+                    </div>
+                </div>
+
+                <div class="position-relative d-none d-sm-inline-block">
+                    <button class="header-icon btn btn-empty" type="button" id="iconMenuButton" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="simple-icon-grid"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right mt-3  position-absolute" id="iconMenuDropdown">
+                        <a href="#" class="icon-menu-item">
+                            <i class="iconsminds-equalizer d-block"></i>
+                            <span>Settings</span>
+                        </a>
+
+                        <a href="#" class="icon-menu-item">
+                            <i class="iconsminds-male-female d-block"></i>
+                            <span>Users</span>
+                        </a>
+
+                        <a href="#" class="icon-menu-item">
+                            <i class="iconsminds-puzzle d-block"></i>
+                            <span>Components</span>
+                        </a>
+
+                        <a href="#" class="icon-menu-item">
+                            <i class="iconsminds-bar-chart-4 d-block"></i>
+                            <span>Profits</span>
+                        </a>
+
+                        <a href="#" class="icon-menu-item">
+                            <i class="iconsminds-file d-block"></i>
+                            <span>Surveys</span>
+                        </a>
+
+                        <a href="#" class="icon-menu-item">
+                            <i class="iconsminds-suitcase d-block"></i>
+                            <span>Tasks</span>
+                        </a>
+
+                    </div>
+                </div>
+  
+                
+
+                <button class="header-icon btn btn-empty d-none d-sm-inline-block" type="button" id="fullScreenButton">
+                    <i class="simple-icon-size-fullscreen"></i>
+                    <i class="simple-icon-size-actual"></i>
+                </button>
+
+            </div>
+
+            <div class="user d-inline-block">
+                <button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    <span class="name">Sarah Kortney</span>
+                    <span>
+                        <img alt="Profile Picture" src="img/profiles/l-1.jpg" />
+                    </span>
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right mt-3">
+                    <a class="dropdown-item" href="#">Account</a>
+                    <a class="dropdown-item" href="#">Features</a>
+                    <a class="dropdown-item" href="#">History</a>
+                    <a class="dropdown-item" href="#">Support</a>
+                    <a class="dropdown-item" href="#">Sign out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
+
+</div>
+</nav>
+<div class="menu">
+<div class="main-menu">
+<div class="scroll">
+    <ul class="list-unstyled">
+        <li class="active">
+            <a href="Dashboard.Content.html">
+                <i class="iconsminds-dashboard"></i>
+                <span>Overview</span>
+            </a>
+        </li>
+        <li>
+            <a href="#layouts">
+                <i class="iconsminds-digital-drawing"></i> Orders
+            </a>
+        </li>
+        <li>
+            <a href="#applications">
+                <i class="iconsminds-air-balloon-1"></i> Clients
+            </a>
+        </li>
+        <li>
+            <a href="#ui">
+                <i class="iconsminds-pantone"></i> Products
+            </a>
+        </li>
+        <li>
+            <a href="#menu">
+                <i class="iconsminds-three-arrow-fork"></i> Users
+            </a>
+        </li>
+       
+        <li>
+            <a href="#settings">
+                <i class="iconsminds-bucket"></i> Settings
+            </a>
+        </li>
+        <li>
+            <a href="https://dore-jquery-docs.coloredstrategies.com" target="_blank">
+                <i class="iconsminds-library"></i> Docs
+            </a>
+        </li>
+    </ul>
+</div>
+</div>
+
+<div class="sub-menu">
+<div class="scroll">
+    <ul class="list-unstyled" data-link="dashboard">
+        
+    </ul>
+    <ul class="list-unstyled" data-link="layouts" id="layouts">
+        <li>
+            
+            <div id="collapseAuthorization" class="collapse show">
+                <ul class="list-unstyled inner-level-menu">
+                    <li>
+                        <a href="Ui.Datatables.Default.html">
+                            <i class="simple-icon-user-following"></i> <span
+                                class="d-inline-block">View Orders</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Dashboard.Ecommerce.html">
+                            <i class="simple-icon-user-follow"></i> <span
+                                class="d-inline-block">Create Order</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </li>
+        
+    </ul>
+    <ul class="list-unstyled" data-link="applications">
+        <li>
+            <a href="Apps.MediaLibrary.html">
+                <i class="simple-icon-picture"></i> <span class="d-inline-block">View Clients</span>
+            </a>
+        </li>
+        <li>
+            <a href="Apps.Todo.List.html">
+                <i class="simple-icon-check"></i> <span class="d-inline-block">Create Clients</span>
+            </a>
+        </li>
+    </ul>
+    <ul class="list-unstyled" data-link="ui">
+        <li>
+           
+            <div id="collapseForms" class="collapse show">
+                <ul class="list-unstyled inner-level-menu">
+                    <li>
+                        <a href="Ui.Forms.Components.html">
+                            <i class="simple-icon-event"></i> <span class="d-inline-block">View Products</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Ui.Forms.Layouts.html">
+                            <i class="simple-icon-doc"></i> <span class="d-inline-block">View Category</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Ui.Forms.Validation.html">
+                            <i class="simple-icon-check"></i> <span class="d-inline-block">View Services</span>
+                        </a>
+                    </li>
+                    <li>
+                        
+                    </li>
+                </ul>
+            </div>
+        </li>
+    
+    </ul>
+
+    <ul class="list-unstyled" data-link="settings">
+        <li>
+           
+            <div id="collapseForms" class="collapse show">
+                <ul class="list-unstyled inner-level-menu">
+                    <li>
+                        <a href="Ui.Forms.Components.html">
+                            <i class="simple-icon-event"></i> <span class="d-inline-block">Backup</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Ui.Forms.Layouts.html">
+                            <i class="simple-icon-doc"></i> <span class="d-inline-block">Restore</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </li>
+        
+    </ul>
+
+
+
+    <ul class="list-unstyled" data-link="menu" id="menuTypes">
+        <li>
+            
+            <div id="collapseMenuTypes" class="collapse show" data-parent="#menuTypes">
+                <ul class="list-unstyled inner-level-menu">
+                    <li>
+                        <li>
+                            <a href="Ui.Forms.Components.html">
+                                <i class="simple-icon-event"></i> <span class="d-inline-block">View Users</span>
+                            </a>
+                        </li>
+                    </li>
+                    <li>
+                        <a href="Menu.Subhidden.html">
+                            <i class="simple-icon-arrow-left mi-subhidden"></i> <span
+                                class="d-inline-block">Create Users</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </li>
+        <li>
+            
+            <div id="collapseMenuLevel" class="collapse" data-parent="#menuTypes">
+                <ul class="list-unstyled inner-level-menu">
+                    <li>
+                        
+                    </li>
+                    <li>
+                        <a href="#" data-toggle="collapse" data-target="#collapseMenuLevel2"
+                            aria-expanded="true" aria-controls="collapseMenuLevel2"
+                            class="rotate-arrow-icon collapsed">
+                            <i class="simple-icon-arrow-down"></i> <span class="d-inline-block">Another
+                                Level</span>
+                        </a>
+                        <div id="collapseMenuLevel2" class="collapse">
+                            <ul class="list-unstyled inner-level-menu">
+                                <li>
+                                    <a href="#">
+                                        <i class="simple-icon-layers"></i> <span class="d-inline-block">Sub
+                                            Level</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </li>
+       
+        <li>
+            
+        </li>
+    </ul>
+
+</div>
+
+</div>
+</div>
+
+    <main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Products</h1>
+                    <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                        
+                        
+                    </nav>
+                    <div class="separator mb-5"></div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-6 col-lg-12 mb-0">
+                        <div class="card">
+                            <div class="card-body p-2">
+                                <div class="w-100 mb-2">
+                                <a href="#"><button type="button" class="btn btn-primary btn-lg mb-1 text-center default categories selectedGat" id="">All</button></a>
+                                    <a href="#"><button type="button" class="btn btn-primary btn-lg mb-1 text-center default categories" id="2">Women</button></a>
+                
+                                    <a href="#"><button type="button" class="btn btn-primary btn-lg mb-1 text-center default categories" id="3">Men</button></a>
+                                    <a href="#"><button type="button" class="btn btn-primary btn-lg mb-1 text-center default categories" id="5">Covers</button></a>
+                                                            
+                                    
+                                </div>
+                                <div class="scroll dashboard-list-with-thumbs ps ps--active-y" id="productList" style="display:block;">
+                
+                                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR001" onclick="add_prodpos('18')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/jacket.svg" width="45%">
+                                                                                        <p class="card-text mb-2">pants</p>
+                
+                                                    <input type="hidden" id="idname-18" name="name" value="pants" />
+                                                    <input type="hidden" id="category" name="category" value="2" />
+                                                    <input type="hidden" id="price-18" name="category" value="2" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR020" onclick="add_prodpos('20')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/jacket.svg" width="45%">
+                                                                                        <p class="card-text mb-2">jacket</p>
+                
+                                                    <input type="hidden" id="idname-20" name="name" value="jacket" />
+                                                    <input type="hidden" id="category" name="category" value="3" />
+                                                    <input type="hidden" id="price-20" name="category" value="3" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR021" onclick="add_prodpos('21')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/mattress.svg" width="45%">
+                                                                                        <p class="card-text mb-2">Carpets</p>
+                
+                                                    <input type="hidden" id="idname-21" name="name" value="Carpets" />
+                                                    <input type="hidden" id="category" name="category" value="4" />
+                                                    <input type="hidden" id="price-21" name="category" value="4" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR022" onclick="add_prodpos('22')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/trench-coat.svg" width="45%">
+                                                                                        <p class="card-text mb-2">coat</p>
+                
+                                                    <input type="hidden" id="idname-22" name="name" value="coat" />
+                                                    <input type="hidden" id="category" name="category" value="2" />
+                                                    <input type="hidden" id="price-22" name="category" value="2" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR023" onclick="add_prodpos('23')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/t-shirt.svg" width="45%">
+                                                                                        <p class="card-text mb-2">t-shirt</p>
+                
+                                                    <input type="hidden" id="idname-23" name="name" value="t-shirt" />
+                                                    <input type="hidden" id="category" name="category" value="3" />
+                                                    <input type="hidden" id="price-23" name="category" value="3" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR024" onclick="add_prodpos('24')">
+                                                <div class="card-body text-center p-1">
+                                                                                        <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/uniform.svg" width="45%">
+                                                                                        <p class="card-text mb-2">dress</p>
+                
+                                                    <input type="hidden" id="idname-24" name="name" value="dress" />
+                                                    <input type="hidden" id="category" name="category" value="2" />
+                                                    <input type="hidden" id="price-24" name="category" value="2" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR024" onclick="add_prodpos('25')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <i class="glyph-icon iconsminds-blouse" style="font-size: 30px;"></i>
+                                                                                        <p class="card-text mb-2">t-shirt</p>
+                
+                                                    <input type="hidden" id="idname-25" name="name" value="t-shirt" />
+                                                    <input type="hidden" id="category" name="category" value="3" />
+                                                    <input type="hidden" id="price-25" name="category" value="3" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR026" onclick="add_prodpos('26')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/shirts.svg" width="45%">
+                                                                                        <p class="card-text mb-2">Shirt</p>
+                
+                                                    <input type="hidden" id="idname-26" name="name" value="Shirt" />
+                                                    <input type="hidden" id="category" name="category" value="3" />
+                                                    <input type="hidden" id="price-26" name="category" value="3" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR027" onclick="add_prodpos('27')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/laundry.svg" width="45%">
+                                                                                        <p class="card-text mb-2">towel</p>
+                
+                                                    <input type="hidden" id="idname-27" name="name" value="towel" />
+                                                    <input type="hidden" id="category" name="category" value="4" />
+                                                    <input type="hidden" id="price-27" name="category" value="4" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR025" onclick="add_prodpos('28')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/pant.svg" width="45%">
+                                                                                        <p class="card-text mb-2">Sweat pants</p>
+                
+                                                    <input type="hidden" id="idname-28" name="name" value="Sweat pants" />
+                                                    <input type="hidden" id="category" name="category" value="3" />
+                                                    <input type="hidden" id="price-28" name="category" value="3" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR029" onclick="add_prodpos('29')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/sneaker.svg" width="45%">
+                                                                                        <p class="card-text mb-2">shoes</p>
+                
+                                                    <input type="hidden" id="idname-29" name="name" value="shoes" />
+                                                    <input type="hidden" id="category" name="category" value="3" />
+                                                    <input type="hidden" id="price-29" name="category" value="3" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR028" onclick="add_prodpos('30')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/cap.svg" width="45%">
+                                                                                        <p class="card-text mb-2">cap</p>
+                
+                                                    <input type="hidden" id="idname-30" name="name" value="cap" />
+                                                    <input type="hidden" id="category" name="category" value="3" />
+                                                    <input type="hidden" id="price-30" name="category" value="3" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR031" onclick="add_prodpos('31')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <i class="glyph-icon iconsminds-cap" style="font-size: 30px;"></i>
+                                                                                        <p class="card-text mb-2">Hat</p>
+                
+                                                    <input type="hidden" id="idname-31" name="name" value="Hat" />
+                                                    <input type="hidden" id="category" name="category" value="2" />
+                                                    <input type="hidden" id="price-31" name="category" value="2" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR032" onclick="add_prodpos('32')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/batik-skirt.svg" width="45%">
+                                                                                        <p class="card-text mb-2">skirt</p>
+                
+                                                    <input type="hidden" id="idname-32" name="name" value="skirt" />
+                                                    <input type="hidden" id="category" name="category" value="2" />
+                                                    <input type="hidden" id="price-32" name="category" value="2" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR033" onclick="add_prodpos('33')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/blazer.svg" width="45%">
+                                                                                        <p class="card-text mb-2">costume</p>
+                
+                                                    <input type="hidden" id="idname-33" name="name" value="costume" />
+                                                    <input type="hidden" id="category" name="category" value="3" />
+                                                    <input type="hidden" id="price-33" name="category" value="3" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR034" onclick="add_prodpos('34')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/uniform.svg" width="45%">
+                                                                                        <p class="card-text mb-2">military uniform</p>
+                
+                                                    <input type="hidden" id="idname-34" name="name" value="military uniform" />
+                                                    <input type="hidden" id="category" name="category" value="3" />
+                                                    <input type="hidden" id="price-34" name="category" value="3" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR035" onclick="add_prodpos('35')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/uniform-medical.svg" width="45%">
+                                                                                        <p class="card-text mb-2">Medical suit</p>
+                
+                                                    <input type="hidden" id="idname-35" name="name" value="Medical suit" />
+                                                    <input type="hidden" id="category" name="category" value="2" />
+                                                    <input type="hidden" id="price-35" name="category" value="2" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR036" onclick="add_prodpos('36')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/vest.svg" width="45%">
+                                                                                        <p class="card-text mb-2">vest</p>
+                
+                                                    <input type="hidden" id="idname-36" name="name" value="vest" />
+                                                    <input type="hidden" id="category" name="category" value="3" />
+                                                    <input type="hidden" id="price-36" name="category" value="3" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR037" onclick="add_prodpos('37')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/leather-jacket.svg" width="45%">
+                                                                                        <p class="card-text mb-2">Queer jacket</p>
+                
+                                                    <input type="hidden" id="idname-37" name="name" value="Queer jacket" />
+                                                    <input type="hidden" id="category" name="category" value="3" />
+                                                    <input type="hidden" id="price-37" name="category" value="3" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR038" onclick="add_prodpos('41')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/jacket.svg" width="45%">
+                                                                                        <p class="card-text mb-2">Jacket</p>
+                
+                                                    <input type="hidden" id="idname-41" name="name" value="Jacket" />
+                                                    <input type="hidden" id="category" name="category" value="3" />
+                                                    <input type="hidden" id="price-41" name="category" value="3" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                                                    <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR042" onclick="add_prodpos('42')">
+                                                <div class="card-body text-center p-1">
+                                                                                            <img class="mt-1 mb-1" src="https://laundry.sudway.ma//files/svg/cap.svg" width="45%">
+                                                                                        <p class="card-text mb-2">Kameez & Shalwar</p>
+                
+                                                    <input type="hidden" id="idname-42" name="name" value="Kameez & Shalwar" />
+                                                    <input type="hidden" id="category" name="category" value="3" />
+                                                    <input type="hidden" id="price-42" name="category" value="3" />
+                
+                                                </div>
+                
+                
+                                            </a>
+                                        
+                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-12 mb-0">
+                
+                        <div class="card">
+                
+                            <form>
+                                <div class="card-body p-2">
+                
+                                    <div class=" ps ps--active-y">
+                                        <button type="button" class="btn btn-light  btn-lg mb-1 w-100 text-center default selectype1" style="border-top:4px solid #138496;" id="laundry">Laundry</button>
+                                        <button type="button" class="btn btn-light  btn-lg mb-1 w-100 text-center default selectype1" style="border-top:4px solid #138496;" id="lroning">Ironing</button>
+                                        <button type="button" class="btn btn-light  btn-lg mb-1 w-100 text-center default selectype1" style="border-top:4px solid #138496;" id="laundrylroning">Laundry and <br /> Ironing</button>
+                                        <button type="button" class="btn btn-light  btn-lg mb-1 w-100 text-center default selectype1" style="border-top:4px solid #138496;" id="dry">Dry Wash</button>
+                                        <button type="button" class="btn btn-light  btn-lg mb-1 w-100 text-center default selectype1" style="border-top:4px solid #138496;" id="other"> Other Services</button>
+                
+                                        <button type="button" class="btn btn-light  btn-lg mb-1 w-100 text-center default selectype2" style="border-top:4px solid #138496;" id="normal"> Normal </button>
+                                        <button type="button" class="btn btn-light  btn-lg mb-1 w-100 text-center default selectype2" style="border-top:4px solid #138496;" id="fast"> Fast</button>
+                                        <div class="w-100">
+                                            <input type="number" value="1" min="1" max="100" step="1" id="" name="qtecart" />
+                                        </div>
+                                        <hr>
+                                        <select id="color" name="color" class="form-control mb-4" data-width="100%" data-height="20%" required>
+                                            <option value="Blanc" style="background-color: #ffffff;">Color </option>
+                
+                                                                            <option value="Extra Brite" style="background-color:#f1efef;"> Extra Brite</option>
+                                                                            <option value="background-color" style="background-color:#0937f1;"> </option>
+                                                                            <option value="Red" style="background-color:#fb092d;"> Red </option>
+                                                                            <option value="Blue" style="background-color:#0937f1;"> Blue</option>
+                                                                            <option value="Green" style="background-color:#10e044;">Green </option>
+                                                                            <option value="Gray" style="background-color:#b6afaf;"> Gray </option>
+                                                                            <option value="Black" style="background-color:#0a0000;"> Black </option>
+                                                                    </select>
+                
+                                        <button type="button" class="btn btn-primary  btn-lg mb-1 w-100 text-center default" onclick="add_posale()"> Ajouter </button>
+                
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-12 mb-0">
+                
+                        <div class="card">
+                            <div class="row px-4 py-1">
+                                <input type="text" id="salesearch" class="form-control col-8" placeholder=" Trouver une facture " style="font-size: 15px;">
+                                <button type="button" class="btn btn-primary  text-center default mr-2 ml-2" onclick="SaleSearch()">
+                                    Search <i class="simple-icon-magnifier"></i>
+                                </button>
+                                <span id="errorsale_searsh" class="text-danger"></span>
+                            </div>
+                            <div class="card-body px-2 py-0">
+                
+                                <div class="row p-3">
+                
+                                    <select id="customerSelect" name="" class="form-control select2-single" data-width="50%" data-height="20%">
+                                        <option value="0">Default client</option>
+                                                                    <option value="7">ahmed bader</option>
+                                                                    <option value="10">Serge MUSABLE</option>
+                                                                    <option value="11">ali karim</option>
+                                                                    <option value="12">Abdullah Majed</option>
+                                                                    <option value="14">John Paul David</option>
+                                                                    <option value="15">Jdsfjfo kmkfvmpmj</option>
+                                                                    <option value="16">sunit pattanayak</option>
+                                                                    <option value="17">walkcustomer Karim</option>
+                                                                    <option value="18">SHAFI KALLANTHOD</option>
+                                                                    <option value="19">JALEEL MUKKAM</option>
+                                                                    <option value="20">Shaf KK</option>
+                                                                    <option value="21">Joel Andam</option>
+                                                                    <option value="22">Hafiz Muhammad</option>
+                                                                    <option value="24">pjsdkljdaffs daskldfasl</option>
+                                                                    <option value="25">Mark No</option>
+                                                                    <option value="26">1234 4444</option>
+                                                                    <option value="27">Cash new</option>
+                                                            </select>
+                                    <button type="button" class="btn btn-primary  text-center default mr-2 ml-2" data-toggle="modal" data-target="#clientModal">
+                                        Add a new Client <i class="simple-icon-user-follow"></i>
+                                    </button>
+                                </div>
+                
+                                <div class="dashboard-list-with-thumbs ps ps--active-y">
+                
+                
+                
+                                    <div class="col-md-13">
+                                        <div class="info mt-4">
+                                            <div class="row mt-2 pb-1" style="border-bottom:1px solid #138496; color:#0b414a">
+                                                <div class="col-md-3 product-name">
+                                                    <div>Produit </div>
+                                                </div>
+                                                <div class="col-md-3 product-name">
+                                                    <div> Service</div>
+                                                </div>
+                
+                                                <div class="col-md-3 price text-center">
+                                                    <span>Quantité</span>
+                                                </div>
+                                                <div class="col-md-2 price text-center">
+                                                    <span>Prix</span>
+                                                </div>
+                                                <div class="col-md-1  text-center">
+                                                    <span></span>
+                                                </div>
+                                            </div>
+                                            <div class="scrollbar" id="style-1">
+                                                <div class="cartview" id="cartview">
+                
+                
+                                                    <br><span class="m-5 text-center col-md-12">Vide</span>                                </div>
+                                            </div>
+                                            <div class="table-responsive col-sm-12 totalTab" style="background-color: #f8f8f8; border:1px solid #f1efef">
+                                                <table class="table">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="active" width="40%" style="padding:3px"> Subtotal total</td>
+                                                            <td class="whiteBg" width="60%" style="padding:3px"><span id="Subtot">0.00</span> xaf <span class="float-right"><b id="ItemsNum"><span>0</span> Number of services</b></span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="active" style="padding:3px">Tax</td>
+                                                            <td class="whiteBg" style="padding:3px"><input type="text" value="0" onchange="total_change()" id="taxValue" class="total-input TAX form-control" placeholder="" maxlength="5">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="active" style="padding:3px">Discounts</td>
+                                                            <td class="whiteBg" style="padding:3px"><input type="text" value="0" onchange="total_change()" id="RemiseValue" class="total-input Remise form-control" placeholder="" maxlength="5">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="active" style="padding:3px">Total</td>
+                                                            <td class="whiteBg light-blue text-bold" style="padding:3px"><span id="total">0.00</span> xaf</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                
+                                        </div>
+                                    </div>
+                
+                
+                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-12 mb-4">
+                        <div class="card">
+                            <div class="card-body p-2">
+                                <button class="btn btn-success default w-100"  onclick="DailyReport()">
+                                    <h3><i class="glyph-icon iconsminds-money-bag"></i> Daily Sales :
+                                        <span id="total_sales">
+                                            0.00                        </span> xaf                    </h3>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-12 mb-4">
+                        <div class="card">
+                            <div class="card-body p-2">
+                                <div class="btn btn-success default w-100">
+                                    <h3><i class="glyph-icon simple-icon-calculator"></i> Number of Daily Orders : <span id="number_sales">0</span></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-12 mb-4">
+                        <div class="card">
+                            <div class="card-body p-2">
+                                <div class="">
+                                    <button type="button" class="btn btn-success btn-lg default float-left text-center mr-1" style="width: 51%!important;" data-toggle="modal" data-target="#AddSale">
+                                        <h4>Paid</h4>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-lg default float-left text-center" style="width: 47%!important;" onclick="cancelPOS()">
+                                        <h4>Close</h4>
+                                    </button>
+                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+
+
+            
+                
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="page-footer">
+        <div class="footer-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <p class="mb-0 text-muted">ColoredStrategies 2019</p>
+                    </div>
+                    <div class="col-sm-6 d-none d-sm-block">
+                        <ul class="breadcrumb pt-0 pr-0 float-right">
+                            <li class="breadcrumb-item mb-0">
+                                <a href="#" class="btn-link">Review</a>
+                            </li>
+                            <li class="breadcrumb-item mb-0">
+                                <a href="#" class="btn-link">Purchase</a>
+                            </li>
+                            <li class="breadcrumb-item mb-0">
+                                <a href="#" class="btn-link">Docs</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="js/vendor/Chart.bundle.min.js"></script>
+    <script src="js/vendor/chartjs-plugin-datalabels.js"></script>
+    <script src="js/vendor/moment.min.js"></script>
+    <script src="js/vendor/fullcalendar.min.js"></script>
+    <script src="js/vendor/datatables.min.js"></script>
+    <script src="js/vendor/perfect-scrollbar.min.js"></script>
+    <script src="js/vendor/progressbar.min.js"></script>
+    <script src="js/vendor/jquery.barrating.min.js"></script>
+    <script src="js/vendor/select2.full.js"></script>
+    <script src="js/vendor/nouislider.min.js"></script>
+    <script src="js/vendor/bootstrap-datepicker.js"></script>
+    <script src="js/vendor/Sortable.js"></script>
+    <script src="js/vendor/mousetrap.min.js"></script>
+    <script src="js/vendor/glide.min.js"></script>
+    <script src="js/dore.script.js"></script>
+    <script src="js/scripts.js"></script>
+</body>
+
+</html>
