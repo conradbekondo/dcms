@@ -23,8 +23,9 @@ export class AuthGuard implements CanActivate {
                     return of(false);
                 }
 
-                const validToken = this.jwtService.verify(Authorization.split(' ')[1]);
+                const validToken = this.jwtService.verify(Authorization);
                 console.log(validToken);
+                return of(true);
             })
         )
     }
