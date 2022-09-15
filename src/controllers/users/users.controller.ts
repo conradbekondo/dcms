@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Inject, Post, Query, Render, Res } from '@nestjs/common';
-import { Response } from 'express';
+import { Body, Controller, Get, Inject, Post, Query, Render, Req, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { ILoginDto } from 'src/dto/login.dto';
 import injectionTokenKeys from 'src/injection-tokens';
 import { UsersService } from 'src/services/users/users.service';
@@ -8,7 +8,8 @@ import { BaseController } from '../base/base.controller';
 @Controller('users')
 export class UsersController extends BaseController {
     constructor (private readonly userService: UsersService,
-        @Inject(injectionTokenKeys.appName) appName: string) {
+        @Inject(injectionTokenKeys.appName) appName: string,
+        @Inject(injectionTokenKeys.identityMaxAge) private readonly identityMaxAge: number) {
         super(appName);
     }
 
@@ -26,7 +27,7 @@ export class UsersController extends BaseController {
 
 
     @Post('login')
-    async handleLogin(@Body() loginDto: ILoginDto, @Query('returnUrl') returnUrl: string, @Res() res: Response) {
+    async handleLogin(@Body() loginDto: ILoginDto, @Query('returnUrl') returnUrl: string, @Req() req: Request, @Res() res: Response) {
         const errors: string[] = [];
         if ((!loginDto.username || loginDto.username.length == 0) && (!loginDto.password || loginDto.password.length == 0)) {
             errors.push('Username & password required');
@@ -36,7 +37,9 @@ export class UsersController extends BaseController {
 
         const loginResult = await this.userService.loginUser(loginDto);
         if (loginResult.success) {
-            return res.redirect(returnUrl ? returnUrl : '/');
+            res.cookie('identity', loginResult.jwtToken, { maxAge: this.identityMaxAge, signed: true });
+            res.redirect(returnUrl ? `${decodeURIComponent(returnUrl)}` : '/');
+            return;
         }
         errors.push(loginResult.error);
         res.render('login/login', {

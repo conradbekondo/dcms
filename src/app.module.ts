@@ -1,14 +1,21 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
+import { JwtModule } from '@nestjs/jwt';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { IndexController } from './controllers/index/index.controller';
 import { OrdersController } from './controllers/orders/orders.controller';
 import { UsersController } from './controllers/users/users.controller';
+import { AppliedPolicy } from './entities/applied-policy.entity';
+import { OrderEntryAttribute } from './entities/order-entry-attribute.entity';
+import { OrderEntry } from './entities/order-entry.entity';
+import { Order } from './entities/order.entity';
+import { Policy } from './entities/processing-policy.entity';
+import { Product } from './entities/product.entity';
 import { Profile } from './entities/profile.entity';
 import { Role } from "./entities/Role";
+import { OfferedService } from './entities/service.entity';
 import { LoginEntry } from './entities/user-login-entry.entity';
 import { User } from './entities/user.entity';
 import { NotFoundFilter } from './filters/not-found.filter';
@@ -26,7 +33,14 @@ const options: TypeOrmModuleOptions = {
     User,
     Role,
     LoginEntry,
-    Profile
+    Profile,
+    Order,
+    OrderEntry,
+    Product,
+    OfferedService,
+    Policy,
+    OrderEntryAttribute,
+    AppliedPolicy
   ],
   namingStrategy: new SnakeNamingStrategy(),
   synchronize: process.env.NODE_ENV == 'development',
@@ -39,9 +53,10 @@ const options: TypeOrmModuleOptions = {
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
       serveRoot: '/static'
-    })
+    }),
+    JwtModule.register({ secret: process.env.E_KEY })
   ],
-  controllers: [UsersController, IndexController, OrdersController],
+  controllers: [UsersController, OrdersController],
   providers: [
     UsersService,
     {
@@ -51,6 +66,10 @@ const options: TypeOrmModuleOptions = {
     {
       provide: injectionTokenKeys.appName,
       useValue: process.env.APP_NAME || 'DCMS'
+    },
+    {
+      provide: injectionTokenKeys.identityMaxAge,
+      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '5000')
     }
   ],
 })
