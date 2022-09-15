@@ -24,6 +24,7 @@ import injectionTokenKeys from './injection-tokens';
 import { UsersService } from './services/users/users.service';
 import { OrdersService } from './services/orders/orders.service';
 import { ServicesController } from './controllers/services/services.controller';
+import { OfferedServicesService } from './services/offered-services/offered-services.service';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -46,8 +47,8 @@ const options: TypeOrmModuleOptions = {
     AppliedPolicy
   ],
   namingStrategy: new SnakeNamingStrategy(),
-  synchronize: process.env.NODE_ENV == 'development',
-  dropSchema: process.env.NODE_ENV == 'development'
+  synchronize: false,
+  dropSchema: false
 };
 
 @Module({
@@ -55,7 +56,8 @@ const options: TypeOrmModuleOptions = {
     TypeOrmModule.forRoot(options),
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
-      serveRoot: '/static'
+      serveRoot: '/static',
+      renderPath: null
     }),
     JwtModule.register({ secret: process.env.E_KEY })
   ],
@@ -78,7 +80,8 @@ const options: TypeOrmModuleOptions = {
       provide: injectionTokenKeys.identityMaxAge,
       useValue: parseInt(process.env.IDENTITY_MAX_AGE || '3600') * 1000
     },
-    OrdersService
+    OrdersService,
+    OfferedServicesService
   ],
 })
 export class AppModule {

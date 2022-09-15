@@ -7,10 +7,10 @@ import { BaseController } from '../base/base.controller';
 
 @Controller('users')
 export class UsersController extends BaseController {
-    constructor (private readonly userService: UsersService,
+    constructor (userService: UsersService,
         @Inject(injectionTokenKeys.appName) appName: string,
         @Inject(injectionTokenKeys.identityMaxAge) private readonly identityMaxAge: number) {
-        super(appName);
+        super(appName, userService);
     }
 
     @Render('login/login')

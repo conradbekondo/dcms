@@ -23,18 +23,20 @@
                         <i class="iconsminds-jacket"></i> Products & Services
                     </a>
                 </li>
-                <li>
-                    <a href="#menu">
-                        <i class="iconsminds-user"></i> System Users
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#settings">
-                        <i class="iconsminds-gear"></i> Settings
-                    </a>
-                </li>
-                <!-- <li>
+                <% if(view.principal && (view.principal?.roles?.includes('system') ||
+                    view.principal?.roles?.includes('admin'))) { %>
+                    <li>
+                        <a href="#menu">
+                            <i class="iconsminds-user"></i> System Users
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#settings">
+                            <i class="iconsminds-gear"></i> Settings
+                        </a>
+                    </li>
+                    <% } %>
+                        <!-- <li>
                     <a href="https://dore-jquery-docs.coloredstrategies.com" target="_blank">
                         <i class="iconsminds-library"></i> Docs
                     </a>
