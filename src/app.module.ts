@@ -4,6 +4,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { IndexController } from './controllers/index/index.controller';
+import { OrdersController } from './controllers/orders/orders.controller';
 import { UsersController } from './controllers/users/users.controller';
 import { Profile } from './entities/profile.entity';
 import { Role } from "./entities/Role";
@@ -12,7 +14,6 @@ import { User } from './entities/user.entity';
 import { NotFoundFilter } from './filters/not-found.filter';
 import injectionTokenKeys from './injection-tokens';
 import { UsersService } from './services/users/users.service';
-import { IndexController } from './controllers/index/index.controller';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -40,7 +41,7 @@ const options: TypeOrmModuleOptions = {
       serveRoot: '/static'
     })
   ],
-  controllers: [UsersController, IndexController],
+  controllers: [UsersController, IndexController, OrdersController],
   providers: [
     UsersService,
     {
