@@ -8,7 +8,7 @@ export class OrdersController extends BaseController {
         super(appName);
     }
     @Get()
-    @Render('orders/index')
+    @Render('orders/orders')
     viewOrders() {
         return { data: {}, view: this.viewBag };
     }

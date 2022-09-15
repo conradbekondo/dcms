@@ -1,0 +1,52 @@
+<%- include('partials/head.ejs') %>
+
+    <body id="app-container" class="menu-default show-spinner">
+        <%- include('../partials/navbar.ejs') %>
+            <%- include('../partials/menu.ejs') %>
+                <main>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <h1>Orders</h1>
+                                <div class="separator mb-5"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-12 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <table class="data-table data-table-feature">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Customer</th>
+                                                    <th>Service</th>
+                                                    <th>Description</th>
+                                                    <th>Price</th>
+                                                    <th>Date Recorded</th>
+                                                    <th>Pickup Date</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Tiger Nixon</td>
+                                                    <td>System Architect</td>
+                                                    <td>Edinburgh</td>
+                                                    <td>61</td>
+                                                    <td>2011/04/25</td>
+                                                    <td>$320,800</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <%- include('../partials/main-footer.ejs') %>
+                    <%- include('partials/scripts.ejs') %>
+    </body>
+
+    </html>

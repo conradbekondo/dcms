@@ -43,3 +43,11 @@ body.show-spinner::after {
     -webkit-transform: rotate(360deg);
   }
 }
+
+.main-menu {
+  width: 140px !important;
+}
+
+.menu .sub-menu {
+  width: 270px !important;
+}

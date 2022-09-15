@@ -1,0 +1,208 @@
+<div class="menu">
+    <div class="main-menu">
+        <div class="scroll">
+            <ul class="list-unstyled">
+                <!-- <li class="active">
+                    <a href="Dashboard.Content.html">
+                        <i class="iconsminds-dashboard"></i>
+                        <span>Overview</span>
+                    </a>
+                </li> -->
+                <li>
+                    <a href="#layouts">
+                        <i class="iconsminds-digital-drawing"></i> Orders
+                    </a>
+                </li>
+                <li>
+                    <a href="#applications">
+                        <i class="iconsminds-id-card"></i> Clients
+                    </a>
+                </li>
+                <li>
+                    <a href="#ui">
+                        <i class="iconsminds-jacket"></i> Products & Services
+                    </a>
+                </li>
+                <li>
+                    <a href="#menu">
+                        <i class="iconsminds-user"></i> System Users
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#settings">
+                        <i class="iconsminds-gear"></i> Settings
+                    </a>
+                </li>
+                <!-- <li>
+                    <a href="https://dore-jquery-docs.coloredstrategies.com" target="_blank">
+                        <i class="iconsminds-library"></i> Docs
+                    </a>
+                </li> -->
+            </ul>
+        </div>
+    </div>
+
+    <div class="sub-menu">
+        <div class="scroll">
+            <ul class="list-unstyled" data-link="dashboard">
+
+            </ul>
+            <ul class="list-unstyled" data-link="layouts" id="layouts">
+                <li>
+
+                    <div id="collapseAuthorization" class="collapse show">
+                        <ul class="list-unstyled inner-level-menu">
+                            <li>
+                                <a href="/orders">
+                                    <i class="simple-icon-list"></i> <span class="d-inline-block">View
+                                        Orders</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/orders/create">
+                                    <i class="simple-icon-plus"></i> <span class="d-inline-block">Create
+                                        Order</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
+
+            </ul>
+            <ul class="list-unstyled" data-link="applications">
+                <li>
+                    <a href="/clients">
+                        <i class="simple-icon-people"></i> <span class="d-inline-block">View Clients</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/clients/create">
+                        <i class="simple-icon-plus"></i> <span class="d-inline-block">Create Client</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="list-unstyled" data-link="ui">
+                <li>
+
+                    <div id="collapseForms" class="collapse show">
+                        <ul class="list-unstyled inner-level-menu">
+                            <li class="text-muted">
+                                <h5>Products</h5>
+                            </li>
+                            <li>
+                                <a href="/products">
+                                    <i class="simple-icon-list"></i> <span class="d-inline-block">All Products</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/products/categories">
+                                    <i class="simple-icon-grid"></i> <span class="d-inline-block">Categories</span>
+                                </a>
+                            </li>
+                            <li class="text-muted mt-5 mb-1">
+                                <h5>Services</h5>
+                            </li>
+                            <li>
+                                <a href="/services">
+                                    <i class="simple-icon-list"></i> <span class="d-inline-block">Offered
+                                        Services</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/services/create">
+                                    <i class="simple-icon-plus"></i> <span class="d-inline-block">Create
+                                        Service</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+            </ul>
+
+            <ul class="list-unstyled" data-link="settings">
+                <li>
+
+                    <div id="collapseForms" class="collapse show">
+                        <ul class="list-unstyled inner-level-menu">
+                            <li>
+                                <a href="Ui.Forms.Components.html">
+                                    <i class="simple-icon-database"></i> <span class="d-inline-block">Data Backup</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="Ui.Forms.Layouts.html">
+                                    <i class="simple-icon-doc"></i> <span class="d-inline-block">Data Restore</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
+
+            </ul>
+
+
+
+            <ul class="list-unstyled" data-link="menu" id="menuTypes">
+                <li>
+
+                    <div id="collapseMenuTypes" class="collapse show" data-parent="#menuTypes">
+                        <ul class="list-unstyled inner-level-menu">
+                            <li>
+                            <li>
+                                <a href="/users">
+                                    <i class="simple-icon-people"></i> <span class="d-inline-block">All
+                                        Users</span>
+                                </a>
+                            </li>
+                </li>
+                <li>
+                    <a href="Menu.Subhidden.html">
+                        <i class="simple-icon-user-follow"></i> <span class="d-inline-block">Create
+                            User</span>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+        </li>
+        <li>
+
+            <div id="collapseMenuLevel" class="collapse" data-parent="#menuTypes">
+                <ul class="list-unstyled inner-level-menu">
+                    <li>
+
+                    </li>
+                    <li>
+                        <a href="#" data-toggle="collapse" data-target="#collapseMenuLevel2" aria-expanded="true"
+                            aria-controls="collapseMenuLevel2" class="rotate-arrow-icon collapsed">
+                            <i class="simple-icon-arrow-down"></i> <span class="d-inline-block">Another
+                                Level</span>
+                        </a>
+                        <div id="collapseMenuLevel2" class="collapse">
+                            <ul class="list-unstyled inner-level-menu">
+                                <li>
+                                    <a href="#">
+                                        <i class="simple-icon-layers"></i> <span class="d-inline-block">Sub
+                                            Level</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+        <li>
+
+        </li>
+        </ul>
+
+    </div>
+
+</div>
+</div>
