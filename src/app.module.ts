@@ -74,7 +74,7 @@ const options: TypeOrmModuleOptions = {
     },
     {
       provide: injectionTokenKeys.identityMaxAge,
-      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '50000')
+      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '5000000000')
     }
   ],
 })
