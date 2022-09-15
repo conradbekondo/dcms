@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
+import { JwtModule } from '@nestjs/jwt';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
@@ -52,7 +53,8 @@ const options: TypeOrmModuleOptions = {
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
       serveRoot: '/static'
-    })
+    }),
+    JwtModule.register({ secret: process.env.E_KEY })
   ],
   controllers: [UsersController, OrdersController],
   providers: [
@@ -64,6 +66,10 @@ const options: TypeOrmModuleOptions = {
     {
       provide: injectionTokenKeys.appName,
       useValue: process.env.APP_NAME || 'DCMS'
+    },
+    {
+      provide: injectionTokenKeys.identityMaxAge,
+      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '5000')
     }
   ],
 })

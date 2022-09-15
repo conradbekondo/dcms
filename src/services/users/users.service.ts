@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
 import { BehaviorSubject } from 'rxjs';
 import { ILoginDto } from 'src/dto/login.dto';
@@ -18,7 +19,7 @@ export class UsersService {
     private readonly profileRepository: Repository<Profile>;
     private readonly roleRepository: Repository<Role>;
 
-    constructor (datasource: DataSource) {
+    constructor (datasource: DataSource, private readonly jwtService: JwtService) {
         this.principalSubject = new BehaviorSubject<IPrincipal>(null);
         this.userRepository = datasource.getRepository(User);
         this.userLoginRepository = datasource.getRepository(LoginEntry);
@@ -56,7 +57,7 @@ export class UsersService {
             systemUser.roles = [systemRole];
             systemUser.profile = systemProfile;
 
-            systemUser = await this.userRepository.save(systemUser);
+            await this.userRepository.save(systemUser);
         });
     }
 
@@ -97,6 +98,6 @@ export class UsersService {
         this.principal = principal;
         this.logger.debug('Updated principal');
 
-        return { success: true, error: '' };
+        return { success: true, error: '', jwtToken: this.jwtService.sign(JSON.stringify(principal)) };
     }
 }
