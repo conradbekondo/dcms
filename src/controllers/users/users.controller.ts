@@ -37,7 +37,7 @@ export class UsersController extends BaseController {
 
         const loginResult = await this.userService.loginUser(loginDto);
         if (loginResult.success) {
-            res.cookie('identity', loginResult.jwtToken, { maxAge: this.identityMaxAge, signed: true });
+            res.cookie('Authorization', `Bearer ${loginResult.jwtToken}`, { maxAge: this.identityMaxAge });
             res.redirect(returnUrl ? `${decodeURIComponent(returnUrl)}` : '/');
             return;
         }

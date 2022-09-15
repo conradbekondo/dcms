@@ -18,6 +18,7 @@ import { Role } from "./entities/Role";
 import { OfferedService } from './entities/service.entity';
 import { LoginEntry } from './entities/user-login-entry.entity';
 import { User } from './entities/user.entity';
+import { AuthFailedFilter } from './filters/auth-failed.filter';
 import { NotFoundFilter } from './filters/not-found.filter';
 import injectionTokenKeys from './injection-tokens';
 import { UsersService } from './services/users/users.service';
@@ -64,12 +65,16 @@ const options: TypeOrmModuleOptions = {
       useClass: NotFoundFilter
     },
     {
+      provide: APP_FILTER,
+      useClass: AuthFailedFilter
+    },
+    {
       provide: injectionTokenKeys.appName,
       useValue: process.env.APP_NAME || 'DCMS'
     },
     {
       provide: injectionTokenKeys.identityMaxAge,
-      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '5000')
+      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '50000')
     }
   ],
 })

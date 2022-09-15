@@ -6,6 +6,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { from, switchMap, tap } from 'rxjs';
 import { AppModule } from 'src/app.module';
+import * as cookieParser from 'cookie-parser';
 
 
 function bootstrap() {
@@ -16,6 +17,7 @@ function bootstrap() {
             app.useStaticAssets(join(process.cwd(), 'public'));
             app.setBaseViewsDir(join(process.cwd(), 'views'));
             app.enableCors({ origin: '*' });
+            app.use(cookieParser());
             app.setViewEngine('ejs');
         }),
         switchMap(app => from(app.listen(parseInt(process.env.APP_PORT))))
