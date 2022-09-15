@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { IPrincipal } from 'src/models/principal.model';
 import { UsersService } from 'src/services/users/users.service';
 
 @Injectable()
@@ -23,8 +24,9 @@ export class AuthGuard implements CanActivate {
                     return of(false);
                 }
 
-                const validToken = this.jwtService.verify(Authorization);
-                console.log(validToken);
+                const principal: IPrincipal = this.jwtService.verify(Authorization) as IPrincipal;
+                this.usersService.principal = principal;
+
                 return of(true);
             })
         )

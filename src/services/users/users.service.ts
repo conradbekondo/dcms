@@ -30,6 +30,7 @@ export class UsersService {
         }
     }
 
+
     private async seed() {
         hash('passwordAdmin123', 12).then(async password => {
             let adminRole = new Role();
@@ -61,7 +62,7 @@ export class UsersService {
         });
     }
 
-    private set principal(principal: IPrincipal) {
+    set principal(principal: IPrincipal) {
         this.principalSubject.next(principal);
     }
 
