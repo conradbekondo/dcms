@@ -10,6 +10,6 @@ export class NotFoundFilter<T> implements ExceptionFilter {
     const response: Response = context.getResponse();
     const path = join(process.cwd(), 'views', 'not-found.ejs');
     renderFile(path, { exception })
-      .then(s => response.status(200).send(s));
+      .then(s => response.status(404).send(s));
   }
 }

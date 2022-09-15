@@ -1,13 +1,16 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UsersController } from './controllers/users/users.controller';
-import { User } from './entities/user.entity';
+import { Profile } from './entities/profile.entity';
 import { Role } from "./entities/Role";
+import { LoginEntry } from './entities/user-login-entry.entity';
+import { User } from './entities/user.entity';
 import { NotFoundFilter } from './filters/not-found.filter';
 import { UsersService } from './services/users/users.service';
-import { LoginEntry } from './entities/user-login-entry.entity';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -19,23 +22,31 @@ const options: TypeOrmModuleOptions = {
   entities: [
     User,
     Role,
-    LoginEntry
+    LoginEntry,
+    Profile
   ],
   namingStrategy: new SnakeNamingStrategy(),
-  synchronize: true,
-  dropSchema: true
+  synchronize: process.env.NODE_ENV == 'development',
+  dropSchema: process.env.NODE_ENV == 'development'
 };
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(options),
-
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'public'),
+      serveRoot: '/static'
+    })
   ],
   controllers: [UsersController],
-  providers: [UsersService,
+  providers: [
+    UsersService,
     {
       provide: APP_FILTER,
       useClass: NotFoundFilter
     }],
 })
-export class AppModule { } 
+export class AppModule {
+  constructor () {
+  }
+} 

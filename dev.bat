@@ -1,5 +1,5 @@
 echo off
 cls
 set NODE_ENV=development
-npx lerna run dev --stream
+yarn run dev
 echo on
