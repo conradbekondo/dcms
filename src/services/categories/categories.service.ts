@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { randomBytes, randomUUID } from 'crypto';
 import { ICreateCategoryDto } from 'src/dto/create_category.dto';
 import { Category } from 'src/entities/category.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -36,6 +35,13 @@ export class CategoriesService {
     return { success: true, category: category }
   }
 
+  /**
+   * Update the given category.
+   * 
+   * @param dto New category data
+   * @param id Category to update
+   * @returns 
+   */
   async updateCategory(dto: ICreateCategoryDto, id: number) {
     const category = await this.categoryRepository.findOneBy({ id: id })
 
@@ -48,6 +54,12 @@ export class CategoriesService {
     return { success: true, category: category }
   }
 
+  /**
+   * Delete the given category.
+   * 
+   * @param id Category to delete
+   * @returns 
+   */
   async deleteCategory(id: number) {
     const category = await this.categoryRepository.findOneBy({ id: id })
     
@@ -59,11 +71,22 @@ export class CategoriesService {
     }
   }
 
+  /**
+   * Get categories index.
+   * 
+   * @returns 
+   */
   async getCategories() {
     const categories = await this.categoryRepository.find()
     return categories
   }
 
+  /**
+   * Get given category data.
+   * 
+   * @param id 
+   * @returns 
+   */
   async getCategory(id: number) {
     const category = await this.categoryRepository.findOneBy({ id: id })
     return category

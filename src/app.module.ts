@@ -25,6 +25,9 @@ import { UsersService } from './services/users/users.service';
 import { CategoriesController } from './controllers/categories/categories.controller';
 import { CategoriesService } from './services/categories/categories.service';
 import { Category } from './entities/category.entity';
+import { ClientsService } from './services/clients/clients.service';
+import { Client } from './entities/client.entity';
+import { ClientsController } from './controllers/clients/clients.controller';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -45,7 +48,8 @@ const options: TypeOrmModuleOptions = {
     Policy,
     OrderEntryAttribute,
     AppliedPolicy,
-    Category
+    Category,
+    Client,
   ],
   namingStrategy: new SnakeNamingStrategy(),
   synchronize: process.env.NODE_ENV == 'development',
@@ -61,7 +65,7 @@ const options: TypeOrmModuleOptions = {
     }),
     JwtModule.register({ secret: process.env.E_KEY })
   ],
-  controllers: [UsersController, OrdersController, CategoriesController],
+  controllers: [UsersController, OrdersController, CategoriesController, ClientsController],
   providers: [
     UsersService,
     {
@@ -80,7 +84,8 @@ const options: TypeOrmModuleOptions = {
       provide: injectionTokenKeys.identityMaxAge,
       useValue: parseInt(process.env.IDENTITY_MAX_AGE || '50000000')
     },
-    CategoriesService
+    CategoriesService,
+    ClientsService
   ],
 })
 export class AppModule {

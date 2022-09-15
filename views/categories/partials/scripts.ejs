@@ -31,7 +31,7 @@
         console.error(err)
         Swal.fire({
           title: 'Error',
-          text: res.responseJSON.message || "Unable to create category.",
+          text: err.responseJSON.message || "Unable to create category.",
           icon: 'error'
         })
       }
@@ -62,7 +62,7 @@
         console.error(err)
         Swal.fire({
           title: 'Error',
-          text: res.responseJSON.message || "Unable to update category.",
+          text: err.responseJSON.message || "Unable to update category.",
           icon: 'error'
         })
       }
@@ -87,7 +87,7 @@
         console.error(err)
         Swal.fire({
           title: 'Error',
-          text: res.responseJSON.message || "Unable to delete category.",
+          text: err.responseJSON.message || "Unable to delete category.",
           icon: 'error'
         })
       }
@@ -121,7 +121,7 @@
             console.error(err)
             Swal.fire({
               title: 'Error',
-              text: res.responseJSON.message || "Unable to delete category.",
+              text: err.responseJSON.message || "Unable to delete category.",
               icon: 'error'
             })
           }
