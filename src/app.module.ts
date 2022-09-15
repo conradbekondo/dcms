@@ -10,6 +10,7 @@ import { Role } from "./entities/Role";
 import { LoginEntry } from './entities/user-login-entry.entity';
 import { User } from './entities/user.entity';
 import { NotFoundFilter } from './filters/not-found.filter';
+import injectionTokenKeys from './injection-tokens';
 import { UsersService } from './services/users/users.service';
 
 const options: TypeOrmModuleOptions = {
@@ -44,7 +45,12 @@ const options: TypeOrmModuleOptions = {
     {
       provide: APP_FILTER,
       useClass: NotFoundFilter
-    }],
+    },
+    {
+      provide: injectionTokenKeys.appName,
+      useValue: process.env.APP_NAME || 'DCMS'
+    }
+  ],
 })
 export class AppModule {
   constructor () {

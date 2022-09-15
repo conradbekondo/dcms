@@ -85,14 +85,14 @@ export class UsersService {
         loginEntry.userId = user.id;
 
         loginEntry = await this.userLoginRepository.save(loginEntry);
-        const roles = await user.roles;
+        const roles = user.roles;
         const principal: IPrincipal = {
             displayName: `${profile.firstName} ${profile.lastName || ''}`.trim(),
             loginTime: loginEntry.dateCreated,
             username,
             roles: [...(roles.map(role => role.roleName))]
         };
-        this.logger.log(`Successful login at ${principal.loginTime} by ${principal.displayName}`);
+        this.logger.log(`Successful login by '${principal.displayName}'`);
         this.principal = principal;
         this.logger.debug('Updated principal');
 
