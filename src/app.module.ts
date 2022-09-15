@@ -25,6 +25,10 @@ import { UsersService } from './services/users/users.service';
 import { OrdersService } from './services/orders/orders.service';
 import { ServicesController } from './controllers/services/services.controller';
 import { OfferedServicesService } from './services/offered-services/offered-services.service';
+import { Category } from './entities/category.entity';
+import { Client } from './entities/client.entity';
+
+
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -44,9 +48,12 @@ const options: TypeOrmModuleOptions = {
     OfferedService,
     Policy,
     OrderEntryAttribute,
-    AppliedPolicy
+    AppliedPolicy,
+    Category,
+    Client,
   ],
   namingStrategy: new SnakeNamingStrategy(),
+
   synchronize: false,
   dropSchema: false
 };
@@ -61,7 +68,8 @@ const options: TypeOrmModuleOptions = {
     }),
     JwtModule.register({ secret: process.env.E_KEY })
   ],
-  controllers: [UsersController, OrdersController, ServicesController],
+
+  controllers: [UsersController, OrdersController, CategoriesController, ClientsController],
   providers: [
     UsersService,
     {
@@ -78,6 +86,7 @@ const options: TypeOrmModuleOptions = {
     },
     {
       provide: injectionTokenKeys.identityMaxAge,
+
       useValue: parseInt(process.env.IDENTITY_MAX_AGE || '3600') * 1000
     },
     OrdersService,

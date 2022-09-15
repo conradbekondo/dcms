@@ -3192,8 +3192,8 @@ $.dore = function (element, options) {
           position: null,
           type: type,
           allow_dismiss: true,
-          newest_on_top: false,
-          showProgressbar: false,
+          newest_on_top: true,
+          showProgressbar: true,
           placement: {
             from: placementFrom,
             align: placementAlign
