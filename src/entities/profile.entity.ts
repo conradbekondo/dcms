@@ -3,7 +3,7 @@ import { BaseEntity } from "./base.entity";
 import { User } from "./user.entity";
 
 export enum Gender {
-    MALE, FEMALE
+    MALE, FEMALE, UNKNOWN
 }
 
 @Entity('profiles')

@@ -30,32 +30,33 @@ export class UsersService {
     }
 
     private async seed() {
-        hash('password123', 12).then(async password => {
+        hash('passwordAdmin123', 12).then(async password => {
             let adminRole = new Role();
             let staffRole = new Role();
+            let systemRole = new Role();
 
             adminRole.roleName = Roles.ADMIN;
             staffRole.roleName = Roles.STAFF;
+            systemRole.roleName = Roles.SYSTEM;
 
-            await this.roleRepository.save([adminRole, staffRole]);
+            await this.roleRepository.save([adminRole, staffRole, systemRole]);
 
-            let adminProfile = new Profile();
-            adminProfile.firstName = 'Conrad';
-            adminProfile.lastName = 'Bekondo';
-            adminProfile.gender = Gender.MALE;
-            adminProfile.phoneNumber = '654020651';
-            adminProfile.natId = '000175124';
+            let systemProfile = new Profile();
+            systemProfile.firstName = 'System';
+            systemProfile.gender = Gender.UNKNOWN;
+            systemProfile.phoneNumber = 'n/a';
+            systemProfile.natId = 'n/a';
 
-            adminProfile = await this.profileRepository.save(adminProfile);
+            systemProfile = await this.profileRepository.save(systemProfile);
 
-            let adminUser = new User();
-            adminUser.username = 'conrad';
-            adminUser.passwordHash = password;
-            adminUser.profileId = adminProfile.id;
-            adminUser.roles = [adminRole];
-            adminUser.profile = adminProfile;
+            let systemUser = new User();
+            systemUser.username = 'system';
+            systemUser.passwordHash = password;
+            systemUser.profileId = systemProfile.id;
+            systemUser.roles = [systemRole];
+            systemUser.profile = systemProfile;
 
-            adminUser = await this.userRepository.save(adminUser);
+            systemUser = await this.userRepository.save(systemUser);
         });
     }
 
@@ -68,7 +69,7 @@ export class UsersService {
     }
 
     async loginUser(dto: ILoginDto) {
-        const user = await this.userRepository.findOneBy({ username: dto.username });
+        const user = await this.userRepository.findOneBy({ isDeleted: false, username: dto.username });
         if (!user) {
             this.logger.warn(`Failed login attempt - Account not found - Attempt credentials: { username: '${dto.username}', password: '${dto.password}' }`)
             return { success: false, error: 'Account not found with username: ' + dto.username };
