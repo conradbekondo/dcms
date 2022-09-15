@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { IPrincipal } from 'src/models/principal.model';
 import { UsersService } from 'src/services/users/users.service';
 
 @Injectable()
@@ -18,12 +19,15 @@ export class AuthGuard implements CanActivate {
         const request: Request = context.switchToHttp().getRequest();
         const response: Response = context.switchToHttp().getResponse();
         return of(request.cookies).pipe(
-            switchMap(cookies => {
-                const { identity: identityCookie } = cookies;
-                if (!identityCookie || identityCookie == '') {
-                    response.redirect(`/users/login?returnUrl=${encodeURIComponent(request.url)}`);
+            switchMap(({ Authorization }) => {
+                if (!Authorization || Authorization == '') {
                     return of(false);
                 }
+
+                const principal: IPrincipal = this.jwtService.verify(Authorization) as IPrincipal;
+                this.usersService.principal = principal;
+
+                return of(true);
             })
         )
     }
