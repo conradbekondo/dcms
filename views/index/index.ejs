@@ -1,0 +1,447 @@
+<%- include('partials/head.ejs') %>
+    <nav class="navbar fixed-top">
+        <div class="d-flex align-items-center navbar-left">
+            <a href="#" class="menu-button d-none d-md-block">
+                <svg class="main" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 17">
+                    <rect x="0.48" y="0.5" width="7" height="1" />
+                    <rect x="0.48" y="7.5" width="7" height="1" />
+                    <rect x="0.48" y="15.5" width="7" height="1" />
+                </svg>
+                <svg class="sub" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 17">
+                    <rect x="1.56" y="0.5" width="16" height="1" />
+                    <rect x="1.56" y="7.5" width="16" height="1" />
+                    <rect x="1.56" y="15.5" width="16" height="1" />
+                </svg>
+            </a>
+
+            <a href="#" class="menu-button-mobile d-xs-block d-sm-block d-md-none">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 17">
+                    <rect x="0.5" y="0.5" width="25" height="1" />
+                    <rect x="0.5" y="7.5" width="25" height="1" />
+                    <rect x="0.5" y="15.5" width="25" height="1" />
+                </svg>
+            </a>
+
+        </div>
+
+        <a class="navbar-logo" href="/">
+            <h2>
+                <%= view.appName %>
+            </h2>
+            <!-- <span class="logo d-none d-xs-block"></span>
+            <span class="logo-mobile d-block d-xs-none"></span> -->
+        </a>
+
+        <div class="navbar-right">
+            <div class="header-icons d-inline-block align-middle">
+                <div class="d-none d-md-inline-block align-text-bottom mr-3">
+                    <div class="custom-switch custom-switch-primary-inverse custom-switch-small pl-1"
+                        data-toggle="tooltip" data-placement="left" title="Dark Mode">
+                        <input class="custom-switch-input" id="switchDark" type="checkbox" checked>
+                        <label class="custom-switch-btn" for="switchDark"></label>
+                    </div>
+                </div>
+
+                <div class="position-relative d-none d-sm-inline-block">
+                    <button class="header-icon btn btn-empty" type="button" id="iconMenuButton" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="simple-icon-grid"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right mt-3  position-absolute" id="iconMenuDropdown">
+                        <a href="#" class="icon-menu-item">
+                            <i class="iconsminds-equalizer d-block"></i>
+                            <span>Settings</span>
+                        </a>
+
+                        <a href="#" class="icon-menu-item">
+                            <i class="iconsminds-male-female d-block"></i>
+                            <span>Users</span>
+                        </a>
+
+                        <a href="#" class="icon-menu-item">
+                            <i class="iconsminds-puzzle d-block"></i>
+                            <span>Components</span>
+                        </a>
+
+                        <a href="#" class="icon-menu-item">
+                            <i class="iconsminds-bar-chart-4 d-block"></i>
+                            <span>Profits</span>
+                        </a>
+
+                        <a href="#" class="icon-menu-item">
+                            <i class="iconsminds-file d-block"></i>
+                            <span>Surveys</span>
+                        </a>
+
+                        <a href="#" class="icon-menu-item">
+                            <i class="iconsminds-suitcase d-block"></i>
+                            <span>Tasks</span>
+                        </a>
+
+                    </div>
+                </div>
+
+
+
+                <button class="header-icon btn btn-empty d-none d-sm-inline-block" type="button" id="fullScreenButton">
+                    <i class="simple-icon-size-fullscreen"></i>
+                    <i class="simple-icon-size-actual"></i>
+                </button>
+
+            </div>
+
+            <div class="user d-inline-block">
+                <button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    <span class="name">Sarah Kortney</span>
+                    <span>
+                        <img alt="Profile Picture" src="/static/img/profiles/l-1.jpg" />
+                    </span>
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right mt-3">
+                    <a class="dropdown-item" href="#">Account</a>
+                    <a class="dropdown-item" href="#">Features</a>
+                    <a class="dropdown-item" href="#">History</a>
+                    <a class="dropdown-item" href="#">Support</a>
+                    <a class="dropdown-item" href="#">Sign out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="menu">
+        <div class="main-menu">
+            <div class="scroll">
+                <ul class="list-unstyled">
+                    <li class="active">
+                        <a href="#dashboard">
+                            <i class="iconsminds-dashboard"></i>
+                            <span>Overview</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#layouts">
+                            <i class="iconsminds-digital-drawing"></i> Orders
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#applications">
+                            <i class="iconsminds-air-balloon-1"></i> Clients
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#ui">
+                            <i class="iconsminds-pantone"></i> Products
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#menu">
+                            <i class="iconsminds-three-arrow-fork"></i> Users
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#settings">
+                            <i class="iconsminds-bucket"></i> Settings
+                        </a>
+                    </li>
+                    <!-- <li>
+                        <a href="https://dore-jquery-docs.coloredstrategies.com" target="_blank">
+                            <i class="iconsminds-library"></i> Docs
+                        </a>
+                    </li> -->
+                </ul>
+            </div>
+        </div>
+
+        <div class="sub-menu">
+            <div class="scroll">
+                <ul class="list-unstyled" data-link="dashboard">
+
+                </ul>
+                <ul class="list-unstyled" data-link="layouts" id="layouts">
+                    <li>
+
+                        <div id="collapseAuthorization" class="collapse show">
+                            <ul class="list-unstyled inner-level-menu">
+                                <li>
+                                    <a href="/orders">
+                                        <i class="simple-icon-user-following"></i> <span class="d-inline-block">View
+                                            Orders</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/orders/create">
+                                        <i class="simple-icon-user-follow"></i> <span class="d-inline-block">Create
+                                            Order</span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </li>
+
+                </ul>
+                <ul class="list-unstyled" data-link="applications">
+                    <li>
+                        <a href="/clients">
+                            <i class="simple-icon-picture"></i> <span class="d-inline-block">View Clients</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/clients/create">
+                            <i class="simple-icon-check"></i> <span class="d-inline-block">Create Clients</span>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="list-unstyled" data-link="ui">
+                    <li>
+
+                        <div id="collapseForms" class="collapse show">
+                            <ul class="list-unstyled inner-level-menu">
+                                <li>
+                                    <a href="/products">
+                                        <i class="simple-icon-event"></i> <span class="d-inline-block">View
+                                            Products</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/products/categories">
+                                        <i class="simple-icon-doc"></i> <span class="d-inline-block">View
+                                            Categories</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/services">
+                                        <i class="simple-icon-check"></i> <span class="d-inline-block">View
+                                            Services</span>
+                                    </a>
+                                </li>
+                                <li>
+
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                </ul>
+
+                <ul class="list-unstyled" data-link="settings">
+                    <li>
+
+                        <div id="collapseForms" class="collapse show">
+                            <ul class="list-unstyled inner-level-menu">
+                                <li>
+                                    <a href="/backup">
+                                        <i class="simple-icon-event"></i> <span class="d-inline-block">Data
+                                            Backup</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/restore">
+                                        <i class="simple-icon-doc"></i> <span class="d-inline-block">Data Restore</span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </li>
+
+                </ul>
+
+
+
+                <ul class="list-unstyled" data-link="menu" id="menuTypes">
+                    <li>
+
+                        <div id="collapseMenuTypes" class="collapse show" data-parent="#menuTypes">
+                            <ul class="list-unstyled inner-level-menu">
+                                <li>
+                                <li>
+                                    <a href="/users">
+                                        <i class="simple-icon-event"></i> <span class="d-inline-block">View Users</span>
+                                    </a>
+                                </li>
+                    </li>
+                    <li>
+                        <a href="/users/create">
+                            <i class="simple-icon-arrow-left mi-subhidden"></i> <span class="d-inline-block">Create
+                                Users</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+            </li>
+            <li>
+
+                <div id="collapseMenuLevel" class="collapse" data-parent="#menuTypes">
+                    <ul class="list-unstyled inner-level-menu">
+                        <li>
+
+                        </li>
+                        <li>
+                            <a href="#" data-toggle="collapse" data-target="#collapseMenuLevel2" aria-expanded="true"
+                                aria-controls="collapseMenuLevel2" class="rotate-arrow-icon collapsed">
+                                <i class="simple-icon-arrow-down"></i> <span class="d-inline-block">Another
+                                    Level</span>
+                            </a>
+                            <div id="collapseMenuLevel2" class="collapse">
+                                <ul class="list-unstyled inner-level-menu">
+                                    <li>
+                                        <a href="#">
+                                            <i class="simple-icon-layers"></i> <span class="d-inline-block">Sub
+                                                Level</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+
+                <div id="collapseMenuDetached" class="collapse">
+                    <ul class="list-unstyled inner-level-menu">
+                        <li>
+                            <a href="#">
+                                <i class="simple-icon-layers"></i> <span class="d-inline-block">Sub
+                                    Level</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+
+            </li>
+            </ul>
+
+        </div>
+
+    </div>
+    </div>
+
+    <main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+
+                    <h1>Welcome &lt;user_name&gt;</h1>
+
+                    <div class="separator mb-5"></div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card mb-4 progress-banner">
+                        <div class="card-body justify-content-between d-flex flex-row align-items-center">
+                            <div>
+                                <i class="iconsminds-clock mr-2 text-white align-text-bottom d-inline-block"></i>
+
+                            </div>
+
+                            <div>
+
+                                <div>
+                                    <p class="lead text-white" style="text-align: right;">5 </p>
+                                    <p class="text-small text-white">New Orders</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card mb-4 progress-banner">
+                        <div class="card-body justify-content-between d-flex flex-row align-items-center">
+                            <div>
+                                <i class="iconsminds-male mr-2 text-white align-text-bottom d-inline-block"></i>
+
+                            </div>
+                            <div>
+
+                                <div>
+                                    <p class="lead text-white" style="text-align: right;">0</p>
+                                    <p class="text-small text-white">In progress</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card mb-4 progress-banner">
+                        <a href="#" class="card-body justify-content-between d-flex flex-row align-items-center">
+                            <div>
+                                <i class="iconsminds-bell mr-2 text-white align-text-bottom d-inline-block"></i>
+
+                            </div>
+                            <div>
+
+                                <div>
+                                    <p class="lead text-white" style="text-align: right;">4 </p>
+                                    <p class="text-small text-white">Completed</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Orders</h1>
+
+                    <div class="separator mb-5"></div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-12 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="data-table data-table-feature">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Customer</th>
+                                        <th>Service</th>
+                                        <th>Description</th>
+                                        <th>Price</th>
+                                        <th>Date Recorded</th>
+                                        <th>Pickup Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template id="order-table-template">
+                                        <td>Tiger Nixon</td>
+                                        <td>System Architect</td>
+                                        <td>Edinburgh</td>
+                                        <td>61</td>
+                                        <td>2011/04/25</td>
+                                        <td>$320,800</td>
+                                    </template>
+                                    <tr>
+                                        <td>Jackson Bradshaw</td>
+                                        <td>Director</td>
+                                        <td>New York</td>
+                                        <td>65</td>
+                                        <td>2008/09/26</td>
+                                        <td>$645,750</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <%- include('partials/foot.ejs') %>
