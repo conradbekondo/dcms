@@ -1,0 +1,169 @@
+
+ <%- include('partials/head.ejs') %>
+ 
+ <body id="app-container" class="menu-default show-spinner">
+    <%- include('../partials/navbar.ejs') %>
+        <%- include('../partials/menu.ejs') %>
+            <main>
+                <div class="container-fluid">
+                    <div class="row">
+                        
+                    </div>
+
+                    <div class="container-fluid">
+                        <!-- Modal delet -->
+                        <div id="confirm-delete" class="modal fade">
+                        <div class="modal-dialog modal-confirm">
+                            <div class="modal-content">
+                                <div class="modal-header flex-column">
+                    
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                </div>
+                                <div class="modal-body" id="">
+                                    <p>Deletion confirmation</p>
+                                    <div id="deletbtm_result"></div>
+                                </div>
+                                <div class="modal-footer justify-content-center fetchedeletebtm">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                        <div class="modal fade modal-right" id="exampleModalRight" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Add new customer</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form class="needs-validation">
+                                        <div class="modal-body">
+                                            <div id="savebtm_result" class="form-group text-success"></div>
+                                            <input type="hidden" name="idclt" id="idclt" value="">
+                    
+                                            <div class="form-group position-relative error-l-50">
+                                                <label>Num </label>
+                                                                            <input type="text" class="form-control" placeholder="" name="num" id="num" autocomplete="off" value="" readonly="readonly">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>First name <span class="text-danger error_lastname">*</span></label>
+                                                <input type="text" class="form-control" placeholder="" name="lastname" id="lastname" autocomplete="off">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Last name <span class="text-danger error_firstname">*</span></label>
+                                                <input type="text" class="form-control" placeholder="" name="firstname" id="firstname" autocomplete="off">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Phone</label>
+                                                <input type="text" class="form-control" placeholder="" name="phone" id="phone" autocomplete="off">
+                                            </div>
+                                            <div class="form-group">
+                                                <label> Address</label>
+                                                <input type="text" class="form-control" placeholder="" name="adress" id="adress">
+                                            </div>
+                                            <div class="form-group">
+                                                <label> Discounts (xaf)</label>
+                                                <input type="text" class="form-control" placeholder="" name="discount" id="discount">
+                                            </div>
+                    
+                    
+                                            <div class="error_validateclt text-danger"></div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                            <button type="button" id="savebtn" onclick="savebtm()" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade modal-right" id="updateclt" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title"> Update </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form class="needs-validation">
+                                        <div class="modal-body">
+                                            <div class="fetcheupdate">
+                    
+                                            </div>
+                                            <div id="savebtm_result" class="form-group"></div>
+                    
+                    
+                    
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                            <button type="button" id="savebtn" onclick="updatebtm()" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="row">
+                            <form action="https://laundry.sudway.ma/clients" method="post" accept-charset="utf-8">
+                            <div class="col-12">
+                                <h1>List of clients</h1>
+                                <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                                    <ol class="breadcrumb pt-0">
+                                        <li class="breadcrumb-item">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-target="#exampleModalRight">Add new customer <i class="simple-icon-user-follow"></i> </button>
+                                        </li>
+                                        <li class="breadcrumb-item">
+                                            <input type="hidden" value="" class="xdirection" id="xdirection" name="xdirection">
+                                            <button type="submit" name="pdfgen" value="pdfgen" class="btn btn-primary  mb-1">Print <i class="glyph-icon simple-icon-printer"></i></button>
+                    
+                                        </li>
+                    
+                                    </ol>
+                                </nav>
+                                <div class="separator mb-1"></div>
+                            </div>
+                            </form>    </div>
+                    
+                        <div class="row mb-4">
+                            <div class="col-12 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        
+                                        <table id="#" class="data-table data-table-feature" style="text-align:centre ;">
+                                            <thead>
+                                                <tr>
+                                                    <th> Num</th>
+                                                    <th>First name </th>
+                                                    <th>Last name</th>
+                                                    <th>Phone</th>
+                                                    <th>Address</th>
+                                                    <th>Total transactions</th>
+                                                    <th>Paid</th>
+                                                    <th>Rest</th>
+                                                    <th>Action</th>
+                    
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                    
+                                            </tbody>
+                                        </table>
+                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    
+                </div>
+            </main>
+
+</body>
+
+</html>
