@@ -22,6 +22,9 @@ import { AuthFailedFilter } from './filters/auth-failed.filter';
 import { NotFoundFilter } from './filters/not-found.filter';
 import injectionTokenKeys from './injection-tokens';
 import { UsersService } from './services/users/users.service';
+import { CategoriesController } from './controllers/categories/categories.controller';
+import { CategoriesService } from './services/categories/categories.service';
+import { Category } from './entities/category.entity';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -41,11 +44,12 @@ const options: TypeOrmModuleOptions = {
     OfferedService,
     Policy,
     OrderEntryAttribute,
-    AppliedPolicy
+    AppliedPolicy,
+    Category
   ],
   namingStrategy: new SnakeNamingStrategy(),
   synchronize: process.env.NODE_ENV == 'development',
-  dropSchema: process.env.NODE_ENV == 'development'
+  dropSchema: false
 };
 
 @Module({
@@ -57,7 +61,7 @@ const options: TypeOrmModuleOptions = {
     }),
     JwtModule.register({ secret: process.env.E_KEY })
   ],
-  controllers: [UsersController, OrdersController],
+  controllers: [UsersController, OrdersController, CategoriesController],
   providers: [
     UsersService,
     {
@@ -74,8 +78,9 @@ const options: TypeOrmModuleOptions = {
     },
     {
       provide: injectionTokenKeys.identityMaxAge,
-      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '50000')
-    }
+      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '50000000')
+    },
+    CategoriesService
   ],
 })
 export class AppModule {
