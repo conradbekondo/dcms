@@ -22,6 +22,9 @@ import { AuthFailedFilter } from './filters/auth-failed.filter';
 import { NotFoundFilter } from './filters/not-found.filter';
 import injectionTokenKeys from './injection-tokens';
 import { UsersService } from './services/users/users.service';
+import { ClientsController } from './controllers/clients/clients.controller';
+import { ProductsController } from './controllers/products/products.controller';
+import { CategoriesController } from './controllers/categories/categories.controller';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -57,7 +60,7 @@ const options: TypeOrmModuleOptions = {
     }),
     JwtModule.register({ secret: process.env.E_KEY })
   ],
-  controllers: [UsersController, OrdersController],
+  controllers: [UsersController, OrdersController, ClientsController, ProductsController, CategoriesController],
   providers: [
     UsersService,
     {
