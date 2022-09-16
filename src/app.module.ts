@@ -28,6 +28,7 @@ import { Category } from './entities/category.entity';
 import { ClientsService } from './services/clients/clients.service';
 import { Client } from './entities/client.entity';
 import { ClientsController } from './controllers/clients/clients.controller';
+import { ProductsController } from './controllers/products/products.controller';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -65,7 +66,7 @@ const options: TypeOrmModuleOptions = {
     }),
     JwtModule.register({ secret: process.env.E_KEY })
   ],
-  controllers: [UsersController, OrdersController, CategoriesController, ClientsController],
+  controllers: [UsersController, OrdersController, CategoriesController, ClientsController, ProductsController],
   providers: [
     UsersService,
     {
