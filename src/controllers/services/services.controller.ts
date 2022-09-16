@@ -24,7 +24,7 @@ export class ServicesController extends BaseController {
     async createService(@Query('start') start: string = '0', @Query('size') size: string = '') {
         let _start: number, _size: number;
         if (isNaN(parseInt(start)))
-            _start = 0;
+            _start = 0; 
         else _start = parseInt(start);
         if (isNaN(parseInt(size)))
             _size = 50;

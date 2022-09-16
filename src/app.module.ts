@@ -6,7 +6,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { OrdersController } from './controllers/orders/orders.controller';
-import { UsersController } from './controllers/users/users.controller';
+import { AuthController } from './controllers/users/auth.controller';
 import { AppliedPolicy } from './entities/applied-policy.entity';
 import { OrderEntryAttribute } from './entities/order-entry-attribute.entity';
 import { OrderEntry } from './entities/order-entry.entity';
@@ -26,6 +26,9 @@ import { ClientsController } from './controllers/clients/clients.controller';
 import { ProductsController } from './controllers/products/products.controller';
 import { LangController } from './controllers/lang/lang.controller';
 import { OrdersService } from './services/orders/orders.service';
+import { ServicesController } from './controllers/services/services.controller';
+import { OfferedServicesService } from './services/offered-services/offered-services.service';
+import { UsersController } from './controllers/users/users.controller';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -63,14 +66,17 @@ const options: TypeOrmModuleOptions = {
     I18n
   ],
   controllers: [
-    UsersController,
+    AuthController,
     OrdersController,
     ClientsController,
     ProductsController,
+    ServicesController,
+    UsersController
   ],
   providers: [
     UsersService,
     OrdersService,
+    OfferedServicesService,
     {
       provide: APP_FILTER,
       useClass: NotFoundFilter,
