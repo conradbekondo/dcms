@@ -59,7 +59,7 @@ const options: TypeOrmModuleOptions = {
   ],
   namingStrategy: new SnakeNamingStrategy(),
   synchronize: process.env.NODE_ENV == 'development',
-  dropSchema: false
+  dropSchema: false,
 };
 
 @Module({
@@ -75,10 +75,11 @@ const options: TypeOrmModuleOptions = {
     AuthController,
     OrdersController,
     ServicesController,
-    UsersController, 
-    CategoriesController, 
-    ClientsController, 
-    ProductsController
+    UsersController,
+    CategoriesController,
+    ClientsController,
+    ProductsController,
+    LangController,
   ],
   providers: [
     UsersService,
@@ -98,10 +99,10 @@ const options: TypeOrmModuleOptions = {
     },
     {
       provide: injectionTokenKeys.identityMaxAge,
-      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '50000000')
+      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '50000000'),
     },
     CategoriesService,
-    ClientsService
+    ClientsService,
   ],
 })
-export class AppModule { }
+export class AppModule {}
