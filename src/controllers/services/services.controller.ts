@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Logger, Post, Query, Render, Res, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Logger, Param, Post, Query, Render, Res, UseFilters, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { INewServiceDto } from 'src/dto/new-service.dto';
 import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
@@ -19,17 +19,31 @@ export class ServicesController extends BaseController {
         super(appName, userService);
     }
 
-    @Get(['', '/create'])
+    @Get()
     @Render('additional_services/additional_services')
-    async createService(@Query('start') start?: number, @Query('size') size?: number) {
+    async createService(@Query('start') start: string = '0', @Query('size') size: string = '') {
+        let _start: number, _size: number;
+        if (isNaN(parseInt(start)))
+            _start = 0;
+        else _start = parseInt(start);
+        if (isNaN(parseInt(size)))
+            _size = 50;
+        else _size = parseInt(size);
         this.viewBag.pageTitle = 'Create a Service';
-        const services = await this.offeredServicesService.getServices(start, size);
-        return { view: this.viewBag, data: { services, formData: {} } };
+        const services = await this.offeredServicesService.getServices(_start, _size);
+        return { view: this.viewBag, data: { startAt: _start, size: _size, services, formData: {} } };
     }
 
-    @Post(['', '/create'])
-    async handlePost(@Body() formBody: INewServiceDto, @Res() res: Response) {
-        const ans = { view: this.viewBag, data: { formData: formBody, errors: [] } };
+    @Post()
+    async handlePost(@Body() formBody: INewServiceDto, @Res() res: Response, @Query('start') start = '0', @Query('size') size = '50') {
+        let _start: number, _size: number;
+        if (isNaN(parseInt(start)))
+            _start = 0;
+        else _start = parseInt(start);
+        if (isNaN(parseInt(size)))
+            _size = 50;
+        else _size = parseInt(size);
+        const ans = { view: this.viewBag, data: { startAt: _start, size: _size, formData: formBody, errors: [] } };
 
         if (!formBody.name) ans.data.errors.push('Service name is required');
         if (formBody.standardPrice === undefined || formBody.standardPrice === null) ans.data.errors.push('Standard price required')
@@ -48,6 +62,29 @@ export class ServicesController extends BaseController {
             return;
         }
 
-        res.redirect('/services');
+        res.redirect(`/services?start=${_start}&size=${_size}`);
     }
-}
+
+    @Get('/delete')
+    async handleDelete(@Query('serviceId') serviceId: string, @Res() res: Response, @Query('start') start = '0', @Query('size') size = '50') {
+        let _start: number, _size: number;
+        if (isNaN(parseInt(start)))
+            _start = 0;
+        else _start = parseInt(start);
+        if (isNaN(parseInt(size)))
+            _size = 50;
+        else _size = parseInt(size);
+        const id = parseInt(serviceId);
+        if (isNaN(id)) {
+            res.status(500).send();
+            return;
+        }
+        try {
+            await this.offeredServicesService.deleteService(id);
+        } catch (e) {
+            res.status(500).send();
+        }
+
+        res.redirect(`/services?start=${_start}&size=${_size}`);
+    }
+} 

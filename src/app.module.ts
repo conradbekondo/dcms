@@ -14,7 +14,7 @@ import { Order } from './entities/order.entity';
 import { Policy } from './entities/processing-policy.entity';
 import { Product } from './entities/product.entity';
 import { Profile } from './entities/profile.entity';
-import { Role } from "./entities/Role";
+import { Role } from './entities/Role';
 import { OfferedService } from './entities/service.entity';
 import { LoginEntry } from './entities/user-login-entry.entity';
 import { User } from './entities/user.entity';
@@ -22,9 +22,10 @@ import { AuthFailedFilter } from './filters/auth-failed.filter';
 import { NotFoundFilter } from './filters/not-found.filter';
 import injectionTokenKeys from './injection-tokens';
 import { UsersService } from './services/users/users.service';
+import { ClientsController } from './controllers/clients/clients.controller';
+import { ProductsController } from './controllers/products/products.controller';
+import { LangController } from './controllers/lang/lang.controller';
 import { OrdersService } from './services/orders/orders.service';
-import { ServicesController } from './controllers/services/services.controller';
-import { OfferedServicesService } from './services/offered-services/offered-services.service';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -44,11 +45,11 @@ const options: TypeOrmModuleOptions = {
     OfferedService,
     Policy,
     OrderEntryAttribute,
-    AppliedPolicy
+    AppliedPolicy,
   ],
   namingStrategy: new SnakeNamingStrategy(),
-  synchronize: false,
-  dropSchema: false
+  synchronize: true,
+  dropSchema: false,
 };
 
 @Module({
@@ -57,34 +58,34 @@ const options: TypeOrmModuleOptions = {
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
       serveRoot: '/static',
-      renderPath: null
     }),
-    JwtModule.register({ secret: process.env.E_KEY })
+    JwtModule.register({ secret: process.env.E_KEY }),
   ],
-  controllers: [UsersController, OrdersController, ServicesController],
+  controllers: [
+    UsersController,
+    OrdersController,
+    ClientsController,
+    ProductsController,
+  ],
   providers: [
     UsersService,
+    OrdersService,
     {
       provide: APP_FILTER,
-      useClass: NotFoundFilter
+      useClass: NotFoundFilter,
     },
     {
       provide: APP_FILTER,
-      useClass: AuthFailedFilter
+      useClass: AuthFailedFilter,
     },
     {
       provide: injectionTokenKeys.appName,
-      useValue: process.env.APP_NAME || 'DCMS'
+      useValue: process.env.APP_NAME || 'DCMS',
     },
     {
       provide: injectionTokenKeys.identityMaxAge,
-      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '3600') * 1000
+      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '5000000000'),
     },
-    OrdersService,
-    OfferedServicesService
   ],
 })
-export class AppModule {
-  constructor () {
-  }
-} 
+export class AppModule { }

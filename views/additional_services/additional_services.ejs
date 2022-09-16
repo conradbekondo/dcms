@@ -10,11 +10,12 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title"> Add a service</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button onclick="createNewServiceClickHandler()" type="button" class="close"
+                                        data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
-                                <form action="" method="post">
+                                <form action="?start=<%= data.startAt || 0%>&size=<%=data.size || 50%>" method="post">
                                     <div class="modal-body">
                                         <% if(data.errors && data.errors.length> 0) { %>
                                             <ul class="list-group">
@@ -26,14 +27,14 @@
                                             </ul>
                                             <% } %>
                                                 <div id="savebtm_result" class="form-group text-success"></div>
-                                                <input type="hidden" name="idctg" id="idctg" value="">
+                                                <input id="operation" hidden name="operation">
+                                                <input id="service-id" hidden value="<%= data.formData.id %>" name="id">
                                                 <div class="form-group">
                                                     <label for="service-name"> Service name <span
                                                             class="text-danger error_lastname">*</span></label>
                                                     <input name="name" id="service-name"
                                                         value="<%= data.formData.name %>" type="text"
-                                                        class="form-control" placeholder="" id="nameservice"
-                                                        autocomplete="off">
+                                                        class="form-control" placeholder="" autocomplete="off">
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="price">Price <span class="text-danger">*</span></label>
@@ -100,7 +101,7 @@
                                 <ol class="breadcrumb pt-0">
                                     <li class="breadcrumb-item">
                                         <button type="button" class="btn btn-primary" data-toggle="modal"
-                                            data-backdrop="static" data-target="#exampleModalRight"> Add services <i
+                                            data-backdrop="static" data-target="#exampleModalRight"> Add Service <i
                                                 class="glyph-icon simple-icon-plus"></i> </button>
                                     </li>
                                     <li class="breadcrumb-item">
@@ -130,12 +131,39 @@
                                             <tr>
                                                 <th>ID </th>
                                                 <th>Name</th>
-                                                <th>Action</th>
-
+                                                <th>Processing Duration (Days)</th>
+                                                <th>Standard Price</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-
+                                            <% data?.services?.forEach(service=> { %>
+                                                <tr>
+                                                    <td>
+                                                        <%= service.id %>
+                                                    </td>
+                                                    <td>
+                                                        <%= service.name %>
+                                                    </td>
+                                                    <td>
+                                                        <%= service.processingDuration %>
+                                                    </td>
+                                                    <td>
+                                                        <%= service.standardPrice %>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <button type="btn" class="btn text-info btn-link"
+                                                                data-toggle="modal" data-backdrop="static"
+                                                                onclick="onRowEditClicked(<%=service.id%>)"
+                                                                data-target="#exampleModalRight">Edit</button>
+                                                            <button type="btn"
+                                                                onclick="deleteServiceClicked(<%=service.id%>)"
+                                                                class="btn text-danger btn-link">Delete</button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <%})%>
                                         </tbody>
                                     </table>
 
@@ -148,6 +176,44 @@
                 </main>
                 <%- include('../partials/main-footer.ejs') %>
                     <%- include('partials/scripts.ejs') %>
+                        <script defer>
+                            const services = JSON.parse('<%- JSON.stringify(data.services) %>');
+                            function createNewServiceClickHandler() {
+                                const _modal = document.getElementById('exampleModalRight');
+                                _modal.querySelector('.modal-title').textContent = `Add a Service`;
+                            }
+                            function onRowEditClicked(id) {
+                                /**
+                                 * 
+                                 * @type {HTMLFormElement}
+                                 * */
+                                const form = document.querySelector('form.needs-validation');
+                                const formData = new FormData(form);
+                                const service = services.find(s => s.id == id);
+                                const _modal = document.getElementById('exampleModalRight');
+                                _modal.querySelector('.modal-title').textContent = `Update: ${service.name}`;
+                                const modal = new bootstrap.Modal(_modal, {});
+                                document.getElementById('service-name').value = service.name;
+                                document.getElementById('price').value = service.standardPrice;
+                                document.getElementById('processing-duration').value = service.processingDuration;
+                                document.getElementById('descriptionInput').value = service.description;
+                                document.getElementById('service-id').value = service.id;
+                                document.getElementById('operation').value = 'update';
+                                modal.show({ backdrop: 'static' });
+                            }
+                            function deleteServiceClicked(id) {
+                                const service = services.find(s => s.id == id);
+                                if (!service) {
+                                    location.reload(true);
+                                }
+
+                                if (confirm(`Are you sure you want to delete: ${service.name}`)) {
+                                    const data = new FormData();
+                                    data.set('serviceId', id);
+                                    location.href = '/services/delete?serviceId=' + id + '&start=<%= data.startAt || 0%>&size=<%=data.size || 50%>';
+                                }
+                            }
+                        </script>
     </body>
 
     </html>

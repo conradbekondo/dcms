@@ -11,4 +11,7 @@ export class Product extends BaseEntity {
 
     @Column({ nullable: true })
     iconUrl?: string;
+
+    /* @Column({ nullable: false })
+    standardPrice: number; */
 }
