@@ -6,7 +6,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { OrdersController } from './controllers/orders/orders.controller';
-import { UsersController } from './controllers/users/users.controller';
+import { AuthController } from './controllers/users/auth.controller';
 import { AppliedPolicy } from './entities/applied-policy.entity';
 import { OrderEntryAttribute } from './entities/order-entry-attribute.entity';
 import { OrderEntry } from './entities/order-entry.entity';
@@ -14,7 +14,7 @@ import { Order } from './entities/order.entity';
 import { Policy } from './entities/processing-policy.entity';
 import { Product } from './entities/product.entity';
 import { Profile } from './entities/profile.entity';
-import { Role } from "./entities/Role";
+import { Role } from './entities/Role';
 import { OfferedService } from './entities/service.entity';
 import { LoginEntry } from './entities/user-login-entry.entity';
 import { User } from './entities/user.entity';
@@ -22,6 +22,11 @@ import { AuthFailedFilter } from './filters/auth-failed.filter';
 import { NotFoundFilter } from './filters/not-found.filter';
 import injectionTokenKeys from './injection-tokens';
 import { UsersService } from './services/users/users.service';
+import { LangController } from './controllers/lang/lang.controller';
+import { OrdersService } from './services/orders/orders.service';
+import { ServicesController } from './controllers/services/services.controller';
+import { OfferedServicesService } from './services/offered-services/offered-services.service';
+import { UsersController } from './controllers/users/users.controller';
 import { CategoriesController } from './controllers/categories/categories.controller';
 import { CategoriesService } from './services/categories/categories.service';
 import { Category } from './entities/category.entity';
@@ -62,24 +67,34 @@ const options: TypeOrmModuleOptions = {
     TypeOrmModule.forRoot(options),
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
-      serveRoot: '/static'
+      serveRoot: '/static',
     }),
-    JwtModule.register({ secret: process.env.E_KEY })
+    JwtModule.register({ secret: process.env.E_KEY }),
   ],
-  controllers: [UsersController, OrdersController, CategoriesController, ClientsController, ProductsController],
+  controllers: [
+    AuthController,
+    OrdersController,
+    ServicesController,
+    UsersController, 
+    CategoriesController, 
+    ClientsController, 
+    ProductsController
+  ],
   providers: [
     UsersService,
+    OrdersService,
+    OfferedServicesService,
     {
       provide: APP_FILTER,
-      useClass: NotFoundFilter
+      useClass: NotFoundFilter,
     },
     {
       provide: APP_FILTER,
-      useClass: AuthFailedFilter
+      useClass: AuthFailedFilter,
     },
     {
       provide: injectionTokenKeys.appName,
-      useValue: process.env.APP_NAME || 'DCMS'
+      useValue: process.env.APP_NAME || 'DCMS',
     },
     {
       provide: injectionTokenKeys.identityMaxAge,
@@ -89,7 +104,4 @@ const options: TypeOrmModuleOptions = {
     ClientsService
   ],
 })
-export class AppModule {
-  constructor () {
-  }
-} 
+export class AppModule { }

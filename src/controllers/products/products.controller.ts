@@ -10,6 +10,7 @@ import {
 import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import injectionTokenKeys from 'src/injection-tokens';
+import { UsersService } from 'src/services/users/users.service';
 import { DataSource } from 'typeorm';
 import { BaseController } from '../base/base.controller';
 
@@ -22,8 +23,9 @@ export class ProductsController extends BaseController {
   constructor(
     @Inject(injectionTokenKeys.appName) appName: string,
     private readonly dataSource: DataSource,
+    usersService: UsersService,
   ) {
-    super(appName);
+    super(appName, usersService);
   }
 
   @Get()

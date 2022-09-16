@@ -1,116 +1,219 @@
+<%- include('partials/head.ejs') %>
 
- <%- include('partials/head.ejs') %>
- 
- <body id="app-container" class="menu-default show-spinner">
-    <%- include('../partials/navbar.ejs') %>
-        <%- include('../partials/menu.ejs') %>
-            <main>
-                <div class="modal fade modal-right" id="exampleModalRight" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title"> Add services </h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form class="needs-validation">
-                                <div class="modal-body">
-                                    <div id="savebtm_result" class="form-group text-success"></div>
-                                    <input type="hidden" name="idctg" id="idctg" value="">
-            
-                                    <div class="form-group position-relative error-l-50">
-                                        <label> Num</label>
-                                                                    <input type="text" class="form-control" placeholder="" name="num" id="num" autocomplete="off" value="#" readonly="readonly">
+    <body id="app-container" class="menu-default show-spinner">
+        <%- include('../partials/navbar.ejs') %>
+            <%- include('../partials/menu.ejs') %>
+                <main>
+                    <div class="modal fade modal-right" id="exampleModalRight" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalRight" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title"> Add a service</h5>
+                                    <button onclick="createNewServiceClickHandler()" type="button" class="close"
+                                        data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form action="?start=<%= data.startAt || 0%>&size=<%=data.size || 50%>" method="post">
+                                    <div class="modal-body">
+                                        <% if(data.errors && data.errors.length> 0) { %>
+                                            <ul class="list-group">
+                                                <% for(let error of data.errors) {%>
+                                                    <li class="list-group-item list-group-item-danger">
+                                                        <%= error %>
+                                                    </li>
+                                                    <% } %>
+                                            </ul>
+                                            <% } %>
+                                                <div id="savebtm_result" class="form-group text-success"></div>
+                                                <input id="operation" hidden name="operation">
+                                                <input id="service-id" hidden value="<%= data.formData.id %>" name="id">
+                                                <div class="form-group">
+                                                    <label for="service-name"> Service name <span
+                                                            class="text-danger error_lastname">*</span></label>
+                                                    <input name="name" id="service-name"
+                                                        value="<%= data.formData.name %>" type="text"
+                                                        class="form-control" placeholder="" autocomplete="off">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="price">Price <span class="text-danger">*</span></label>
+                                                    <input type="number" class="form-control" id="price" min="0"
+                                                        name="standardPrice" value="<% data.formData.standardPrice%>"
+                                                        required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="processing-duration">Processing Duration (days)</label>
+                                                    <input type="number" min="0" class="form-control"
+                                                        id="processing-duration" name="processingDuration"
+                                                        value="<%= data.formData.processingDuration %>">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="descriptionInput">Description</label>
+                                                    <textarea class="form-control" name="description"
+                                                        id="descriptionInput" cols="30" rows="10"></textarea>
+                                                </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label> Service name <span class="text-danger error_lastname">*</span></label>
-                                        <input type="text" class="form-control" placeholder="" name="nameservice" id="nameservice" autocomplete="off">
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-primary"
+                                            data-dismiss="modal">Close</button>
+                                        <button data-toggle="modal" type="submit" id="savebtn"
+                                            class="btn btn-primary">Save</button>
                                     </div>
-            
-                                    <div class="error_validateclt text-danger"></div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-                                    <button type="button" id="savebtn" onclick="savebtm()" class="btn btn-primary">Save</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal fade modal-right" id="updateclt" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title"> Update </h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form class="needs-validation">
-                                <div class="modal-body">
-                                    <div class="fetcheupdate">
-            
-                                    </div>
-                                    <div id="savebtm_result" class="form-group"></div>
-            
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-                                    <button type="button" id="savebtn" onclick="updatebtm()" class="btn btn-primary">Update</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            
-                <div class="row">
-                    <div class="col-12">
-                        <h1> Additional services</h1>
-                        <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
-                            <ol class="breadcrumb pt-0">
-                                <li class="breadcrumb-item">
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-target="#exampleModalRight"> Add services <i class="glyph-icon simple-icon-plus"></i> </button>
-                                </li>
-                                <li class="breadcrumb-item">
-                                    <a href="/additional_services/product"><button type="button" class="btn btn-primary"><i class="glyph-icon simple-icon-list"></i> Products list </button></a>
-                                </li>
-                                <li class="breadcrumb-item">
-                                    <a href="/additional_services/categories"><button type="button" class="btn btn-primary"><i class="glyph-icon simple-icon-list"></i> Categories</button></a>
-                                </li>
-            
-                            </ol>
-                        </nav>
-                        <div class="separator mb-1"></div>
-                    </div>
-                </div>
-            
-                <div class="row mb-4">
-                    <div class="col-12 mb-4">
-                        <div class="card">
-                            <div class="card-body">
-            
-                                <table id="table" class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Num </th>
-                                            <th>Service name</th>
-                                            <th>Action</th>
-            
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-            
-                                    </tbody>
-                                </table>
-            
+                                </form>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        
-            </main>
+                    <div class="modal fade modal-right" id="updateclt" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalRight" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title"> Update </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form class="needs-validation">
+                                    <div class="modal-body">
+                                        <div class="fetcheupdate">
 
-</body>
-</html>
+                                        </div>
+                                        <div id="savebtm_result" class="form-group"></div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-primary"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="button" id="savebtn" onclick="updatebtm()"
+                                            class="btn btn-primary">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <h1>Services</h1>
+                            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block"
+                                aria-label="breadcrumb">
+                                <ol class="breadcrumb pt-0">
+                                    <li class="breadcrumb-item">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-backdrop="static" data-target="#exampleModalRight"> Add Service <i
+                                                class="glyph-icon simple-icon-plus"></i> </button>
+                                    </li>
+                                    <li class="breadcrumb-item">
+                                        <a href="/services/product"><button type="button" class="btn btn-primary"><i
+                                                    class="glyph-icon simple-icon-list"></i>
+                                                Products list </button></a>
+                                    </li>
+                                    <li class="breadcrumb-item">
+                                        <a href="/services/categories"><button type="button" class="btn btn-primary"><i
+                                                    class="glyph-icon simple-icon-list"></i>
+                                                Categories</button></a>
+                                    </li>
+
+                                </ol>
+                            </nav>
+                            <div class="separator mb-1"></div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-12 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+
+                                    <table id="table" class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID </th>
+                                                <th>Name</th>
+                                                <th>Processing Duration (Days)</th>
+                                                <th>Standard Price</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% data?.services?.forEach(service=> { %>
+                                                <tr>
+                                                    <td>
+                                                        <%= service.id %>
+                                                    </td>
+                                                    <td>
+                                                        <%= service.name %>
+                                                    </td>
+                                                    <td>
+                                                        <%= service.processingDuration %>
+                                                    </td>
+                                                    <td>
+                                                        <%= service.standardPrice %>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <button type="btn" class="btn text-info btn-link"
+                                                                data-toggle="modal" data-backdrop="static"
+                                                                onclick="onRowEditClicked(<%= service.id %>)"
+                                                                data-target="#exampleModalRight">Edit</button>
+                                                            <button type="btn"
+                                                                onclick="deleteServiceClicked(<%= service.id %>)"
+                                                                class="btn text-danger btn-link">Delete</button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <%})%>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                </main>
+                <%- include('../partials/main-footer.ejs') %>
+                    <%- include('partials/scripts.ejs') %>
+                        <script defer>
+                            const services = JSON.parse('<%- JSON.stringify(data.services) %>');
+                            function createNewServiceClickHandler() {
+                                const _modal = document.getElementById('exampleModalRight');
+                                _modal.querySelector('.modal-title').textContent = `Add a Service`;
+                            }
+                            function onRowEditClicked(id) {
+                                /**
+                                 * 
+                                 * @type {HTMLFormElement}
+                                 * */
+                                const form = document.querySelector('form.needs-validation');
+                                const formData = new FormData(form);
+                                const service = services.find(s => s.id == id);
+                                const _modal = document.getElementById('exampleModalRight');
+                                _modal.querySelector('.modal-title').textContent = `Update: ${service.name}`;
+                                const modal = new bootstrap.Modal(_modal, {});
+                                document.getElementById('service-name').value = service.name;
+                                document.getElementById('price').value = service.standardPrice;
+                                document.getElementById('processing-duration').value = service.processingDuration;
+                                document.getElementById('descriptionInput').value = service.description;
+                                document.getElementById('service-id').value = service.id;
+                                document.getElementById('operation').value = 'update';
+                                modal.show({ backdrop: 'static' });
+                            }
+                            function deleteServiceClicked(id) {
+                                const service = services.find(s => s.id == id);
+                                if (!service) {
+                                    location.reload(true);
+                                }
+
+                                if (confirm(`Are you sure you want to delete: ${service.name}`)) {
+                                    const data = new FormData();
+                                    data.set('serviceId', id);
+                                    location.href = '/services/delete?serviceId=' + id + '&start=<%= data.startAt || 0%>&size=<%=data.size || 50%>';
+                                }
+                            }
+                        </script>
+    </body>
+
+    </html>

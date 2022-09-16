@@ -15,7 +15,7 @@ export class ClientsController extends BaseController {
   private readonly logger = new Logger(ClientsController.name);
 
   constructor(private readonly clientService: ClientsService, @Inject(injectionTokenKeys.appName) appName: string, private readonly dataSource: DataSource) {
-    super(appName);
+    super(appName, clientService);
   }
 
 

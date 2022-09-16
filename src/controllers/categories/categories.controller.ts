@@ -15,7 +15,7 @@ export class CategoriesController extends BaseController {
   private readonly logger = new Logger(CategoriesController.name);
 
   constructor(private readonly categoryService: CategoriesService, @Inject(injectionTokenKeys.appName) appName: string, private readonly dataSource: DataSource) {
-    super(appName);
+    super(appName, categoryService);
   }
 
   @Get()
