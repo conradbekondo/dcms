@@ -1,5 +1,6 @@
-import { Column, Entity } from "typeorm";
+import { Column, Entity, ManyToMany, OneToMany } from "typeorm";
 import { BaseEntity } from "./base.entity";
+import { ProductServicePrice } from "./product-service-price.entity";
 
 @Entity('products')
 export class Product extends BaseEntity {
@@ -12,6 +13,6 @@ export class Product extends BaseEntity {
     @Column({ nullable: true })
     iconUrl?: string;
 
-    /* @Column({ nullable: false })
-    standardPrice: number; */
+    @OneToMany(() => ProductServicePrice, p => p.product)
+    servicePrices: Promise<ProductServicePrice[]>;
 }

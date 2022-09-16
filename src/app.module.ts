@@ -5,13 +5,18 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { ClientsController } from './controllers/clients/clients.controller';
 import { OrdersController } from './controllers/orders/orders.controller';
+import { ProductsController } from './controllers/products/products.controller';
+import { ServicesController } from './controllers/services/services.controller';
 import { AuthController } from './controllers/users/auth.controller';
+import { UsersController } from './controllers/users/users.controller';
 import { AppliedPolicy } from './entities/applied-policy.entity';
 import { OrderEntryAttribute } from './entities/order-entry-attribute.entity';
 import { OrderEntry } from './entities/order-entry.entity';
 import { Order } from './entities/order.entity';
 import { Policy } from './entities/processing-policy.entity';
+import { ProductServicePrice } from './entities/product-service-price.entity';
 import { Product } from './entities/product.entity';
 import { Profile } from './entities/profile.entity';
 import { Role } from './entities/Role';
@@ -21,14 +26,9 @@ import { User } from './entities/user.entity';
 import { AuthFailedFilter } from './filters/auth-failed.filter';
 import { NotFoundFilter } from './filters/not-found.filter';
 import injectionTokenKeys from './injection-tokens';
-import { UsersService } from './services/users/users.service';
-import { ClientsController } from './controllers/clients/clients.controller';
-import { ProductsController } from './controllers/products/products.controller';
-import { LangController } from './controllers/lang/lang.controller';
-import { OrdersService } from './services/orders/orders.service';
-import { ServicesController } from './controllers/services/services.controller';
 import { OfferedServicesService } from './services/offered-services/offered-services.service';
-import { UsersController } from './controllers/users/users.controller';
+import { OrdersService } from './services/orders/orders.service';
+import { UsersService } from './services/users/users.service';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -49,6 +49,7 @@ const options: TypeOrmModuleOptions = {
     Policy,
     OrderEntryAttribute,
     AppliedPolicy,
+    ProductServicePrice,
   ],
   namingStrategy: new SnakeNamingStrategy(),
   synchronize: true,

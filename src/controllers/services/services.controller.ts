@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Inject, Logger, Param, Post, Query, Render, Res, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Logger, Post, Query, Render, Res, UseFilters, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { INewServiceDto } from 'src/dto/new-service.dto';
 import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
@@ -13,7 +13,7 @@ import { BaseController } from '../base/base.controller';
 @UseFilters(AuthFailedFilter)
 export class ServicesController extends BaseController {
     private readonly logger = new Logger(ServicesController.name);
-    constructor (@Inject(injectionTokenKeys.appName) appName: string,
+    constructor(@Inject(injectionTokenKeys.appName) appName: string,
         private readonly offeredServicesService: OfferedServicesService,
         userService: UsersService) {
         super(appName, userService);
@@ -24,7 +24,7 @@ export class ServicesController extends BaseController {
     async createService(@Query('start') start: string = '0', @Query('size') size: string = '') {
         let _start: number, _size: number;
         if (isNaN(parseInt(start)))
-            _start = 0; 
+            _start = 0;
         else _start = parseInt(start);
         if (isNaN(parseInt(size)))
             _size = 50;
@@ -46,7 +46,6 @@ export class ServicesController extends BaseController {
         const ans = { view: this.viewBag, data: { startAt: _start, size: _size, formData: formBody, errors: [] } };
 
         if (!formBody.name) ans.data.errors.push('Service name is required');
-        if (formBody.standardPrice === undefined || formBody.standardPrice === null) ans.data.errors.push('Standard price required')
 
         if (ans.data.errors.length <= 0) {
             const serviceExists = await this.offeredServicesService.serviceExistsWithName(formBody.name);

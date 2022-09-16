@@ -9,9 +9,6 @@ export class OfferedService extends BaseEntity {
     @Column({ nullable: true, type: 'mediumtext' })
     description?: string;
 
-    @Column({ default: 0, type: 'double' })
-    standardPrice: number;
-
-    @Column({ nullable: true, type: 'double', default: 1 })
-    processingDuration?: number;
+    @Column({ nullable: false, default: 0 })
+    isAdditional: boolean;
 }

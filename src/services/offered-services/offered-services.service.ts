@@ -7,7 +7,7 @@ import { DataSource, Repository } from 'typeorm';
 export class OfferedServicesService {
     private readonly offeredServicesRepository: Repository<OfferedService>;
     private readonly logger = new Logger(OfferedServicesService.name);
-    constructor (dataSource: DataSource) {
+    constructor(dataSource: DataSource) {
         this.offeredServicesRepository = dataSource.getRepository(OfferedService);
     }
 
@@ -17,20 +17,10 @@ export class OfferedServicesService {
         }).then(service => service != null);
     }
 
-    async createService({ id, name, standardPrice, operation, description, processingDuration }: INewServiceDto) {
+    async createService({ id, name, operation, description }: INewServiceDto) {
         const service = new OfferedService();
         service.description = description?.trim();
         service.name = name?.trim();
-        // service.standardPrice = parseFloat(standardPrice);
-        const _standardPrice = parseFloat(standardPrice);
-        if (isNaN(_standardPrice)) {
-            service.standardPrice = 0;
-        } else service.standardPrice = _standardPrice;
-
-        const _processingDuration = parseFloat(processingDuration);
-        if (isNaN(_processingDuration)) {
-            service.processingDuration = 1;
-        } else service.processingDuration = _processingDuration;
 
         if (!operation)
             return this.offeredServicesRepository.findOneBy({
