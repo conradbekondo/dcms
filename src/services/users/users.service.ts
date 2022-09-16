@@ -67,41 +67,49 @@ export class UsersService {
     this.principalSubject.next(principal);
   }
 
-    getPrincipal(): IPrincipal | null {
-        return this.principalSubject.getValue();
-    }
+  getPrincipal(): IPrincipal | null {
+    return this.principalSubject.getValue();
+  }
 
-    get principal$() {
-        return this.principalSubject.asObservable();
-    }
+  get principal$() {
+    return this.principalSubject.asObservable();
+  }
 
-    async getUser(arg: IPrincipal | number | string) {
-        let user: User;
-        switch (typeof arg) {
-            case 'string':
-                user = await this.userRepository.findOneBy({ username: arg });
-                break;
-            case 'number':
-                user = await this.userRepository.findOneBy({ id: arg });
-                break;
-            case 'object':
-                user = await this.userRepository.findOneBy({ username: arg.username });
-                break;
-            default:
-                const msg = `Could not find user`;
-                this.logger.error(msg);
-                throw new Error(msg);
-        }
-        return user;
+  async getUser(arg: IPrincipal | number | string) {
+    let user: User;
+    switch (typeof arg) {
+      case 'string':
+        user = await this.userRepository.findOneBy({ username: arg });
+        break;
+      case 'number':
+        user = await this.userRepository.findOneBy({ id: arg });
+        break;
+      case 'object':
+        user = await this.userRepository.findOneBy({ username: arg.username });
+        break;
+      default:
+        const msg = `Could not find user`;
+        this.logger.error(msg);
+        throw new Error(msg);
     }
+    return user;
+  }
 
-    async loginUser(dto: ILoginDto) {
-        const user = await this.userRepository.findOneBy({ isDeleted: false, username: dto.username });
-        if (!user) {
-            this.logger.warn(`Failed login attempt - Account not found - Attempt credentials: { username: '${dto.username}', password: '${dto.password}' }`)
-            return { success: false, error: 'Account not found with username: ' + dto.username };
-        }
-        const { profile, username } = user;
+  async loginUser(dto: ILoginDto) {
+    const user = await this.userRepository.findOneBy({
+      isDeleted: false,
+      username: dto.username,
+    });
+    if (!user) {
+      this.logger.warn(
+        `Failed login attempt - Account not found - Attempt credentials: { username: '${dto.username}', password: '${dto.password}' }`,
+      );
+      return {
+        success: false,
+        error: 'Account not found with username: ' + dto.username,
+      };
+    }
+    const { profile, username } = user;
 
     const verificationResult = await compare(dto.password, user.passwordHash);
     if (!verificationResult) {
@@ -185,17 +193,6 @@ export class UsersService {
   async getUsers() {
     const users = await this.userRepository.createQueryBuilder().getMany();
     return users;
-  }
-
-  /**
-   * Get given client data.
-   *
-   * @param id
-   * @returns
-   */
-  async getUser(id: number) {
-    const user = await this.userRepository.findOneBy({ id: id });
-    return user;
   }
 
   /**
