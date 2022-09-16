@@ -6,7 +6,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { OrdersController } from './controllers/orders/orders.controller';
-import { UsersController } from './controllers/users/users.controller';
+import { AuthController } from './controllers/users/auth.controller';
 import { AppliedPolicy } from './entities/applied-policy.entity';
 import { OrderEntryAttribute } from './entities/order-entry-attribute.entity';
 import { OrderEntry } from './entities/order-entry.entity';
@@ -22,10 +22,18 @@ import { AuthFailedFilter } from './filters/auth-failed.filter';
 import { NotFoundFilter } from './filters/not-found.filter';
 import injectionTokenKeys from './injection-tokens';
 import { UsersService } from './services/users/users.service';
-import { ClientsController } from './controllers/clients/clients.controller';
-import { ProductsController } from './controllers/products/products.controller';
 import { LangController } from './controllers/lang/lang.controller';
 import { OrdersService } from './services/orders/orders.service';
+import { ServicesController } from './controllers/services/services.controller';
+import { OfferedServicesService } from './services/offered-services/offered-services.service';
+import { UsersController } from './controllers/users/users.controller';
+import { CategoriesController } from './controllers/categories/categories.controller';
+import { CategoriesService } from './services/categories/categories.service';
+import { Category } from './entities/category.entity';
+import { ClientsService } from './services/clients/clients.service';
+import { Client } from './entities/client.entity';
+import { ClientsController } from './controllers/clients/clients.controller';
+import { ProductsController } from './controllers/products/products.controller';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -46,10 +54,12 @@ const options: TypeOrmModuleOptions = {
     Policy,
     OrderEntryAttribute,
     AppliedPolicy,
+    Category,
+    Client,
   ],
   namingStrategy: new SnakeNamingStrategy(),
-  synchronize: true,
-  dropSchema: false,
+  synchronize: process.env.NODE_ENV == 'development',
+  dropSchema: false
 };
 
 @Module({
@@ -62,14 +72,18 @@ const options: TypeOrmModuleOptions = {
     JwtModule.register({ secret: process.env.E_KEY }),
   ],
   controllers: [
-    UsersController,
+    AuthController,
     OrdersController,
-    ClientsController,
-    ProductsController,
+    ServicesController,
+    UsersController, 
+    CategoriesController, 
+    ClientsController, 
+    ProductsController
   ],
   providers: [
     UsersService,
     OrdersService,
+    OfferedServicesService,
     {
       provide: APP_FILTER,
       useClass: NotFoundFilter,
@@ -84,8 +98,10 @@ const options: TypeOrmModuleOptions = {
     },
     {
       provide: injectionTokenKeys.identityMaxAge,
-      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '5000000000'),
+      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '50000000')
     },
+    CategoriesService,
+    ClientsService
   ],
 })
 export class AppModule { }

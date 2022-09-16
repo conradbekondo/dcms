@@ -12,16 +12,12 @@
     e.preventDefault()
 
     const data = {
-      first_name: $('#create_form #first_name').val(),
-      last_name: $('#create_form #last_name').val(),
-      phone: $('#create_form #phone').val(),
-      email: $('#create_form #email').val(),
-      address: $('#create_form #address').val(),
+      name: $('#create_form #name').val(),
       description: $('#create_form #description').val(),
     }
 
     $.ajax({
-      url: '/clients',
+      url: '/categories',
       method: 'POST',
       data: data,
       success: (res) => {
@@ -35,7 +31,7 @@
         console.error(err)
         Swal.fire({
           title: 'Error',
-          text: err.responseJSON.message || "Unable to create client.",
+          text: err.responseJSON.message || "Unable to create category.",
           icon: 'error'
         })
       }
@@ -45,18 +41,14 @@
   $('#edit_form').submit(function (e) {
     e.preventDefault()
 
-    const client = $('#edit_form #id').val()
+    const category = $('#edit_form #id').val()
     const data = {
-      first_name: $('#edit_form #first_name').val(),
-      last_name: $('#edit_form #last_name').val(),
-      phone: $('#edit_form #phone').val(),
-      email: $('#edit_form #email').val(),
-      address: $('#edit_form #address').val(),
+      name: $('#edit_form #name').val(),
       description: $('#edit_form #description').val(),
     }
 
     $.ajax({
-      url: `/clients/${client}`,
+      url: `/categories/${category}`,
       method: 'PUT',
       data: data,
       success: (res) => {
@@ -70,7 +62,7 @@
         console.error(err)
         Swal.fire({
           title: 'Error',
-          text: err.responseJSON.message || "Unable to update client.",
+          text: err.responseJSON.message || "Unable to update category.",
           icon: 'error'
         })
       }
@@ -83,22 +75,19 @@
     const id = $(this).data('id')
 
     $.ajax({
-      url: '/clients/' + id,
+      url: '/categories/' + id,
       method: 'GET',
       success: (res) => {
         $('#edit_form').find('#id').val(id)
-        $('#edit_form').find('#first_name').val(res.first_name)
-        $('#edit_form').find('#last_name').val(res.last_name)
-        $('#edit_form').find('#phone').val(res.phone)
-        $('#edit_form').find('#email').val(res.email)
-        $('#edit_form').find('#address').val(res.address)
+        $('#edit_form').find('#name').val(res.name)
+        $('#edit_form').find('#description').val(res.description)
         $('#editModal').modal('show')
       },
       error: (err) => {
         console.error(err)
         Swal.fire({
           title: 'Error',
-          text: err.responseJSON.message || "Unable to delete client.",
+          text: err.responseJSON.message || "Unable to delete category.",
           icon: 'error'
         })
       }
@@ -119,7 +108,7 @@
     }).then((result) => {
       if (result.isConfirmed) {
         $.ajax({
-          url: `/clients/${id}`,
+          url: `/categories/${id}`,
           method: 'DELETE',
           success: (res) => {
             Swal.fire({
@@ -132,7 +121,7 @@
             console.error(err)
             Swal.fire({
               title: 'Error',
-              text: err.responseJSON.message || "Unable to delete client.",
+              text: err.responseJSON.message || "Unable to delete category.",
               icon: 'error'
             })
           }

@@ -1,0 +1,157 @@
+<%- include('partials/head.ejs') %>
+
+  <body id="app-container" class="menu-default show-spinner">
+    <%- include('../partials/navbar.ejs') %>
+      <%- include('../partials/menu.ejs') %>
+        <main>
+          <div class="modal fade modal-right" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModal"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add a new category</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <form id="create_form" class="needs-validation">
+                  <div class="modal-body">
+                    <div id="savebtm_result" class="form-group text-success"></div>
+                    <div class="form-group position-relative error-l-50">
+                      <label> Num</label>
+                      <input type="text" class="form-control" placeholder="" name="num" id="num" autocomplete="off"
+                        value="#" readonly="readonly">
+                    </div>
+                    <div class="form-group">
+                      <label> Name <span class="text-danger error_lastname">*</span></label>
+                      <input type="text" class="form-control" placeholder="Enter category name" name="name" id="name"
+                        required>
+                    </div>
+                    <div class="form-group">
+                      <label> Description</label>
+                      <textarea name="description" id="description" cols="30" rows="5" class="form-control"></textarea>
+                    </div>
+
+                    <div class="error_validateclt text-danger"></div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                    <button type="submit" id="savebtn" class="btn btn-primary">Save</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade modal-right" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Update category</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <form id="edit_form" class="needs-validation">
+                  <div class="modal-body">
+                    <div id="savebtm_result" class="form-group text-success"></div>
+                    <input type="hidden" name="id" id="id" value="">
+
+                    <div class="form-group position-relative error-l-50">
+                      <label> Num</label>
+                      <input type="text" class="form-control" placeholder="" name="num" id="num" autocomplete="off"
+                        value="#" readonly="readonly">
+                    </div>
+                    <div class="form-group">
+                      <label> Name <span class="text-danger error_lastname">*</span></label>
+                      <input type="text" class="form-control" placeholder="Enter category name" name="name" id="name"
+                        required>
+                    </div>
+                    <div class="form-group">
+                      <label> Description</label>
+                      <textarea name="description" id="description" cols="30" rows="5" class="form-control"></textarea>
+                    </div>
+
+                    <div class="error_validateclt text-danger"></div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                    <button type="submit" id="updatebtn" class="btn btn-primary">Save</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <h1> Categories </h1>
+              <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                <ol class="breadcrumb pt-0">
+                  <li class="breadcrumb-item">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="static"
+                      data-target="#createModal">Add a new category
+                      <i class="glyph-icon simple-icon-plus"></i> </button>
+                  </li>
+                  <li class="breadcrumb-item">
+                    <a href="/categories/product/"><button type="button" class="btn btn-primary"><i
+                          class="glyph-icon simple-icon-list"></i> Products list </button></a>
+                    <a href="/categories/additional_services">
+                      <button type="button" class="btn btn-primary"><i class="glyph-icon simple-icon-list"></i>
+                        Additional services </button></a>
+                  </li>
+                </ol>
+              </nav>
+              <div class="separator mb-1"></div>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-12 mb-4">
+              <div class="card">
+                <div class="card-body">
+                  <table id="table" class="table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Action(s)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% data.categories.forEach(category=> { %>
+                        <tr data-id="<%= category.id %>">
+                          <td>
+                            <%= category.id %>
+                          </td>
+                          <td>
+                            <%= category.name %>
+                          </td>
+                          <td>
+                            <%= category.description %>
+                          </td>
+                          <td>
+                            <a href="#" class="btn btn-primary edit-btn" data-id="<%= category.id %>">
+                              <i class="glyph-icon simple-icon-pencil"></i>
+                            </a>
+                            <a href="#" class="btn btn-danger delete-btn" data-id="<%= category.id %>">
+                              <i class="glyph-icon simple-icon-trash"></i>
+                            </a>
+                          </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+        </main>
+        <%- include('../partials/main-footer.ejs') %>
+          <%- include('partials/scripts.ejs') %>
+  </body>
+
+  </html>
