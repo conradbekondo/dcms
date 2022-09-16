@@ -14,7 +14,7 @@ import { Order } from './entities/order.entity';
 import { Policy } from './entities/processing-policy.entity';
 import { Product } from './entities/product.entity';
 import { Profile } from './entities/profile.entity';
-import { Role } from "./entities/Role";
+import { Role } from './entities/Role';
 import { OfferedService } from './entities/service.entity';
 import { LoginEntry } from './entities/user-login-entry.entity';
 import { User } from './entities/user.entity';
@@ -24,7 +24,6 @@ import injectionTokenKeys from './injection-tokens';
 import { UsersService } from './services/users/users.service';
 import { ClientsController } from './controllers/clients/clients.controller';
 import { ProductsController } from './controllers/products/products.controller';
-import { CategoriesController } from './controllers/categories/categories.controller';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -44,11 +43,11 @@ const options: TypeOrmModuleOptions = {
     OfferedService,
     Policy,
     OrderEntryAttribute,
-    AppliedPolicy
+    AppliedPolicy,
   ],
   namingStrategy: new SnakeNamingStrategy(),
   synchronize: true,
-  dropSchema: false
+  dropSchema: false,
 };
 
 @Module({
@@ -56,32 +55,34 @@ const options: TypeOrmModuleOptions = {
     TypeOrmModule.forRoot(options),
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
-      serveRoot: '/static'
+      serveRoot: '/static',
     }),
-    JwtModule.register({ secret: process.env.E_KEY })
+    JwtModule.register({ secret: process.env.E_KEY }),
   ],
-  controllers: [UsersController, OrdersController, ClientsController, ProductsController, CategoriesController],
+  controllers: [
+    UsersController,
+    OrdersController,
+    ClientsController,
+    ProductsController,
+  ],
   providers: [
     UsersService,
     {
       provide: APP_FILTER,
-      useClass: NotFoundFilter
+      useClass: NotFoundFilter,
     },
     {
       provide: APP_FILTER,
-      useClass: AuthFailedFilter
+      useClass: AuthFailedFilter,
     },
     {
       provide: injectionTokenKeys.appName,
-      useValue: process.env.APP_NAME || 'DCMS'
+      useValue: process.env.APP_NAME || 'DCMS',
     },
     {
       provide: injectionTokenKeys.identityMaxAge,
-      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '5000000000')
-    }
+      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '5000000000'),
+    },
   ],
 })
-export class AppModule {
-  constructor () {
-  }
-} 
+export class AppModule {}
