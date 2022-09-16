@@ -66,20 +66,32 @@ export class UsersService {
         this.principalSubject.next(principal);
     }
 
+    getPrincipal(): IPrincipal | null {
+        return this.principalSubject.getValue();
+    }
+
     get principal$() {
         return this.principalSubject.asObservable();
     }
 
     async getUser(arg: IPrincipal | number | string) {
+        let user: User;
         switch (typeof arg) {
             case 'string':
-                return this.userRepository.findOneBy({ username: arg });
+                user = await this.userRepository.findOneBy({ username: arg });
+                break;
             case 'number':
-                return this.userRepository.findOneBy({ id: arg });
+                user = await this.userRepository.findOneBy({ id: arg });
+                break;
             case 'object':
+                user = await this.userRepository.findOneBy({ username: arg.username });
+                break;
             default:
-                return this.userRepository.findOneBy({ username: arg.username });
+                const msg = `Could not find user`;
+                this.logger.error(msg);
+                throw new Error(msg);
         }
+        return user;
     }
 
     async loginUser(dto: ILoginDto) {

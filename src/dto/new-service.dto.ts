@@ -3,5 +3,5 @@ export interface INewServiceDto {
     name: string;
     description?: string;
     operation?: 'update';
-    isAdditional: boolean;
+    isAdditional: string;
 }

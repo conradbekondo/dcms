@@ -36,12 +36,13 @@
                                                     <label>Is Additional Service</label>
                                                     <div class="row">
                                                         <div class="col">
-                                                            <label for="no-additional"><input type="radio" checked
-                                                                    id="no-additional" name="isAdditional"> No</label>
+                                                            <label for="no-additional"><input type="radio" checked id="<td>
+                                                        </td>" value="false" name="isAdditional"> No</label>
                                                         </div>
                                                         <div class="col">
                                                             <label for="yes-additional"><input type="radio"
-                                                                    id="yes-additional" name="isAdditional"> Yes</label>
+                                                                    id="yes-additional" value="true"
+                                                                    name="isAdditional"> Yes</label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -63,7 +64,7 @@
                                                 </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                        <button type="reset" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
                                         <button data-toggle="modal" type="submit" id="savebtn" class="btn btn-primary">Save</button>
                                     </div>
                                 </form>
@@ -132,6 +133,7 @@
                                             <tr>
                                                 <th>ID </th>
                                                 <th>Name</th>
+                                                <th>Is Additional Service</th>
                                                 <th>Updated</th>
                                                 <th>Created</th>
                                                 <th>Created By</th>
@@ -148,10 +150,13 @@
                                                         <%= service.name %>
                                                     </td>
                                                     <td>
-                                                        <%= (service.lastUpdated || 'N/A' ) %>
+                                                        <%= service.isAdditional ? 'Yes' : 'No' %>
                                                     </td>
                                                     <td>
-                                                        <%= service.dateCreated %>
+                                                        <%= (service.lastUpdated?.toLocaleDateString() || 'N/A' ) %>
+                                                    </td>
+                                                    <td>
+                                                        <%= service.dateCreated?.toLocaleDateString() %>
                                                     </td>
                                                     <td>
                                                         <%= `${service.creator.profile.firstName}
@@ -183,6 +188,12 @@
                             function createNewServiceClickHandler() {
                                 const _modal = document.getElementById('exampleModalRight');
                                 _modal.querySelector('.modal-title').textContent = `Add a Service`;
+                                document.getElementById('service-name').value = null;
+                                // document.getElementById('price').value = service.standardPrice;
+                                // document.getElementById('processing-duration').value = service.processingDuration;
+                                document.getElementById('descriptionInput').value = null;
+                                document.getElementById('service-id').value = null;
+                                document.getElementById('operation').value = null;
                             }
 
                             function onRowEditClicked(id) {
@@ -202,6 +213,11 @@
                                 document.getElementById('descriptionInput').value = service.description;
                                 document.getElementById('service-id').value = service.id;
                                 document.getElementById('operation').value = 'update';
+                                if (service.isAdditional == true) {
+                                    document.getElementById('yes-additional').checked = true;
+                                } else {
+                                    document.getElementById('no-additional').checked = true;
+                                }
                                 modal.show({
                                     backdrop: 'static'
                                 });
@@ -214,9 +230,7 @@
                                 }
 
                                 if (confirm(`Are you sure you want to delete: ${service.name}`)) {
-                                    const data = new FormData();
-                                    data.set('serviceId', id);
-                                    location.href = '/services/delete?serviceId=' + id + '&start=<%= data.startAt || 0%>&size=<%=data.size || 50%>';
+                                    location.replace('/services/delete?serviceId=' + id + '&start=<%= data.startAt || 0%>&size=<%=data.size || 50%>');
                                 }
                             }
                         </script>

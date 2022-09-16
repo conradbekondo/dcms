@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Inject, Logger, Post, Query, Render, Res, UseFilters, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
+import { from, lastValueFrom, map, of, reduce, switchMap, zipAll } from 'rxjs';
 import { INewServiceDto } from 'src/dto/new-service.dto';
 import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
@@ -30,7 +31,30 @@ export class ServicesController extends BaseController {
             _size = 50;
         else _size = parseInt(size);
         this.viewBag.pageTitle = 'Create a Service';
-        const services = await this.offeredServicesService.getServices(_start, _size);
+        const services = await lastValueFrom(from(this.offeredServicesService.getServices(_start, _size)).pipe(
+            switchMap(_services => {
+                return of(..._services).pipe(
+                    map(({ dateCreated, lastUpdated, name, isAdditional, id, creator: { profile: { firstName, lastName } } }) => {
+                        const __service = {
+                            dateCreated,
+                            lastUpdated,
+                            isAdditional,
+                            id,
+                            name,
+                            creator: {
+                                profile: { firstName, lastName }
+                            }
+                        };
+
+                        return __service;
+                    }),
+                    reduce((acc: any[], curr: any) => {
+                        acc.push(curr);
+                        return acc;
+                    }, [])
+                )
+            })
+        ))
         return { view: this.viewBag, data: { startAt: _start, size: _size, services, formData: {} } };
     }
 
@@ -49,7 +73,7 @@ export class ServicesController extends BaseController {
 
         if (ans.data.errors.length <= 0) {
             const serviceExists = await this.offeredServicesService.serviceExistsWithName(formBody.name);
-            if (serviceExists) {
+            if (formBody.operation != 'update' && serviceExists) {
                 ans.data.errors.push(`Service already exists: '${formBody.name}'`);
             } else {
                 await this.offeredServicesService.createService(formBody);

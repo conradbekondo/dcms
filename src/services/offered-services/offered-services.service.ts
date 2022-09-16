@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { firstValueFrom } from 'rxjs';
 import { INewServiceDto } from 'src/dto/new-service.dto';
 import { OfferedService } from 'src/entities/service.entity';
+import { User } from 'src/entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 
@@ -9,7 +9,7 @@ import { UsersService } from '../users/users.service';
 export class OfferedServicesService {
     private readonly offeredServicesRepository: Repository<OfferedService>;
     private readonly logger = new Logger(OfferedServicesService.name);
-    constructor(dataSource: DataSource, private readonly userService: UsersService) {
+    constructor(private dataSource: DataSource, private readonly userService: UsersService) {
         this.offeredServicesRepository = dataSource.getRepository(OfferedService);
     }
 
@@ -19,13 +19,14 @@ export class OfferedServicesService {
         }).then(service => service != null);
     }
 
-    async createService({ id, name, operation, description }: INewServiceDto) {
+    async createService({ id, name, operation, isAdditional, description }: INewServiceDto) {
         const service = new OfferedService();
         service.description = description?.trim();
         service.name = name?.trim();
+        service.isAdditional = isAdditional == 'true';
 
         if (!operation) {
-            const principal = await firstValueFrom(this.userService.principal$);
+            const principal = this.userService.getPrincipal();
             const signedInUser = await this.userService.getUser(principal);
             if (!signedInUser) {
                 const msg = `User principal not found`;
@@ -39,7 +40,7 @@ export class OfferedServicesService {
         }
         else {
             return this.offeredServicesRepository.findOneBy({
-                isDeleted: false, id: parseInt(id)
+                id: parseInt(id)
             }).then(s => {
                 if (!s) {
                     const msg = `Cannot update a service which does not exist: '${id}'`;
@@ -53,13 +54,16 @@ export class OfferedServicesService {
     }
 
     async getServices(startAt: number = 0, size = 50) {
-        const services: OfferedService[] = await this.offeredServicesRepository.createQueryBuilder()
-            // .where('is_deleted = 0')
-            .orderBy('date_created', 'DESC')
-            .orderBy('last_updated', 'DESC')
-            .skip(startAt * size)
-            .take(size)
-            .getMany();
+        const services: OfferedService[] = await this.offeredServicesRepository
+            .find({
+                relations: { creator: true },
+                skip: startAt * size,
+                take: size,
+                order: {
+                    dateCreated: 'DESC',
+                    lastUpdated: 'DESC',
+                }
+            })
         return services;
     }
 
