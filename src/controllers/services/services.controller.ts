@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Inject, Logger, Post, Query, Render, Res, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Logger, Param, Post, Query, Render, Res, UseFilters, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { INewServiceDto } from 'src/dto/new-service.dto';
 import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
@@ -62,11 +62,11 @@ export class ServicesController extends BaseController {
             return;
         }
 
-        res.redirect(`/services?start=${start}&size=${size}`);
+        res.redirect(`/services?start=${_start}&size=${_size}`);
     }
 
-    @Post('/delete')
-    async handleDelete(@Body() formBody: { serviceId: string }, @Res() res: Response, @Query('start') start = '0', @Query('size') size = '50') {
+    @Get('/delete')
+    async handleDelete(@Query('serviceId') serviceId: string, @Res() res: Response, @Query('start') start = '0', @Query('size') size = '50') {
         let _start: number, _size: number;
         if (isNaN(parseInt(start)))
             _start = 0;
@@ -74,17 +74,17 @@ export class ServicesController extends BaseController {
         if (isNaN(parseInt(size)))
             _size = 50;
         else _size = parseInt(size);
-        const serviceId = parseInt(formBody.serviceId);
-        if (isNaN(serviceId)) {
+        const id = parseInt(serviceId);
+        if (isNaN(id)) {
             res.status(500).send();
             return;
         }
         try {
-            await this.offeredServicesService.deleteService(serviceId);
+            await this.offeredServicesService.deleteService(id);
         } catch (e) {
             res.status(500).send();
         }
 
-        res.status(200).send();
+        res.redirect(`/services?start=${_start}&size=${_size}`);
     }
-}
+} 

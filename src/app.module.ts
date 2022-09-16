@@ -25,6 +25,7 @@ import { UsersService } from './services/users/users.service';
 import { OrdersService } from './services/orders/orders.service';
 import { ServicesController } from './controllers/services/services.controller';
 import { OfferedServicesService } from './services/offered-services/offered-services.service';
+import { LangController } from './controllers/lang/lang.controller';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -61,7 +62,7 @@ const options: TypeOrmModuleOptions = {
     }),
     JwtModule.register({ secret: process.env.E_KEY })
   ],
-  controllers: [UsersController, OrdersController, ServicesController],
+  controllers: [UsersController, OrdersController, ServicesController, LangController],
   providers: [
     UsersService,
     {
