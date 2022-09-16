@@ -79,7 +79,7 @@ export class OfferedServicesService {
 
         // service.isDeleted = true;
         // service.dateDeleted = new Date(Date.now());
-        return this.offeredServicesRepository.delete(service);
+        return this.offeredServicesRepository.remove(service);
     }
 }
 
