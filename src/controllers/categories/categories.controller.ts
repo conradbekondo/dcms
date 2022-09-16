@@ -5,6 +5,7 @@ import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import injectionTokenKeys from 'src/injection-tokens';
 import { CategoriesService } from 'src/services/categories/categories.service';
+import { UsersService } from 'src/services/users/users.service';
 import { DataSource } from 'typeorm';
 import { BaseController } from '../base/base.controller';
 
@@ -14,8 +15,8 @@ import { BaseController } from '../base/base.controller';
 export class CategoriesController extends BaseController {
   private readonly logger = new Logger(CategoriesController.name);
 
-  constructor(private readonly categoryService: CategoriesService, @Inject(injectionTokenKeys.appName) appName: string, private readonly dataSource: DataSource) {
-    super(appName, categoryService);
+  constructor(private readonly categoryService: CategoriesService, usersService: UsersService, @Inject(injectionTokenKeys.appName) appName: string, private readonly dataSource: DataSource) {
+    super(appName, usersService);
   }
 
   @Get()

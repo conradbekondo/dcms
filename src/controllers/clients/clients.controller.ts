@@ -5,6 +5,7 @@ import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import injectionTokenKeys from 'src/injection-tokens';
 import { ClientsService } from 'src/services/clients/clients.service';
+import { UsersService } from 'src/services/users/users.service';
 import { DataSource } from 'typeorm';
 import { BaseController } from '../base/base.controller';
 
@@ -14,8 +15,8 @@ import { BaseController } from '../base/base.controller';
 export class ClientsController extends BaseController {
   private readonly logger = new Logger(ClientsController.name);
 
-  constructor(private readonly clientService: ClientsService, @Inject(injectionTokenKeys.appName) appName: string, private readonly dataSource: DataSource) {
-    super(appName, clientService);
+  constructor(private readonly clientService: ClientsService, usersService: UsersService, @Inject(injectionTokenKeys.appName) appName: string, private readonly dataSource: DataSource) {
+    super(appName, usersService);
   }
 
 

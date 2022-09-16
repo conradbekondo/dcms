@@ -33,11 +33,4 @@ export class ProductsController extends BaseController {
   viewProducts() {
     return { data: {}, view: this.viewBag };
   }
-
-  // @Get('create')
-  // @Render('products/view-products')
-  // createProducts() {
-  //     this.viewBag.pageTitle = 'Create a Product';
-  //     return { data: {}, view: this.viewBag };
-  // }
 }
