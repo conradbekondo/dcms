@@ -24,6 +24,7 @@ import injectionTokenKeys from './injection-tokens';
 import { UsersService } from './services/users/users.service';
 import { ClientsController } from './controllers/clients/clients.controller';
 import { ProductsController } from './controllers/products/products.controller';
+import { LangController } from './controllers/lang/lang.controller';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
