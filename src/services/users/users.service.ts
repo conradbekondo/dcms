@@ -19,7 +19,7 @@ export class UsersService {
     private readonly profileRepository: Repository<Profile>;
     private readonly roleRepository: Repository<Role>;
 
-    constructor (datasource: DataSource, private readonly jwtService: JwtService) {
+    constructor(datasource: DataSource, private readonly jwtService: JwtService) {
         this.principalSubject = new BehaviorSubject<IPrincipal>(null);
         this.userRepository = datasource.getRepository(User);
         this.userLoginRepository = datasource.getRepository(LoginEntry);
@@ -68,6 +68,18 @@ export class UsersService {
 
     get principal$() {
         return this.principalSubject.asObservable();
+    }
+
+    async getUser(arg: IPrincipal | number | string) {
+        switch (typeof arg) {
+            case 'string':
+                return this.userRepository.findOneBy({ username: arg });
+            case 'number':
+                return this.userRepository.findOneBy({ id: arg });
+            case 'object':
+            default:
+                return this.userRepository.findOneBy({ username: arg.username });
+        }
     }
 
     async loginUser(dto: ILoginDto) {

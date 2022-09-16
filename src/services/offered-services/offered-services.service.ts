@@ -1,13 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { firstValueFrom } from 'rxjs';
 import { INewServiceDto } from 'src/dto/new-service.dto';
 import { OfferedService } from 'src/entities/service.entity';
 import { DataSource, Repository } from 'typeorm';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class OfferedServicesService {
     private readonly offeredServicesRepository: Repository<OfferedService>;
     private readonly logger = new Logger(OfferedServicesService.name);
-    constructor(dataSource: DataSource) {
+    constructor(dataSource: DataSource, private readonly userService: UsersService) {
         this.offeredServicesRepository = dataSource.getRepository(OfferedService);
     }
 
@@ -22,18 +24,19 @@ export class OfferedServicesService {
         service.description = description?.trim();
         service.name = name?.trim();
 
-        if (!operation)
-            return this.offeredServicesRepository.findOneBy({
-                isDeleted: false, name
-            }).then(async s => {
-                if (!s) {
-                    return this.offeredServicesRepository.save(service)
-                } else {
-                    return this.offeredServicesRepository.delete(s).then(r => {
-                        this.offeredServicesRepository.save(service);
-                    });
-                }
-            });
+        if (!operation) {
+            const principal = await firstValueFrom(this.userService.principal$);
+            const signedInUser = await this.userService.getUser(principal);
+            if (!signedInUser) {
+                const msg = `User principal not found`;
+                this.logger.error(msg);
+                throw new Error(msg);
+            }
+
+            service.creator = signedInUser;
+            service.creatorId = signedInUser.id;
+            return this.offeredServicesRepository.save(service);
+        }
         else {
             return this.offeredServicesRepository.findOneBy({
                 isDeleted: false, id: parseInt(id)

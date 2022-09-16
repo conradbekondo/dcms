@@ -37,11 +37,11 @@
                                                     <div class="row">
                                                         <div class="col">
                                                             <label for="no-additional"><input type="radio" checked
-                                                                    id="no-additional" name="isAdditional"> Yes</label>
+                                                                    id="no-additional" name="isAdditional"> No</label>
                                                         </div>
                                                         <div class="col">
                                                             <label for="yes-additional"><input type="radio"
-                                                                    id="yes-additional" name="isAdditional"> No</label>
+                                                                    id="yes-additional" name="isAdditional"> Yes</label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -132,8 +132,9 @@
                                             <tr>
                                                 <th>ID </th>
                                                 <th>Name</th>
-                                                <th>Processing Duration (Days)</th>
-                                                <th>Standard Price</th>
+                                                <th>Updated</th>
+                                                <th>Created</th>
+                                                <th>Created By</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -147,10 +148,14 @@
                                                         <%= service.name %>
                                                     </td>
                                                     <td>
-                                                        <%= service.processingDuration %>
+                                                        <%= (service.lastUpdated || 'N/A' ) %>
                                                     </td>
                                                     <td>
-                                                        <%= service.standardPrice %>
+                                                        <%= service.dateCreated %>
+                                                    </td>
+                                                    <td>
+                                                        <%= `${service.creator.profile.firstName}
+                                                            ${service.creator.profile.lastName || '' }`.trim() %>
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">
