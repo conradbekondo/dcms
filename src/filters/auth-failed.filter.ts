@@ -6,6 +6,6 @@ export class AuthFailedFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const request = host.switchToHttp().getRequest<Request>();
     const response = host.switchToHttp().getResponse<Response>();
-    response.redirect(`/users/login?returnUrl=${encodeURIComponent(request.url)}`);
+    response.redirect(`/auth?returnUrl=${encodeURIComponent(request.url)}`);
   }
 }
