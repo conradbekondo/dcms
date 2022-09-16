@@ -47,8 +47,8 @@ const options: TypeOrmModuleOptions = {
     AppliedPolicy
   ],
   namingStrategy: new SnakeNamingStrategy(),
-  synchronize: process.env.NODE_ENV == 'development',
-  dropSchema: process.env.NODE_ENV == 'development'
+  synchronize: true,
+  dropSchema: false
 };
 
 @Module({
