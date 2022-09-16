@@ -47,7 +47,7 @@ const options: TypeOrmModuleOptions = {
     AppliedPolicy
   ],
   namingStrategy: new SnakeNamingStrategy(),
-  synchronize: false,
+  synchronize: true,
   dropSchema: false
 };
 
