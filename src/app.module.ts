@@ -29,6 +29,8 @@ import { OrdersService } from './services/orders/orders.service';
 import { ServicesController } from './controllers/services/services.controller';
 import { OfferedServicesService } from './services/offered-services/offered-services.service';
 import { UsersController } from './controllers/users/users.controller';
+import { LangService } from './services/lang/lang.service';
+import { I18nModule } from 'nestjs-i18n';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -63,7 +65,13 @@ const options: TypeOrmModuleOptions = {
       serveRoot: '/static',
     }),
     JwtModule.register({ secret: process.env.E_KEY }),
-    I18n
+    I18nModule.forRoot({
+      fallbackLanguage: process.env.SYSTEM_LANG || 'en',
+      loaderOptions: {
+        path: join(__dirname, '/i18n/'),
+        watch: true,
+      }
+    })
   ],
   controllers: [
     AuthController,
@@ -71,7 +79,8 @@ const options: TypeOrmModuleOptions = {
     ClientsController,
     ProductsController,
     ServicesController,
-    UsersController
+    UsersController,
+    LangController
   ],
   providers: [
     UsersService,
@@ -93,6 +102,7 @@ const options: TypeOrmModuleOptions = {
       provide: injectionTokenKeys.identityMaxAge,
       useValue: parseInt(process.env.IDENTITY_MAX_AGE || '5000000000'),
     },
+    LangService,
   ],
 })
 export class AppModule { }
