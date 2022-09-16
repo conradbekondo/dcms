@@ -211,7 +211,7 @@
                                 if (confirm(`Are you sure you want to delete: ${service.name}`)) {
                                     const data = new FormData();
                                     data.set('serviceId', id);
-                                    location.href = '/services/delete?serviceId=' + id + '&start=<%= data.startAt || 0%>&size=<%=data.size || 50%>';
+                                    location.replace('/services/delete?serviceId=' + id + '&start=<%= data.startAt || 0%>&size=<%=data.size || 50%>')
                                 }
                             }
                         </script>

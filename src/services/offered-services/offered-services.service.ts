@@ -51,7 +51,18 @@ export class OfferedServicesService {
 
     async getServices(startAt: number = 0, size = 50) {
         const services: OfferedService[] = await this.offeredServicesRepository.createQueryBuilder()
-            // .where('is_deleted = 0')
+            .where('is_additional = 0')
+            .orderBy('date_created', 'DESC')
+            .orderBy('last_updated', 'DESC')
+            .skip(startAt * size)
+            .take(size)
+            .getMany();
+        return services;
+    }
+
+    async getAdditional(startAt: number = 0, size = 50) {
+        const services: OfferedService[] = await this.offeredServicesRepository.createQueryBuilder()
+            .where('is_additional = 1')
             .orderBy('date_created', 'DESC')
             .orderBy('last_updated', 'DESC')
             .skip(startAt * size)

@@ -34,6 +34,7 @@ import { ClientsService } from './services/clients/clients.service';
 import { OfferedServicesService } from './services/offered-services/offered-services.service';
 import { OrdersService } from './services/orders/orders.service';
 import { UsersService } from './services/users/users.service';
+import { ProductsService } from './services/products/products.service';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -102,7 +103,8 @@ const options: TypeOrmModuleOptions = {
       useValue: parseInt(process.env.IDENTITY_MAX_AGE || '50000000')
     },
     CategoriesService,
-    ClientsService
+    ClientsService,
+    ProductsService
   ],
 })
 export class AppModule { }
