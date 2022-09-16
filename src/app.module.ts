@@ -60,6 +60,7 @@ const options: TypeOrmModuleOptions = {
       serveRoot: '/static',
     }),
     JwtModule.register({ secret: process.env.E_KEY }),
+    I18n
   ],
   controllers: [
     UsersController,
