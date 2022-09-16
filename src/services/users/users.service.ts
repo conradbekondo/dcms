@@ -26,7 +26,7 @@ export class UsersService {
         this.profileRepository = datasource.getRepository(Profile);
         this.roleRepository = datasource.getRepository(Role);
         if (process.env.NODE_ENV == 'development') {
-            // this.seed();
+            this.seed();
         }
     }
 
