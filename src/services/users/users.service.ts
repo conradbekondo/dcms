@@ -67,25 +67,41 @@ export class UsersService {
     this.principalSubject.next(principal);
   }
 
-  get principal$() {
-    return this.principalSubject.asObservable();
-  }
-
-  async loginUser(dto: ILoginDto) {
-    const user = await this.userRepository.findOneBy({
-      isDeleted: false,
-      username: dto.username,
-    });
-    if (!user) {
-      this.logger.warn(
-        `Failed login attempt - Account not found - Attempt credentials: { username: '${dto.username}', password: '${dto.password}' }`,
-      );
-      return {
-        success: false,
-        error: 'Account not found with username: ' + dto.username,
-      };
+    getPrincipal(): IPrincipal | null {
+        return this.principalSubject.getValue();
     }
-    const { profile, username } = user;
+
+    get principal$() {
+        return this.principalSubject.asObservable();
+    }
+
+    async getUser(arg: IPrincipal | number | string) {
+        let user: User;
+        switch (typeof arg) {
+            case 'string':
+                user = await this.userRepository.findOneBy({ username: arg });
+                break;
+            case 'number':
+                user = await this.userRepository.findOneBy({ id: arg });
+                break;
+            case 'object':
+                user = await this.userRepository.findOneBy({ username: arg.username });
+                break;
+            default:
+                const msg = `Could not find user`;
+                this.logger.error(msg);
+                throw new Error(msg);
+        }
+        return user;
+    }
+
+    async loginUser(dto: ILoginDto) {
+        const user = await this.userRepository.findOneBy({ isDeleted: false, username: dto.username });
+        if (!user) {
+            this.logger.warn(`Failed login attempt - Account not found - Attempt credentials: { username: '${dto.username}', password: '${dto.password}' }`)
+            return { success: false, error: 'Account not found with username: ' + dto.username };
+        }
+        const { profile, username } = user;
 
     const verificationResult = await compare(dto.password, user.passwordHash);
     if (!verificationResult) {

@@ -6,12 +6,15 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { OrdersController } from './controllers/orders/orders.controller';
+import { ServicesController } from './controllers/services/services.controller';
 import { AuthController } from './controllers/users/auth.controller';
+import { UsersController } from './controllers/users/users.controller';
 import { AppliedPolicy } from './entities/applied-policy.entity';
 import { OrderEntryAttribute } from './entities/order-entry-attribute.entity';
 import { OrderEntry } from './entities/order-entry.entity';
 import { Order } from './entities/order.entity';
 import { Policy } from './entities/processing-policy.entity';
+import { ProductServicePrice } from './entities/product-service-price.entity';
 import { Product } from './entities/product.entity';
 import { Profile } from './entities/profile.entity';
 import { Role } from './entities/Role';
@@ -24,9 +27,7 @@ import injectionTokenKeys from './injection-tokens';
 import { UsersService } from './services/users/users.service';
 import { LangController } from './controllers/lang/lang.controller';
 import { OrdersService } from './services/orders/orders.service';
-import { ServicesController } from './controllers/services/services.controller';
 import { OfferedServicesService } from './services/offered-services/offered-services.service';
-import { UsersController } from './controllers/users/users.controller';
 import { CategoriesController } from './controllers/categories/categories.controller';
 import { CategoriesService } from './services/categories/categories.service';
 import { Category } from './entities/category.entity';
@@ -56,6 +57,7 @@ const options: TypeOrmModuleOptions = {
     AppliedPolicy,
     Category,
     Client,
+    ProductServicePrice,
   ],
   namingStrategy: new SnakeNamingStrategy(),
   synchronize: process.env.NODE_ENV == 'development',

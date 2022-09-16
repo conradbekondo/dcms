@@ -4,14 +4,12 @@
         <%- include('../partials/navbar.ejs') %>
             <%- include('../partials/menu.ejs') %>
                 <main>
-                    <div class="modal fade modal-right" id="exampleModalRight" tabindex="-1" role="dialog"
-                        aria-labelledby="exampleModalRight" aria-hidden="true">
+                    <div class="modal fade modal-right" id="exampleModalRight" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title"> Add a service</h5>
-                                    <button onclick="createNewServiceClickHandler()" type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close">
+                                    <button onclick="createNewServiceClickHandler()" type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -32,11 +30,23 @@
                                                 <div class="form-group">
                                                     <label for="service-name"> Service name <span
                                                             class="text-danger error_lastname">*</span></label>
-                                                    <input name="name" id="service-name"
-                                                        value="<%= data.formData.name %>" type="text"
-                                                        class="form-control" placeholder="" autocomplete="off">
+                                                    <input name="name" id="service-name" value="<%= data.formData.name %>" type="text" class="form-control" placeholder="" autocomplete="off">
                                                 </div>
                                                 <div class="form-group">
+                                                    <label>Is Additional Service</label>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <label for="no-additional"><input type="radio" checked id="<td>
+                                                        </td>" value="false" name="isAdditional"> No</label>
+                                                        </div>
+                                                        <div class="col">
+                                                            <label for="yes-additional"><input type="radio"
+                                                                    id="yes-additional" value="true"
+                                                                    name="isAdditional"> Yes</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- <div class="form-group">
                                                     <label for="price">Price <span class="text-danger">*</span></label>
                                                     <input type="number" class="form-control" id="price" min="0"
                                                         name="standardPrice" value="<% data.formData.standardPrice%>"
@@ -47,25 +57,21 @@
                                                     <input type="number" min="0" class="form-control"
                                                         id="processing-duration" name="processingDuration"
                                                         value="<%= data.formData.processingDuration %>">
-                                                </div>
+                                                </div> -->
                                                 <div class="form-group">
                                                     <label for="descriptionInput">Description</label>
-                                                    <textarea class="form-control" name="description"
-                                                        id="descriptionInput" cols="30" rows="10"></textarea>
+                                                    <textarea class="form-control" name="description" id="descriptionInput" cols="30" rows="10"></textarea>
                                                 </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-primary"
-                                            data-dismiss="modal">Close</button>
-                                        <button data-toggle="modal" type="submit" id="savebtn"
-                                            class="btn btn-primary">Save</button>
+                                        <button type="reset" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                        <button data-toggle="modal" type="submit" id="savebtn" class="btn btn-primary">Save</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade modal-right" id="updateclt" tabindex="-1" role="dialog"
-                        aria-labelledby="exampleModalRight" aria-hidden="true">
+                    <div class="modal fade modal-right" id="updateclt" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -83,10 +89,8 @@
 
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-primary"
-                                            data-dismiss="modal">Close</button>
-                                        <button type="button" id="savebtn" onclick="updatebtm()"
-                                            class="btn btn-primary">Update</button>
+                                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                        <button type="button" id="savebtn" onclick="updatebtm()" class="btn btn-primary">Update</button>
                                     </div>
                                 </form>
                             </div>
@@ -96,15 +100,13 @@
                     <div class="row">
                         <div class="col-12">
                             <h1>Services</h1>
-                            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block"
-                                aria-label="breadcrumb">
+                            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
                                 <ol class="breadcrumb pt-0">
                                     <li class="breadcrumb-item">
-                                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                                            data-backdrop="static" data-target="#exampleModalRight"> Add Service <i
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-target="#exampleModalRight"> Add Service <i
                                                 class="glyph-icon simple-icon-plus"></i> </button>
                                     </li>
-                                    <li class="breadcrumb-item">
+                                    <!-- <li class="breadcrumb-item">
                                         <a href="/services/product"><button type="button" class="btn btn-primary"><i
                                                     class="glyph-icon simple-icon-list"></i>
                                                 Products list </button></a>
@@ -113,7 +115,7 @@
                                         <a href="/services/categories"><button type="button" class="btn btn-primary"><i
                                                     class="glyph-icon simple-icon-list"></i>
                                                 Categories</button></a>
-                                    </li>
+                                    </li> -->
 
                                 </ol>
                             </nav>
@@ -131,8 +133,10 @@
                                             <tr>
                                                 <th>ID </th>
                                                 <th>Name</th>
-                                                <th>Processing Duration (Days)</th>
-                                                <th>Standard Price</th>
+                                                <th>Is Additional Service</th>
+                                                <th>Updated</th>
+                                                <th>Created</th>
+                                                <th>Created By</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -146,20 +150,22 @@
                                                         <%= service.name %>
                                                     </td>
                                                     <td>
-                                                        <%= service.processingDuration %>
+                                                        <%= service.isAdditional ? 'Yes' : 'No' %>
                                                     </td>
                                                     <td>
-                                                        <%= service.standardPrice %>
+                                                        <%= (service.lastUpdated?.toLocaleDateString() || 'N/A' ) %>
+                                                    </td>
+                                                    <td>
+                                                        <%= service.dateCreated?.toLocaleDateString() %>
+                                                    </td>
+                                                    <td>
+                                                        <%= `${service.creator.profile.firstName}
+                                                            ${service.creator.profile.lastName || '' }`.trim() %>
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <button type="btn" class="btn text-info btn-link"
-                                                                data-toggle="modal" data-backdrop="static"
-                                                                onclick="onRowEditClicked(<%= service.id %>)"
-                                                                data-target="#exampleModalRight">Edit</button>
-                                                            <button type="btn"
-                                                                onclick="deleteServiceClicked(<%= service.id %>)"
-                                                                class="btn text-danger btn-link">Delete</button>
+                                                            <button type="btn" class="btn text-info btn-link" data-toggle="modal" data-backdrop="static" onclick="onRowEditClicked(<%= service.id %>)" data-target="#exampleModalRight">Edit</button>
+                                                            <button type="btn" onclick="deleteServiceClicked(<%= service.id %>)" class="btn text-danger btn-link">Delete</button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -178,10 +184,18 @@
                     <%- include('partials/scripts.ejs') %>
                         <script defer>
                             const services = JSON.parse('<%- JSON.stringify(data.services) %>');
+
                             function createNewServiceClickHandler() {
                                 const _modal = document.getElementById('exampleModalRight');
                                 _modal.querySelector('.modal-title').textContent = `Add a Service`;
+                                document.getElementById('service-name').value = null;
+                                // document.getElementById('price').value = service.standardPrice;
+                                // document.getElementById('processing-duration').value = service.processingDuration;
+                                document.getElementById('descriptionInput').value = null;
+                                document.getElementById('service-id').value = null;
+                                document.getElementById('operation').value = null;
                             }
+
                             function onRowEditClicked(id) {
                                 /**
                                  * 
@@ -194,13 +208,21 @@
                                 _modal.querySelector('.modal-title').textContent = `Update: ${service.name}`;
                                 const modal = new bootstrap.Modal(_modal, {});
                                 document.getElementById('service-name').value = service.name;
-                                document.getElementById('price').value = service.standardPrice;
-                                document.getElementById('processing-duration').value = service.processingDuration;
+                                // document.getElementById('price').value = service.standardPrice;
+                                // document.getElementById('processing-duration').value = service.processingDuration;
                                 document.getElementById('descriptionInput').value = service.description;
                                 document.getElementById('service-id').value = service.id;
                                 document.getElementById('operation').value = 'update';
-                                modal.show({ backdrop: 'static' });
+                                if (service.isAdditional == true) {
+                                    document.getElementById('yes-additional').checked = true;
+                                } else {
+                                    document.getElementById('no-additional').checked = true;
+                                }
+                                modal.show({
+                                    backdrop: 'static'
+                                });
                             }
+
                             function deleteServiceClicked(id) {
                                 const service = services.find(s => s.id == id);
                                 if (!service) {
@@ -208,9 +230,7 @@
                                 }
 
                                 if (confirm(`Are you sure you want to delete: ${service.name}`)) {
-                                    const data = new FormData();
-                                    data.set('serviceId', id);
-                                    location.href = '/services/delete?serviceId=' + id + '&start=<%= data.startAt || 0%>&size=<%=data.size || 50%>';
+                                    location.replace('/services/delete?serviceId=' + id + '&start=<%= data.startAt || 0%>&size=<%=data.size || 50%>');
                                 }
                             }
                         </script>
