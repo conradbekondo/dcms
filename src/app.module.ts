@@ -25,6 +25,7 @@ import { UsersService } from './services/users/users.service';
 import { ClientsController } from './controllers/clients/clients.controller';
 import { ProductsController } from './controllers/products/products.controller';
 import { LangController } from './controllers/lang/lang.controller';
+import { OrdersService } from './services/orders/orders.service';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -68,6 +69,7 @@ const options: TypeOrmModuleOptions = {
   ],
   providers: [
     UsersService,
+    OrdersService,
     {
       provide: APP_FILTER,
       useClass: NotFoundFilter,
@@ -86,4 +88,4 @@ const options: TypeOrmModuleOptions = {
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }
