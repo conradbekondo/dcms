@@ -5,11 +5,15 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { CategoriesController } from './controllers/categories/categories.controller';
+import { ClientsController } from './controllers/clients/clients.controller';
 import { OrdersController } from './controllers/orders/orders.controller';
 import { ServicesController } from './controllers/services/services.controller';
 import { AuthController } from './controllers/users/auth.controller';
 import { UsersController } from './controllers/users/users.controller';
 import { AppliedPolicy } from './entities/applied-policy.entity';
+import { Category } from './entities/category.entity';
+import { Client } from './entities/client.entity';
 import { OrderEntryAttribute } from './entities/order-entry-attribute.entity';
 import { OrderEntry } from './entities/order-entry.entity';
 import { Order } from './entities/order.entity';
@@ -30,11 +34,11 @@ import { OrdersService } from './services/orders/orders.service';
 import { OfferedServicesService } from './services/offered-services/offered-services.service';
 import { CategoriesController } from './controllers/categories/categories.controller';
 import { CategoriesService } from './services/categories/categories.service';
-import { Category } from './entities/category.entity';
 import { ClientsService } from './services/clients/clients.service';
-import { Client } from './entities/client.entity';
-import { ClientsController } from './controllers/clients/clients.controller';
-import { ProductsController } from './controllers/products/products.controller';
+import { OfferedServicesService } from './services/offered-services/offered-services.service';
+import { OrdersService } from './services/orders/orders.service';
+import { UsersService } from './services/users/users.service';
+import { ProductsService } from './services/products/products.service';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -105,6 +109,7 @@ const options: TypeOrmModuleOptions = {
     },
     CategoriesService,
     ClientsService,
+    ProductsService
   ],
 })
-export class AppModule {}
+export class AppModule { }

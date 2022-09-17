@@ -63,8 +63,23 @@ export class OfferedServicesService {
                     dateCreated: 'DESC',
                     lastUpdated: 'DESC',
                 }
-            })
+            });
         return services;
+    }
+
+    async getAdditional(startAt: number = 0, size: number = 50) {
+        const services: OfferedService[] = await this.offeredServicesRepository.find({
+            where: {
+                isAdditional: true
+            },
+            relations: { creator: true },
+            order: {
+                dateCreated: 'desc',
+                lastUpdated: 'desc',
+            },
+            skip: start * size,
+            take: size
+        })
     }
 
     async deleteService(serivceId: number) {
