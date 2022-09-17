@@ -12,20 +12,23 @@ import {
   Req,
   Res,
   UseFilters,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { Role } from 'src/decorators/role.decorator';
 import { IClientDto } from 'src/dto/cleint.dto';
+import { Roles } from 'src/entities/roles';
 import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import injectionTokenKeys from 'src/injection-tokens';
 import { ClientsService } from 'src/services/clients/clients.service';
-import { DataSource } from 'typeorm';
+import { UsersService } from 'src/services/users/users.service';
 import { BaseController } from '../base/base.controller';
 
 @Controller('clients')
 @UseGuards(AuthGuard)
 @UseFilters(AuthFailedFilter)
+@Role(Roles.ADMIN, Roles.STAFF, Roles.SYSTEM)
 export class ClientsController extends BaseController {
   private readonly logger = new Logger(ClientsController.name);
 

@@ -13,32 +13,35 @@ import {
   Res,
   UseFilters,
   UseGuards,
+  UsePipes,
+  ValidationPipe
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { IUsersDto } from 'src/dto/users.dto';
+import { Role } from 'src/decorators/role.decorator';
+import { INewUserDto } from 'src/dto/new-user.dto';
+import { Roles } from 'src/entities/roles';
 import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import injectionTokenKeys from 'src/injection-tokens';
-import { DataSource } from 'typeorm';
-import { BaseController } from '../base/base.controller';
 import { UsersService } from 'src/services/users/users.service';
+import { BaseController } from '../base/base.controller';
 
 @Controller('users')
 @UseGuards(AuthGuard)
 @UseFilters(AuthFailedFilter)
+@Role(Roles.ADMIN, Roles.SYSTEM)
 export class UsersController extends BaseController {
   private readonly logger = new Logger(UsersController.name);
 
   constructor(
     @Inject(injectionTokenKeys.appName) appName: string,
-    private readonly dataSource: DataSource,
-    private readonly usersService: UsersService,
+    usersService: UsersService,
   ) {
     super(appName, usersService);
   }
 
   @Get()
-  @Render('users/view_users')
+  @Render('users/users')
   async viewUsers() {
     const users = await this.userService.getUsers();
     return { data: { users: users }, view: this.viewBag };
@@ -51,19 +54,19 @@ export class UsersController extends BaseController {
   }
 
   @Post()
+  @UsePipes(ValidationPipe)
   async storeUsers(
-    @Body() createUsersDto: IUsersDto,
-    @Req() req: Request,
+    @Body() createUsersDto: INewUserDto,
     @Res() res: Response,
   ) {
-    const errors: string[] = [];
+    // const errors: string[] = [];
 
-    if (!createUsersDto.first_name || createUsersDto.first_name.length <= 0) {
+    /* if (!createUsersDto.firstName || createUsersDto.firstName.length <= 0) {
       errors.push('User name required');
       return res
         .status(400)
         .json({ message: 'Unable to create User.', errors: errors });
-    }
+    } */
 
     try {
       const stored = await this.userService.createUser(createUsersDto);
@@ -77,7 +80,7 @@ export class UsersController extends BaseController {
 
   @Put(':id')
   async updateUsers(
-    @Body() updateUsersDto: IUsersDto,
+    @Body() updateUsersDto: INewUserDto,
     @Param('id') id: number,
     @Req() req: Request,
     @Res() res: Response,

@@ -12,25 +12,28 @@ import {
   Req,
   Res,
   UseFilters,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { Role } from 'src/decorators/role.decorator';
 import { ICreateCategoryDto } from 'src/dto/create_category.dto';
+import { Roles } from 'src/entities/roles';
 import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import injectionTokenKeys from 'src/injection-tokens';
 import { CategoriesService } from 'src/services/categories/categories.service';
-import { DataSource } from 'typeorm';
+import { UsersService } from 'src/services/users/users.service';
 import { BaseController } from '../base/base.controller';
 
 @Controller('categories')
 @UseGuards(AuthGuard)
 @UseFilters(AuthFailedFilter)
+@Role(Roles.ADMIN, Roles.STAFF, Roles.SYSTEM)
 export class CategoriesController extends BaseController {
   private readonly logger = new Logger(CategoriesController.name);
 
-  constructor(private readonly categoryService: CategoriesService, @Inject(injectionTokenKeys.appName) appName: string, private readonly dataSource: DataSource) {
-    super(appName, categoryService);
+  constructor(private readonly categoryService: CategoriesService, @Inject(injectionTokenKeys.appName) appName: string, usersService: UsersService) {
+    super(appName, usersService);
   }
 
   @Get()

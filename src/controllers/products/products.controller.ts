@@ -11,10 +11,12 @@ import {
   Req,
   Res,
   UseFilters,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { Role } from 'src/decorators/role.decorator';
 import { IProductDto } from 'src/dto/product.dto';
+import { Roles } from 'src/entities/roles';
 import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import injectionTokenKeys from 'src/injection-tokens';
@@ -22,12 +24,12 @@ import { CategoriesService } from 'src/services/categories/categories.service';
 import { OfferedServicesService } from 'src/services/offered-services/offered-services.service';
 import { ProductsService } from 'src/services/products/products.service';
 import { UsersService } from 'src/services/users/users.service';
-import { DataSource } from 'typeorm';
 import { BaseController } from '../base/base.controller';
 
 @Controller(['products'])
 @UseGuards(AuthGuard)
 @UseFilters(AuthFailedFilter)
+@Role(Roles.ADMIN, Roles.STAFF, Roles.SYSTEM)
 export class ProductsController extends BaseController {
   private readonly logger = new Logger(ProductsController.name);
 

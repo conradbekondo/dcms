@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { INewServiceDto } from 'src/dto/new-service.dto';
 import { OfferedService } from 'src/entities/service.entity';
-import { User } from 'src/entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 
@@ -77,7 +76,7 @@ export class OfferedServicesService {
                 dateCreated: 'desc',
                 lastUpdated: 'desc',
             },
-            skip: start * size,
+            skip: startAt * size,
             take: size
         })
     }

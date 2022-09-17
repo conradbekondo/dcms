@@ -4,6 +4,7 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToOne,
 } from 'typeorm';
 import { BaseEntity } from './base.entity';
@@ -35,4 +36,11 @@ export class User extends BaseEntity {
   @OneToOne(() => Profile, { eager: true })
   @JoinColumn({ name: 'profile_id' })
   profile: Profile;
+
+  @Column({ nullable: true, name: 'creator_id' })
+  creatorId: number;
+
+  @ManyToOne(() => User, { eager: true })
+  @JoinColumn({ name: 'creator_id' })
+  creator?: User;
 }

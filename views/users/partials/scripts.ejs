@@ -5,9 +5,11 @@
 <script src="/static/js/vendor/jquery.contextMenu.min.js"></script>
 <script src="/static/js/dore.script.js"></script>
 <script src="/static/js/scripts.js"></script>
+<script src="/static/js/vendor/jquery.validate/jquery.validate.min.js"></script>
 
 <script>
-    $('#create_form').submit(function (e) {
+    const createFormNameRef = '#new-user-form';
+    $('#new-user-form').submit(function (e) {
         e.preventDefault()
         const data = {
             first_name: $('#create_form #first_name').val(),
@@ -39,10 +41,10 @@
         })
     })
     $('#edit_form').submit(function (e) {
-        e.preventDefault()
-        const client = $('#edit_form #id').val()
+        e.preventDefault();
+        // const client = $('#edit_form #id').val()
         const data = {
-            first_name: $('#edit_form #first_name').val(),
+            first_name: $('#new-user-form #first-name').val(),
             last_name: $('#edit_form #last_name').val(),
             phoneNumber: $('#edit_form #phone').val(),
             role: $('#edit_form #email').val(),

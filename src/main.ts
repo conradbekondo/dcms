@@ -4,10 +4,11 @@ config({ path: join(process.cwd(), `.${process.env.NODE_ENV}.env`) });
 
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import * as cookieParser from 'cookie-parser';
 import { from, switchMap, tap } from 'rxjs';
 import { AppModule } from 'src/app.module';
-import * as cookieParser from 'cookie-parser';
-
+import { AuthFailedFilter } from './filters/auth-failed.filter';
+import { RoleCheckFailedFilter } from './filters/role-check-failed.filter';
 
 function bootstrap() {
     return from(NestFactory.create<NestExpressApplication>(AppModule)).pipe(
@@ -16,6 +17,7 @@ function bootstrap() {
             // app.use('/static', express.static(join(process.cwd(), 'public')))
             app.useStaticAssets(join(process.cwd(), 'public'));
             app.setBaseViewsDir(join(process.cwd(), 'views'));
+            app.useGlobalFilters(new AuthFailedFilter(), new RoleCheckFailedFilter());
             app.enableCors({ origin: '*' });
             app.use(cookieParser());
             app.setViewEngine('ejs');

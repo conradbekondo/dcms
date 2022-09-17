@@ -1,13 +1,16 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { I18nModule } from 'nestjs-i18n';
 import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { CategoriesController } from './controllers/categories/categories.controller';
 import { ClientsController } from './controllers/clients/clients.controller';
+import { LangController } from './controllers/lang/lang.controller';
 import { OrdersController } from './controllers/orders/orders.controller';
+import { ProductsController } from './controllers/products/products.controller';
 import { ServicesController } from './controllers/services/services.controller';
 import { AuthController } from './controllers/users/auth.controller';
 import { UsersController } from './controllers/users/users.controller';
@@ -27,12 +30,15 @@ import { LoginEntry } from './entities/user-login-entry.entity';
 import { User } from './entities/user.entity';
 import { AuthFailedFilter } from './filters/auth-failed.filter';
 import { NotFoundFilter } from './filters/not-found.filter';
+import { RoleCheckFailedFilter } from './filters/role-check-failed.filter';
 import injectionTokenKeys from './injection-tokens';
-import { UsersService } from './services/users/users.service';
-import { LangController } from './controllers/lang/lang.controller';
-import { OrdersService } from './services/orders/orders.service';
+import { LangInterceptor } from './interceptors/lang.interceptor';
+import { CategoriesService } from './services/categories/categories.service';
+import { ClientsService } from './services/clients/clients.service';
 import { OfferedServicesService } from './services/offered-services/offered-services.service';
-import { UsersController } from './controllers/users/users.controller';
+import { OrdersService } from './services/orders/orders.service';
+import { ProductsService } from './services/products/products.service';
+import { UsersService } from './services/users/users.service';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -87,7 +93,8 @@ const options: TypeOrmModuleOptions = {
     ClientsController,
     ProductsController,
     ServicesController,
-    UsersController
+    UsersController,
+    LangController
   ],
   providers: [
     UsersService,
@@ -100,6 +107,10 @@ const options: TypeOrmModuleOptions = {
     {
       provide: APP_FILTER,
       useClass: AuthFailedFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: RoleCheckFailedFilter
     },
     {
       provide: injectionTokenKeys.appName,

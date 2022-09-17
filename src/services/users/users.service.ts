@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, share, shareReplay, startWith } from 'rxjs';
 import { ILoginDto } from 'src/dto/login.dto';
 import { Gender, Profile } from 'src/entities/profile.entity';
 import { Role } from 'src/entities/Role';
@@ -10,7 +10,7 @@ import { LoginEntry } from 'src/entities/user-login-entry.entity';
 import { User } from 'src/entities/user.entity';
 import { IPrincipal } from 'src/models/principal.model';
 import { DataSource, Repository } from 'typeorm';
-import { IUsersDto } from 'src/dto/users.dto';
+import { INewUserDto } from 'src/dto/new-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -30,6 +30,11 @@ export class UsersService {
     if (process.env.NODE_ENV == 'development') {
       // this.seed();
     }
+
+    this.principalSubject.subscribe(p => {
+      if (!p) return;
+      this.logger.debug('Principal updated => ' + JSON.stringify(p));
+    })
   }
 
   private async seed() {
@@ -72,7 +77,21 @@ export class UsersService {
   }
 
   get principal$() {
-    return this.principalSubject.asObservable();
+    return this.principalSubject.pipe(startWith(this.principalSubject.getValue()));
+  }
+
+  async isUserInRoles(roleNames: string[], username: string) {
+    return this.userRepository.findOne({
+      relations: { roles: true },
+      where: { username },
+      select: { roles: { roleName: true } }
+    }).then(user => {
+      for (let roleName of roleNames) {
+        if (user.roles.some(role => role.roleName === roleName))
+          return true;
+      }
+      return false;
+    });
   }
 
   async getUser(arg: IPrincipal | number | string) {
@@ -114,9 +133,8 @@ export class UsersService {
     const verificationResult = await compare(dto.password, user.passwordHash);
     if (!verificationResult) {
       this.logger.warn(
-        `Invalid login credentials provided for: '${profile.firstName} ${
-          profile.lastName?.trim() || ''
-        }'`.trim(),
+        `Invalid login credentials provided for: '${profile.firstName} ${profile.lastName?.trim() || ''
+          }'`.trim(),
       );
       return { success: false, error: 'Invalid username or password' };
     }
@@ -143,7 +161,7 @@ export class UsersService {
     };
   }
 
-  async createUser(dto: IUsersDto) {
+  async createUser(dto: INewUserDto) {
     const exists = await this.userRepository.findOneBy({
       username: dto.username,
     });
@@ -155,8 +173,8 @@ export class UsersService {
 
     const user = new User();
     const profile = new Profile();
-    profile.firstName = dto.first_name;
-    profile.lastName = dto.last_name;
+    profile.firstName = dto.firstName;
+    profile.lastName = dto.lastName;
     profile.phoneNumber = dto.phoneNumber;
     profile.gender = dto.gender as Gender;
     profile.notes = dto.notes;
@@ -202,7 +220,7 @@ export class UsersService {
    * @param id Client to update
    * @returns
    */
-  async updateUser(dto: IUsersDto, id: number) {
+  async updateUser(dto: INewUserDto, id: number) {
     const user = await this.userRepository.findOneBy({ id: id });
 
     if (!user) {
@@ -213,9 +231,9 @@ export class UsersService {
 
     const { profile, roles } = user;
 
-    profile.firstName = dto.first_name;
+    profile.firstName = dto.firstName;
     profile.phoneNumber = dto.phoneNumber;
-    profile.lastName = dto.last_name;
+    profile.lastName = dto.lastName;
 
     if (dto.role && !roles.every((r) => r.roleName !== dto.role)) {
       if (!(dto.role in Roles)) {

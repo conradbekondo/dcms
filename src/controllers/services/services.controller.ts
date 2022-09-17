@@ -13,7 +13,9 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { from, lastValueFrom, map, of, reduce, switchMap } from 'rxjs';
+import { Role } from 'src/decorators/role.decorator';
 import { INewServiceDto } from 'src/dto/new-service.dto';
+import { Roles } from 'src/entities/roles';
 import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import injectionTokenKeys from 'src/injection-tokens';
@@ -24,6 +26,7 @@ import { BaseController } from '../base/base.controller';
 @Controller('services')
 @UseGuards(AuthGuard)
 @UseFilters(AuthFailedFilter)
+@Role(Roles.ADMIN, Roles.STAFF, Roles.SYSTEM)
 export class ServicesController extends BaseController {
   private readonly logger = new Logger(ServicesController.name);
   constructor(
