@@ -20,7 +20,7 @@
                                         <% } %>
                                 </ul>
                                 <% } %>
-                                    <h6 class="mb-4">Login</h6>
+                                    <h6 class="mb-4"><%= t('test.Login', view.lang )%></h6>
                                     <form
                                         action="<%= (data.returnUrl && data.returnUrl.length > 0 ? `?returnUrl=${data.returnUrl}` : '') %>"
                                         method="post">

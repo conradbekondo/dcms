@@ -32,13 +32,7 @@ import { UsersService } from './services/users/users.service';
 import { LangController } from './controllers/lang/lang.controller';
 import { OrdersService } from './services/orders/orders.service';
 import { OfferedServicesService } from './services/offered-services/offered-services.service';
-import { CategoriesController } from './controllers/categories/categories.controller';
-import { CategoriesService } from './services/categories/categories.service';
-import { ClientsService } from './services/clients/clients.service';
-import { OfferedServicesService } from './services/offered-services/offered-services.service';
-import { OrdersService } from './services/orders/orders.service';
-import { UsersService } from './services/users/users.service';
-import { ProductsService } from './services/products/products.service';
+import { UsersController } from './controllers/users/users.controller';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -76,6 +70,13 @@ const options: TypeOrmModuleOptions = {
       serveRoot: '/static',
     }),
     JwtModule.register({ secret: process.env.E_KEY }),
+    I18nModule.forRoot({
+      fallbackLanguage: process.env.SYSTEM_LANG || 'en',
+      loaderOptions: {
+        path: join(__dirname, '/i18n/'),
+        watch: true,
+      }
+    })
   ],
   controllers: [
     AuthController,
@@ -85,7 +86,8 @@ const options: TypeOrmModuleOptions = {
     CategoriesController,
     ClientsController,
     ProductsController,
-    LangController,
+    ServicesController,
+    UsersController
   ],
   providers: [
     UsersService,
