@@ -6,7 +6,7 @@ import injectionTokenKeys from 'src/injection-tokens';
 import { UsersService } from 'src/services/users/users.service';
 import { BaseController } from '../base/base.controller';
 
-@Controller(['orders'])
+@Controller(['', 'orders'])
 @UseGuards(AuthGuard)
 @Role(Roles.STAFF, Roles.ADMIN, Roles.SYSTEM)
 export class OrdersController extends BaseController {

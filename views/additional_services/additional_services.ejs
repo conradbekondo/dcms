@@ -4,14 +4,12 @@
         <%- include('../partials/navbar.ejs') %>
             <%- include('../partials/menu.ejs') %>
                 <main>
-                    <div class="modal fade modal-right" id="exampleModalRight" tabindex="-1" role="dialog"
-                        aria-labelledby="exampleModalRight" aria-hidden="true">
+                    <div class="modal fade modal-right" id="exampleModalRight" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title"> Add a service</h5>
-                                    <button onclick="createNewServiceClickHandler()" type="button" class="close"
-                                        data-dismiss="modal" aria-label="Close">
+                                    <button onclick="createNewServiceClickHandler()" type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
@@ -32,9 +30,7 @@
                                                 <div class="form-group">
                                                     <label for="service-name"> Service name <span
                                                             class="text-danger error_lastname">*</span></label>
-                                                    <input name="name" id="service-name"
-                                                        value="<%= data.formData.name %>" type="text"
-                                                        class="form-control" placeholder="" autocomplete="off">
+                                                    <input name="name" id="service-name" value="<%= data.formData.name %>" type="text" class="form-control" placeholder="" autocomplete="off">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Is Additional Service</label>
@@ -64,22 +60,18 @@
                                                 </div> -->
                                                 <div class="form-group">
                                                     <label for="descriptionInput">Description</label>
-                                                    <textarea class="form-control" name="description"
-                                                        id="descriptionInput" cols="30" rows="10"></textarea>
+                                                    <textarea class="form-control" name="description" id="descriptionInput" cols="30" rows="10"></textarea>
                                                 </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="reset" class="btn btn-outline-primary"
-                                            data-dismiss="modal">Close</button>
-                                        <button data-toggle="modal" type="submit" id="savebtn"
-                                            class="btn btn-primary">Save</button>
+                                        <button type="reset" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                        <button data-toggle="modal" type="submit" id="savebtn" class="btn btn-primary">Save</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade modal-right" id="updateclt" tabindex="-1" role="dialog"
-                        aria-labelledby="exampleModalRight" aria-hidden="true">
+                    <div class="modal fade modal-right" id="updateclt" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -97,10 +89,8 @@
 
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-primary"
-                                            data-dismiss="modal">Close</button>
-                                        <button type="button" id="savebtn" onclick="updatebtm()"
-                                            class="btn btn-primary">Update</button>
+                                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                        <button type="button" id="savebtn" onclick="updatebtm()" class="btn btn-primary">Update</button>
                                     </div>
                                 </form>
                             </div>
@@ -110,12 +100,10 @@
                     <div class="row">
                         <div class="col-12">
                             <h1>Services</h1>
-                            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block"
-                                aria-label="breadcrumb">
+                            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
                                 <ol class="breadcrumb pt-0">
                                     <li class="breadcrumb-item">
-                                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                                            data-backdrop="static" data-target="#exampleModalRight"> Add Service <i
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-target="#exampleModalRight"> Add Service <i
                                                 class="glyph-icon simple-icon-plus"></i> </button>
                                     </li>
                                     <!-- <li class="breadcrumb-item">
@@ -149,7 +137,7 @@
                                                 <th>Updated</th>
                                                 <th>Created</th>
                                                 <th>Created By</th>
-                                                <th></th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -176,13 +164,10 @@
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <button type="btn" class="btn text-info btn-link"
-                                                                data-toggle="modal" data-backdrop="static"
-                                                                onclick="onRowEditClicked(<%= service.id %>)"
-                                                                data-target="#exampleModalRight">Edit</button>
-                                                            <button type="btn"
-                                                                onclick="deleteServiceClicked(<%= service.id %>)"
-                                                                class="btn text-danger btn-link">Delete</button>
+                                                            <button type="btn" class="btn text-white btn-warning" data-toggle="modal" data-backdrop="static" onclick="onRowEditClicked(<%= service.id %>)" data-target="#exampleModalRight" title="Edit"><i
+                                                                    class="simple-icon-pencil"></i></button>
+                                                            <button type="btn" onclick="deleteServiceClicked(<%= service.id %>)" class="btn text-white btn-danger" title="Delete"><i
+                                                                    class="simple-icon-trash"></i></button>
                                                         </div>
                                                     </td>
                                                 </tr>

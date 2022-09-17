@@ -20,10 +20,10 @@
                                         <% } %>
                                 </ul>
                                 <% } %>
-                                    <h6 class="mb-4"><%= t('test.Login', view.lang )%></h6>
-                                    <form
-                                        action="<%= (data.returnUrl && data.returnUrl.length > 0 ? `?returnUrl=${data.returnUrl}` : '') %>"
-                                        method="post">
+                                    <h6 class="mb-4">
+                                        Login
+                                    </h6>
+                                    <form action="<%= (data.returnUrl && data.returnUrl.length > 0 ? `?returnUrl=${data.returnUrl}` : '') %>" method="post">
 
                                         <label class="form-group has-float-label mb-4">
                                             <input value="<%= data.formData.username %>" name="username"

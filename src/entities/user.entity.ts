@@ -40,7 +40,7 @@ export class User extends BaseEntity {
   @Column({ nullable: true, name: 'creator_id' })
   creatorId: number;
 
-  @ManyToOne(() => User, { eager: true })
+  @ManyToOne(() => User, { eager: false })
   @JoinColumn({ name: 'creator_id' })
   creator?: User;
 }
