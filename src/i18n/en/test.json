@@ -1,0 +1,55 @@
+{
+  "Wecome": "Welcome Administrator",
+  "Overview": "Overview",
+  "Orders": "Orders",
+  "View Orders": "View Orders",
+  "All": "All",
+  "Women": "Women",
+  "Men": "Men",
+  "Covers": "Covers",
+
+  "Order Status": "Order Status",
+  "Create Orders": "Create Orders",
+  "Clients": "Clients",
+  "View Clients": "View Clients",
+  "Create Clients": "Create Clients",
+  "Products": "Products",
+  "View Products": "View Products",
+  "View Category": "View Category",
+  "View Services": "View Services",
+  "Users": "Users",
+  "View Users": "View Users",
+  "Create Users": "Create Users",
+  "Settings": "Settings",
+  "Docs": "Docs",
+  "Customer Name": "Customer Name",
+  "Service Name": "Service Name",
+  "Description": "Description",
+  "Price": "Price",
+  "Delivery Date": "Delivery Date",
+  "Pickup Date": "Pickup Date",
+  "Status": "Status",
+  "Items Per Page": "Items Per Page",
+  "Customer": "Customer",
+  "Service": "Service",
+  "Date Recorded": "Date Recorded",
+
+
+
+
+
+
+
+
+
+
+  
+
+
+  "day_interval": {
+    "one": "Every day",
+    "other": "Every {count} days",
+    "zero": "Never"
+  },
+  "nested": "We go shopping: $t(test.day_interval, {{\"count\": {count} }})"
+}

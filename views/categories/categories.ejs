@@ -132,12 +132,14 @@
                             <%= category.description %>
                           </td>
                           <td>
-                            <a href="#" class="btn btn-primary edit-btn" data-id="<%= category.id %>">
-                              <i class="glyph-icon simple-icon-pencil"></i>
-                            </a>
-                            <a href="#" class="btn btn-danger delete-btn" data-id="<%= category.id %>">
-                              <i class="glyph-icon simple-icon-trash"></i>
-                            </a>
+                            <div class="btn-group">
+                              <a href="#" class="btn btn-primary edit-btn" data-id="<%= category.id %>">
+                                <i class="glyph-icon simple-icon-pencil"></i>
+                              </a>
+                              <a href="#" class="btn btn-danger delete-btn" data-id="<%= category.id %>">
+                                <i class="glyph-icon simple-icon-trash"></i>
+                              </a>
+                            </div>
                           </td>
                         </tr>
                         <% }) %>

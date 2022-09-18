@@ -1,368 +1,423 @@
 <%- include('partials/head.ejs') %>
 
-<body id="app-container" class="menu-default show-spinner">
+  <body id="app-container" class="menu-default show-spinner">
     <%- include('../partials/navbar.ejs') %>
-        <%- include('../partials/menu.ejs') %>
-                <main>
-                    <div class="container-fluid disable-text-selection">
-                        <div class="row">
-                            <div class="col-12">                        
-                                </div>
-                                <div class="separator mb-5"></div>
-                            </div>
-                        </div>
+      <%- include('../partials/menu.ejs') %>
+        <main>
+          <div class="container-fluid disable-text-selection">
+            <div class="row">
+              <div class="col-12">
+              </div>
+              <div class="separator mb-5"></div>
+            </div>
+          </div>
 
-                        <div class="modal fade modal-right" id="exampleModalRight" tabindex="-1" role="dialog"
-                                                        aria-labelledby="exampleModalRight" aria-hidden="true">
-                                                        <div class="modal-dialog" role="document" style="max-width: 600px;">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header p-3" style="flex:0 0 3px">
-                                                                    <h5 class="modal-title">Add product</h5>
-                                                                    
-                                                                    <div id="savebtm_result" class="form-group text-success w-50"></div>
-                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                    
-                        
-                                                                </div>
-                                                                <form class="needs-validation">
-                                                                <div class="modal-body">
-                                                                        <div class="row">
-                                                                        <div class="form-group position-relative error-l-50 col-2">
-                                                                            <label>Num </label>
-                                                                                                                                <input type="text" class="form-control" placeholder="" name="num" id="num" autocomplete="off" value="" readonly="readonly">
-                                                                        </div>
-                                                                        <div class="form-group col-6">
-                                                                            <label>  Name <span class="text-danger ">*</span></label>
-                                                                            <input type="text" class="form-control reqred" placeholder="" name="nameprod" id="nameprod" autocomplete="off">
-                                                                        </div>
-                                                                        <div class="form-group col-4">
-                                                                            <label>   Categories  <span class="text-danger ">*</span></label>
-                                                                            <select name="categoryid" class="form-control reqred" id="categoryid">
-                                                                                                                                            <option value="2">women</option>
-                                                                                                                                                <option value="3">Men</option> 
-                                                                                                                                                <option value="9">Covers</option>
-                                                                                                                                                
-                                                                                                                                        
-                                                                            </select>
-                                                                        </div>
-                                                                        </div>
-                                                                
-                                                                        
-                                                                        <div class="row">
-                                                                            <div class="form-group col-6">
-                                                                                <label>  Ironing  Normal (usd) <span class="text-danger ">*</span></label>
-                                                                                <input type="text" class="form-control reqred" placeholder="" name="lroningnormal" id="lroningnormal" autocomplete="off">
-                                                                            </div>
-                                                                            <div class="form-group col-6">
-                                                                                <label>  Ironing Fast <span class="text-danger ">*</span></label>
-                                                                                <input type="text" class="form-control reqred" placeholder="" name="lroningfast" id="lroningfast" autocomplete="off">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="form-group col-6">
-                                                                                <label>  Laundry Normal (xaf) <span class="text-danger ">*</span></label>
-                                                                                <input type="text" class="form-control reqred" placeholder="" name="laundrynormal" id="laundrynormal" autocomplete="off">
-                                                                            </div>
-                                                                            <div class="form-group col-6">
-                                                                                <label>  Laundry Fast (xaf) <span class="text-danger ">*</span></label>
-                                                                                <input type="text" class="form-control reqred" placeholder="" name="laundryfast" id="laundryfast" autocomplete="off">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="form-group col-6">
-                                                                                <label>  Laundry and Ironing Normal (xaf) <span class="text-danger ">*</span></label>
-                                                                                <input type="text" class="form-control reqred" placeholder="" name="laundrylroningnormal" id="laundrylroningnormal" autocomplete="off">
-                                                                            </div>
-                                                                            <div class="form-group col-6">
-                                                                                <label> Laundry and Ironing Fast (usd) <span class="text-danger ">*</span></label>
-                                                                                <input type="text" class="form-control reqred" placeholder="" name="laundrylroningfast" id="laundrylroningfast" autocomplete="off">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                        
-                                                                        
-                                                                            <div class="form-group col-12">
-                        <button type="button" class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block" data-toggle="modal" data-backdrop="static" data-target="#iconshow"> Add an icon  <i class="glyph-icon simple-icon-plus"></i> </button>
-                        <span id="icon_select" style="font-size: 40px;"></span>
-                        <input type="hidden" id="icons">
-                                                                            </div>
-                                                                        </div>
-                        
-                                                                        <hr>
-                                                                        <div class="row">
-                                                                                                                            <div class="form-group col-4">
-                                                                                <label> Stain removal (xaf) <span class="text-danger "></span></label>
-                                                                                <input type="text" class="form-control item_name" placeholder="" name="item_name" id="" autocomplete="off" value="0">
-                                                                                <input type="hidden" class="servid" placeholder="" name="servid" id="" autocomplete="off" value="1">
-                                                                            </div>
-                                                                                                                                <div class="form-group col-4">
-                                                                                <label> Dry up (xaf) <span class="text-danger "></span></label>
-                                                                                <input type="text" class="form-control item_name" placeholder="" name="item_name" id="" autocomplete="off" value="0">
-                                                                                <input type="hidden" class="servid" placeholder="" name="servid" id="" autocomplete="off" value="2">
-                                                                            </div>
-                                                                                                                                <div class="form-group col-4">
-                                                                                <label> Deliver (xaf) <span class="text-danger "></span></label>
-                                                                                <input type="text" class="form-control item_name" placeholder="" name="item_name" id="" autocomplete="off" value="0">
-                                                                                <input type="hidden" class="servid" placeholder="" name="servid" id="" autocomplete="off" value="3">
-                                                                            </div>
-                                                                                                                                <div class="form-group col-4">
-                                                                                <label> Pickup (xaf) <span class="text-danger "></span></label>
-                                                                                <input type="text" class="form-control item_name" placeholder="" name="item_name" id="" autocomplete="off" value="0">
-                                                                                <input type="hidden" class="servid" placeholder="" name="servid" id="" autocomplete="off" value="4">
-                                                                            </div>
-                                                                                                                                <div class="form-group col-4">
-                                                                                <label> Pickup & Delivery (xaf) <span class="text-danger "></span></label>
-                                                                                <input type="text" class="form-control item_name" placeholder="" name="item_name" id="" autocomplete="off" value="0">
-                                                                                <input type="hidden" class="servid" placeholder="" name="servid" id="" autocomplete="off" value="5">
-                                                                            </div>
-                                                                                                                            </div>
-                                                                    
-                                                                
-                                                                        
-                                                                <div class="error_validateclt text-danger"></div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-outline-primary"
-                                                                        data-dismiss="modal">Close</button>
-                                                                    <button type="button" id="savebtn"  onclick="savebtm()" class="btn btn-primary">Save</button>
-                                                                </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                            </div>
-                            <div class="modal fade modal-right" id="updateclt" tabindex="-1" role="dialog"
-                                                        aria-labelledby="exampleModalRight" aria-hidden="true">
-                                                        <div class="modal-dialog" role="document" style="max-width: 600px;">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header p-3" style="flex:0 0 3px">
-                                                                    <h5 class="modal-title">  Update </h5>
-                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                    <span id="updatebtm_result" class="form-group text-success"></span>
-                        
-                                                                </div>
-                                                                <form class="needs-validation">
-                                                                <div class="modal-body">
-                                                                    <div class="fetcheupdate">
-                        
-                                                                    </div>
-                                                                        <div id="savebtm_result" class="form-group"></div>
-                                                                    
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-outline-primary"
-                                                                        data-dismiss="modal">Close</button>
-                                                                    <button type="button" id="savebtn"  onclick="updatebtm()" class="btn btn-primary">Save</button>
-                                                                </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal fade" id="iconshow" tabindex="-1" role="dialog"
-                                                        aria-labelledby="exampleModalRight" aria-hidden="true">
-                                                        <div class="modal-dialog" role="document" style="max-width: 600px;">
-                                                            <div class="modal-content" style="border: solid 1px #ed7117;">
-                                                                
-                                                                <div class="modal-body">
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                        <span aria-hidden="true">&times;</span>
-                                                                    </button>
-                                                                    <br> 
-                                                                    <hr>
-                                                                    <div class="simple-line-icons">
-                                                                                                                        <a href="#" onclick="add_icon('glyph-icon iconsminds-t-shirt','iconsminds')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <i class="glyph-icon iconsminds-t-shirt" style="font-size: 60px;"></i>
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('glyph-icon iconsminds-jeans','iconsminds')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <i class="glyph-icon iconsminds-jeans" style="font-size: 60px;"></i>
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('glyph-icon iconsminds-blouse','iconsminds')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <i class="glyph-icon iconsminds-blouse" style="font-size: 60px;"></i>
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('glyph-icon iconsminds-jacket','iconsminds')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <i class="glyph-icon iconsminds-jacket" style="font-size: 60px;"></i>
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('glyph-icon iconsminds-tie','iconsminds')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <i class="glyph-icon iconsminds-tie" style="font-size: 60px;"></i>
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('glyph-icon iconsminds-baby-clothes','iconsminds')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <i class="glyph-icon iconsminds-baby-clothes" style="font-size: 60px;"></i>
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('glyph-icon iconsminds-bikini','iconsminds')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <i class="glyph-icon iconsminds-bikini" style="font-size: 60px;"></i>
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('glyph-icon iconsminds-dress','iconsminds')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <i class="glyph-icon iconsminds-dress" style="font-size: 60px;"></i>
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('glyph-icon iconsminds-walkie-talkie','iconsminds')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <i class="glyph-icon iconsminds-walkie-talkie" style="font-size: 60px;"></i>
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('glyph-icon iconsminds-cap','iconsminds')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <i class="glyph-icon iconsminds-cap" style="font-size: 60px;"></i>
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('glyph-icon iconsminds-gloves','iconsminds')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <i class="glyph-icon iconsminds-gloves" style="font-size: 60px;"></i>
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('glyph-icon iconsminds-boot','iconsminds')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <i class="glyph-icon iconsminds-boot" style="font-size: 60px;"></i>
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('clothes.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/clothes.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('laundry.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/laundry.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('mattress.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/mattress.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('shirts.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/shirts.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('jacket.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/jacket.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('sneaker.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/sneaker.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('trench-coat.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/trench-coat.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('cap.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/cap.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('pant.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/pant.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('t-shirt.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/t-shirt.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('sweatshirt.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/sweatshirt.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('blazer.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/blazer.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('batik-skirt.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/batik-skirt.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('vest.svg','vest')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/vest.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('uniform.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/uniform.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('uniform-medical.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/uniform-medical.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('leather-jacket.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/leather-jacket.svg">
-                                                                                                                                    </div></a>
-                                                                                                                            <a href="#" onclick="add_icon('bed-sheets.svg','svg')"><div class="glyph border border-success mr-1 mb-1">
-                                                                                                                                        <img style="width: 65px;" class="mt-3" src="https://laundry.sudway.ma/files/svg/bed-sheets.svg">
-                                                                                                                                    </div></a>
-                                                                                                                        
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>              
-                            
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <h1>Products list</h1>
-                                            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
-                                                <ol class="breadcrumb pt-0">
-                                                                                <li class="breadcrumb-item">
-                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-target="#exampleModalRight">Add product <i class="glyph-icon simple-icon-plus"></i> </button>
-                                                    </li>
-                                                    
-                                                    <li class="breadcrumb-item">
-                                                    <a href="/products/categories"><button type="button" class="btn btn-primary"><i class="glyph-icon simple-icon-list"></i> Categories </button></a>
-                                                    </li>
-                                                    <li class="breadcrumb-item">
-                                                    <a href="/products/additional_services"><button type="button" class="btn btn-primary"><i class="glyph-icon simple-icon-list"></i>  Additional services  </button></a>
-                                                    </li>
+          <div class="modal fade modal-right" id="exampleModalRight" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalRight" aria-hidden="true">
+            <div class="modal-dialog" role="document" style="max-width: 600px;">
+              <div class="modal-content">
+                <div class="modal-header p-3" style="flex:0 0 3px">
+                  <h5 class="modal-title">Add product</h5>
 
-                                                </ol>
-                                            </nav>
-                                            <div class="separator mb-1"></div>
-                                        </div>
-                                    </div>
-                        
-                                    <div class="row mb-4">
-                                        <div class="col-12 mb-4">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    
-                                                    <table id="table" class="table">
-                                                        <thead>
-                                                        <tr>
-                                        <th> Num</th>
-                                        <th>Image</th>
-                                        <th>  Product name</th>
-                                        <th>  Ironing  Normal</th>
-                                        <th>  Ironing  Fast</th>
-                                        <th>  Laundry Normal</th>
-                                        <th>  Laundry Fast</th>
-                                        <th> Laundry and Ironing Normal</th>
-                                        <th> Laundry and Ironing Fast</th>
-                                        <th>Action</th>
-                                        
-                                    </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                    
-                                                        </tbody>
-                                                    </table>
-                                                
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                  <div id="savebtm_result" class="form-group text-success w-50"></div>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
 
-                                <nav class="mt-4 mb-3">
-                                    <ul class="pagination justify-content-center mb-0">
-                                        <li class="page-item ">
-                                            <a class="page-link first" href="#">
-                                                <i class="simple-icon-control-start"></i>
-                                            </a>
-                                        </li>
-                                        <li class="page-item ">
-                                            <a class="page-link prev" href="#">
-                                                <i class="simple-icon-arrow-left"></i>
-                                            </a>
-                                        </li>
-                                        <li class="page-item active">
-                                            <a class="page-link" href="#">1</a>
-                                        </li>
-                                        <li class="page-item ">
-                                            <a class="page-link" href="#">2</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">3</a>
-                                        </li>
-                                        <li class="page-item ">
-                                            <a class="page-link next" href="#" aria-label="Next">
-                                                <i class="simple-icon-arrow-right"></i>
-                                            </a>
-                                        </li>
-                                        <li class="page-item ">
-                                            <a class="page-link last" href="#">
-                                                <i class="simple-icon-control-end"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
-
-                            </div>
-                        </div>
+                </div>
+                <form class="needs-validation" id="create_form">
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="form-group position-relative error-l-50 col-2">
+                        <label>Num </label>
+                        <input type="text" class="form-control" placeholder="" name="num" id="num" autocomplete="off"
+                          value="" readonly="readonly">
+                      </div>
+                      <div class="form-group col-6">
+                        <label> Name <span class="text-danger ">*</span></label>
+                        <input type="text" class="form-control reqred" placeholder="" name="name" id="name"
+                          autocomplete="off">
+                      </div>
+                      <div class="form-group col-4">
+                        <label> Categories <span class="text-danger ">*</span></label>
+                        <select name="category" class="form-control reqred" id="category">
+                          <option value="">Select category</option>
+                          <% data.categories.forEach(category=> { %>
+                            <option value="<%= category.id %>">
+                              <%= category.name %>
+                            </option>
+                            <% }) %>
+                        </select>
+                      </div>
                     </div>
-                </main>
 
-</body>
+                    <% data.services.forEach(service=> { %>
+                      <div class="row">
+                        <div class="form-group col-6">
+                          <label>
+                            <%= service.name %> Normal (XAF) <span class="text-danger ">*</span>
+                          </label>
+                          <input type="number" min="0" class="form-control service_price"
+                            name="<%= service.name %>_normal" id="<%= service.name %>_normal"
+                            data-service="<%= service.id %>" data-type="normal">
+                        </div>
+                        <div class="form-group col-6">
+                          <label>
+                            <%= service.name %> Fast (XAF)<span class="text-danger ">*</span>
+                          </label>
+                          <input type="number" min="0" class="form-control service_price"
+                            name="<%= service.name %>_fast" id="<%= service.name %>_fast"
+                            data-service="<%= service.id %>" data-type="fast">
+                        </div>
+                      </div>
+                      <% }) %>
 
-</html>
+                        <div class="row">
+                          <div class="form-group col-12">
+                            <button type="button" class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block"
+                              data-toggle="modal" data-backdrop="static" data-target="#iconshow"> Add an icon <i
+                                class="glyph-icon simple-icon-plus"></i> </button>
+                            <span id="icon_select" style="font-size: 40px;"></span>
+                            <input type="hidden" id="icons">
+                          </div>
+                        </div>
+
+                        <hr>
+                        <div class="row">
+                          <% data.additional.forEach(service=> { %>
+                            <div class="form-group col-4">
+                              <label>
+                                <%= service.name %> (XAF) <span class="text-danger "></span>
+                              </label>
+                              <input type="number" min="0" class="form-control service_price"
+                                name="<%= service.name %>_additional" id="<%= service.name %>_additional"
+                                data-service="<%= service.id %>" data-type="additional" value="0">
+                            </div>
+                            <% }) %>
+                        </div>
+                        <div class="error_validateclt text-danger"></div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                    <button type="submit" id="savebtn" class="btn btn-primary">Save</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade modal-right" id="updateclt" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalRight" aria-hidden="true">
+            <div class="modal-dialog" role="document" style="max-width: 600px;">
+              <div class="modal-content">
+                <div class="modal-header p-3" style="flex:0 0 3px">
+                  <h5 class="modal-title">Update </h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  <span id="updatebtm_result" class="form-group text-success"></span>
+
+                </div>
+                <form class="needs-validation">
+                  <div class="modal-body">
+                    <div class="fetcheupdate">
+
+                    </div>
+                    <div id="savebtm_result" class="form-group"></div>
+
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                    <button type="button" id="savebtn" onclick="updatebtm()" class="btn btn-primary">Save</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="modal fade" id="iconshow" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document" style="max-width: 600px;">
+              <div class="modal-content" style="border: solid 1px #ed7117;">
+
+                <div class="modal-body">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  <br>
+                  <hr>
+                  <div class="simple-line-icons">
+                    <a href="#" onclick="add_icon('glyph-icon iconsminds-t-shirt','iconsminds')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <i class="glyph-icon iconsminds-t-shirt" style="font-size: 60px;"></i>
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('glyph-icon iconsminds-jeans','iconsminds')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <i class="glyph-icon iconsminds-jeans" style="font-size: 60px;"></i>
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('glyph-icon iconsminds-blouse','iconsminds')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <i class="glyph-icon iconsminds-blouse" style="font-size: 60px;"></i>
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('glyph-icon iconsminds-jacket','iconsminds')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <i class="glyph-icon iconsminds-jacket" style="font-size: 60px;"></i>
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('glyph-icon iconsminds-tie','iconsminds')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <i class="glyph-icon iconsminds-tie" style="font-size: 60px;"></i>
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('glyph-icon iconsminds-baby-clothes','iconsminds')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <i class="glyph-icon iconsminds-baby-clothes" style="font-size: 60px;"></i>
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('glyph-icon iconsminds-bikini','iconsminds')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <i class="glyph-icon iconsminds-bikini" style="font-size: 60px;"></i>
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('glyph-icon iconsminds-dress','iconsminds')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <i class="glyph-icon iconsminds-dress" style="font-size: 60px;"></i>
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('glyph-icon iconsminds-walkie-talkie','iconsminds')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <i class="glyph-icon iconsminds-walkie-talkie" style="font-size: 60px;"></i>
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('glyph-icon iconsminds-cap','iconsminds')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <i class="glyph-icon iconsminds-cap" style="font-size: 60px;"></i>
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('glyph-icon iconsminds-gloves','iconsminds')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <i class="glyph-icon iconsminds-gloves" style="font-size: 60px;"></i>
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('glyph-icon iconsminds-boot','iconsminds')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <i class="glyph-icon iconsminds-boot" style="font-size: 60px;"></i>
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('clothes.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/baby-pants-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('laundry.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/coat-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('mattress.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/dress-garment-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('shirts.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/baby-pants-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('jacket.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/hat-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('sneaker.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/jacket-fur-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('trench-coat.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/jacket-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('cap.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/oxford-wave-blazer-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('pant.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/pillow-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('t-shirt.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/oxford-wave-blazer-svgrepo-com">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('sweatshirt.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/skirt-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('blazer.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/skirt-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('batik-skirt.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/sleeveless-t-shirt-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('vest.svg','vest')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/sneakers-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('uniform.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/sweatshirt-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('uniform-medical.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/vest-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('leather-jacket.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/skirt-svgrepo-com.svg">
+                      </div>
+                    </a>
+                    <a href="#" onclick="add_icon('bed-sheets.svg','svg')">
+                      <div class="glyph border border-success mr-1 mb-1">
+                        <img style="width: 65px;" class="mt-3" src="/static/icons/hats.svg">
+                      </div>
+                    </a>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <h1>Products list</h1>
+              <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                <ol class="breadcrumb pt-0">
+                  <li class="breadcrumb-item">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="static"
+                      data-target="#exampleModalRight">Add product <i class="glyph-icon simple-icon-plus"></i> </button>
+                  </li>
+
+                  <li class="breadcrumb-item">
+                    <a href="/products/categories"><button type="button" class="btn btn-primary"><i
+                          class="glyph-icon simple-icon-list"></i> Categories </button></a>
+                  </li>
+                  <li class="breadcrumb-item">
+                    <a href="/products/additional_services"><button type="button" class="btn btn-primary"><i
+                          class="glyph-icon simple-icon-list"></i> Additional services </button></a>
+                  </li>
+
+                </ol>
+              </nav>
+              <div class="separator mb-1"></div>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-12 mb-4">
+              <div class="card">
+                <div class="card-body">
+
+                  <table id="table" class="table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Image</th>
+                        <th>Product name</th>
+                        <th>Category</th>
+                        
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% data.products.forEach(product => { %>
+                       <tr>
+                        <td><%= product.id %></td>
+                        <td>
+                          <% if (product.iconUrl) { %>
+                           <i class="<%= product.iconUrl %>"></i>
+                          <% } %>
+                        </td>
+                        <td><%= product.name %></td>
+                        <td><%= product.category.name %></td>
+                        <td>
+                          <div class="btn-group">
+                            <a href="#" class="btn btn-primary more-btn" data-id="<%= product.id %>">
+                              <i class="glyph-icon simple-icon-eye"></i>
+                            </a>
+                            <a href="#" class="btn btn-primary edit-btn" data-id="<%= product.id %>">
+                              <i class="glyph-icon simple-icon-pencil"></i>
+                            </a>
+                            <a href="#" class="btn btn-danger delete-btn" data-id="<%= product.id %>">
+                              <i class="glyph-icon simple-icon-trash"></i>
+                            </a>
+                          </div>
+                        </td>
+                       </tr>
+                      <% }) %>
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <nav class="mt-4 mb-3">
+            <ul class="pagination justify-content-center mb-0">
+              <li class="page-item ">
+                <a class="page-link first" href="#">
+                  <i class="simple-icon-control-start"></i>
+                </a>
+              </li>
+              <li class="page-item ">
+                <a class="page-link prev" href="#">
+                  <i class="simple-icon-arrow-left"></i>
+                </a>
+              </li>
+              <li class="page-item active">
+                <a class="page-link" href="#">1</a>
+              </li>
+              <li class="page-item ">
+                <a class="page-link" href="#">2</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">3</a>
+              </li>
+              <li class="page-item ">
+                <a class="page-link next" href="#" aria-label="Next">
+                  <i class="simple-icon-arrow-right"></i>
+                </a>
+              </li>
+              <li class="page-item ">
+                <a class="page-link last" href="#">
+                  <i class="simple-icon-control-end"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+
+          </div>
+          </div>
+          </div>
+        </main>
+        <%- include('../partials/main-footer.ejs') %>
+          <%- include('partials/scripts.ejs') %>
+  </body>
+
+  </html>

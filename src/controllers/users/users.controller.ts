@@ -1,49 +1,107 @@
-import { Body, Controller, Get, Inject, Post, Query, Render, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Logger,
+  Param,
+  Post,
+  Put,
+  Render,
+  Req,
+  Res,
+  UseFilters,
+  UseGuards,
+  UsePipes,
+  ValidationPipe
+} from '@nestjs/common';
 import { Request, Response } from 'express';
-import { ILoginDto } from 'src/dto/login.dto';
+import { Role } from 'src/decorators/role.decorator';
+import { INewUserDto } from 'src/dto/new-user.dto';
+import { Roles } from 'src/entities/roles';
+import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 import injectionTokenKeys from 'src/injection-tokens';
 import { UsersService } from 'src/services/users/users.service';
 import { BaseController } from '../base/base.controller';
 
 @Controller('users')
+@UseGuards(AuthGuard)
+@UseFilters(AuthFailedFilter)
+@Role(Roles.ADMIN, Roles.SYSTEM)
 export class UsersController extends BaseController {
-    constructor (userService: UsersService,
-        @Inject(injectionTokenKeys.appName) appName: string,
-        @Inject(injectionTokenKeys.identityMaxAge) private readonly identityMaxAge: number) {
-        super(appName, userService);
+  private readonly logger = new Logger(UsersController.name);
+
+  constructor(
+    @Inject(injectionTokenKeys.appName) appName: string,
+    usersService: UsersService,
+  ) {
+    super(appName, usersService);
+  }
+
+  @Get()
+  @Render('users/users')
+  async viewUsers() {
+    const users = await this.userService.getUsers();
+    return { data: { users: users }, view: this.viewBag };
+  }
+
+  @Get(':id')
+  async getUsers(@Param('id') id: number, @Res() res: Response) {
+    const users = await this.userService.getUser(id);
+    return res.json(users);
+  }
+
+  @Post()
+  @UsePipes(ValidationPipe)
+  async storeUsers(
+    @Body() createUsersDto: INewUserDto,
+    @Res() res: Response,
+  ) {
+    // const errors: string[] = [];
+
+    /* if (!createUsersDto.firstName || createUsersDto.firstName.length <= 0) {
+      errors.push('User name required');
+      return res
+        .status(400)
+        .json({ message: 'Unable to create User.', errors: errors });
+    } */
+
+    try {
+      const stored = await this.userService.createUser(createUsersDto);
+
+      if (stored.success)
+        return res.status(201).json({ message: 'User created successfully.' });
+    } catch (e) {
+      res.status(500).json({ message: e.message });
     }
+  }
 
-    @Render('login/login')
-    @Get('login')
-    login(@Query('returnUrl') returnUrl: string) {
-        const data = {
-            returnUrl,
-            errors: [],
-            formData: {}
-        };
-        this.viewBag.pageTitle = 'Sign in to Your Account';
-        return { data, view: this.viewBag };
-    }
+  @Put(':id')
+  async updateUsers(
+    @Body() updateUsersDto: INewUserDto,
+    @Param('id') id: number,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const updated = await this.userService.updateUser(updateUsersDto, id);
 
+    if (updated.success)
+      return res.json({ message: 'User updated successfully.' });
+    else return res.status(500).json({ message: 'Unable to update user.' });
+  }
 
-    @Post('login')
-    async handleLogin(@Body() loginDto: ILoginDto, @Query('returnUrl') returnUrl: string, @Req() req: Request, @Res() res: Response) {
-        const errors: string[] = [];
-        if ((!loginDto.username || loginDto.username.length == 0) && (!loginDto.password || loginDto.password.length == 0)) {
-            errors.push('Username & password required');
-            res.render('login/login', { data: { formData: loginDto, errors, returnUrl }, view: this.viewBag });
-            return;
-        }
+  @Delete(':id')
+  async deleteUsers(
+    @Param('id') id: number,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const deleted = await this.userService.deleteUser(id);
 
-        const loginResult = await this.userService.loginUser(loginDto);
-        if (loginResult.success) {
-            res.cookie('Authorization', `${loginResult.jwtToken}`, { maxAge: this.identityMaxAge });
-            res.redirect(returnUrl ? `${decodeURIComponent(returnUrl)}` : '/');
-            return;
-        }
-        errors.push(loginResult.error);
-        res.render('login/login', {
-            data: { formData: loginDto, errors, returnUrl }, view: this.viewBag
-        });
-    }
+    if (deleted.success)
+      return res.json({ message: 'User deleted successfully.' });
+    else return res.status(500).json({ message: 'Unable to delete user.' });
+  }
 }

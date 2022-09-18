@@ -1,25 +1,20 @@
-import { Controller, Get, Inject, Logger, Render, UseFilters, UseGuards } from '@nestjs/common';
-import { Order } from 'src/entities/order.entity';
-import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
+import { Controller, Get, Inject, Logger, Render, UseGuards } from '@nestjs/common';
+import { Role } from 'src/decorators/role.decorator';
+import { Roles } from 'src/entities/roles';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import injectionTokenKeys from 'src/injection-tokens';
-import { OrdersService } from 'src/services/orders/orders.service';
 import { UsersService } from 'src/services/users/users.service';
-import { Repository } from 'typeorm';
 import { BaseController } from '../base/base.controller';
 
 @Controller(['', 'orders'])
 @UseGuards(AuthGuard)
-@UseFilters(AuthFailedFilter)
+@Role(Roles.STAFF, Roles.ADMIN, Roles.SYSTEM)
 export class OrdersController extends BaseController {
     private readonly logger = new Logger(OrdersController.name);
-    private readonly ordersRepository: Repository<Order>;
 
-    constructor (@Inject(injectionTokenKeys.appName) appName: string,
-        userService: UsersService,
-        private readonly ordersService: OrdersService) {
+    constructor(@Inject(injectionTokenKeys.appName) appName: string,
+        userService: UsersService) {
         super(appName, userService);
-
     }
 
     @Get()

@@ -1,34 +1,44 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { I18nModule } from 'nestjs-i18n';
 import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { CategoriesController } from './controllers/categories/categories.controller';
+import { ClientsController } from './controllers/clients/clients.controller';
+import { LangController } from './controllers/lang/lang.controller';
 import { OrdersController } from './controllers/orders/orders.controller';
+import { ProductsController } from './controllers/products/products.controller';
+import { ServicesController } from './controllers/services/services.controller';
+import { AuthController } from './controllers/users/auth.controller';
 import { UsersController } from './controllers/users/users.controller';
 import { AppliedPolicy } from './entities/applied-policy.entity';
+import { Category } from './entities/category.entity';
+import { Client } from './entities/client.entity';
 import { OrderEntryAttribute } from './entities/order-entry-attribute.entity';
 import { OrderEntry } from './entities/order-entry.entity';
 import { Order } from './entities/order.entity';
 import { Policy } from './entities/processing-policy.entity';
+import { ProductServicePrice } from './entities/product-service-price.entity';
 import { Product } from './entities/product.entity';
 import { Profile } from './entities/profile.entity';
-import { Role } from "./entities/Role";
+import { Role } from './entities/Role';
 import { OfferedService } from './entities/service.entity';
 import { LoginEntry } from './entities/user-login-entry.entity';
 import { User } from './entities/user.entity';
 import { AuthFailedFilter } from './filters/auth-failed.filter';
 import { NotFoundFilter } from './filters/not-found.filter';
+import { RoleCheckFailedFilter } from './filters/role-check-failed.filter';
 import injectionTokenKeys from './injection-tokens';
-import { UsersService } from './services/users/users.service';
-import { OrdersService } from './services/orders/orders.service';
-import { ServicesController } from './controllers/services/services.controller';
+import { LangInterceptor } from './interceptors/lang.interceptor';
+import { CategoriesService } from './services/categories/categories.service';
+import { ClientsService } from './services/clients/clients.service';
 import { OfferedServicesService } from './services/offered-services/offered-services.service';
-import { Category } from './entities/category.entity';
-import { Client } from './entities/client.entity';
-
-
+import { OrdersService } from './services/orders/orders.service';
+import { ProductsService } from './services/products/products.service';
+import { UsersService } from './services/users/users.service';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -64,36 +74,55 @@ const options: TypeOrmModuleOptions = {
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
       serveRoot: '/static',
-      renderPath: null
     }),
-    JwtModule.register({ secret: process.env.E_KEY })
+    JwtModule.register({ secret: process.env.E_KEY }),
+    I18nModule.forRoot({
+      fallbackLanguage: process.env.SYSTEM_LANG || 'en',
+      loaderOptions: {
+        path: join(__dirname, '/i18n/'),
+        watch: true,
+      }
+    })
   ],
-
-  controllers: [UsersController, OrdersController, CategoriesController, ClientsController],
+  controllers: [
+    AuthController,
+    OrdersController,
+    ServicesController,
+    UsersController,
+    CategoriesController,
+    ClientsController,
+    ProductsController,
+    ServicesController,
+    UsersController,
+    LangController
+  ],
   providers: [
     UsersService,
+    OrdersService,
+    OfferedServicesService,
     {
       provide: APP_FILTER,
-      useClass: NotFoundFilter
+      useClass: NotFoundFilter,
     },
     {
       provide: APP_FILTER,
-      useClass: AuthFailedFilter
+      useClass: AuthFailedFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: RoleCheckFailedFilter
     },
     {
       provide: injectionTokenKeys.appName,
-      useValue: process.env.APP_NAME || 'DCMS'
+      useValue: process.env.APP_NAME || 'DCMS',
     },
     {
       provide: injectionTokenKeys.identityMaxAge,
-
-      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '3600') * 1000
+      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '50000000'),
     },
-    OrdersService,
-    OfferedServicesService
+    CategoriesService,
+    ClientsService,
+    ProductsService
   ],
 })
-export class AppModule {
-  constructor () {
-  }
-} 
+export class AppModule { }

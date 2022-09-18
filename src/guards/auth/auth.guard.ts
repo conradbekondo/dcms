@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
@@ -10,7 +10,7 @@ import { UsersService } from 'src/services/users/users.service';
 @Injectable()
 export class AuthGuard implements CanActivate {
 
-    constructor (private readonly usersService: UsersService, private readonly jwtService: JwtService) {
+    constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) {
     }
 
     canActivate(
@@ -20,9 +20,8 @@ export class AuthGuard implements CanActivate {
         return of(request.cookies).pipe(
             switchMap(({ Authorization }) => {
                 if (!Authorization || Authorization == '') {
-                    return of(false);
+                    throw new UnauthorizedException();
                 }
-
                 const principal: IPrincipal = this.jwtService.verify(Authorization) as IPrincipal;
                 this.usersService.principal = principal;
 

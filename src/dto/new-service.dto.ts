@@ -1,9 +1,7 @@
 export interface INewServiceDto {
+    id?: string;
     name: string;
     description?: string;
-    standardPrice: string;
-    processingDuration?: string;
-} // npm i -g yarn
-// npm i -g @nestjs/cli
-// yarn install
-// 
+    operation?: 'update';
+    isAdditional: string;
+}

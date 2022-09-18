@@ -26,7 +26,7 @@
                 <% if(view.principal && (view.principal?.roles?.includes('system') ||
                     view.principal?.roles?.includes('admin'))) { %>
                     <li>
-                        <a href="#menu">
+                        <a href="/users">
                             <i class="iconsminds-user"></i> System Users
                         </a>
                     </li>
@@ -154,57 +154,56 @@
                     <div id="collapseMenuTypes" class="collapse show" data-parent="#menuTypes">
                         <ul class="list-unstyled inner-level-menu">
                             <li>
-                            <li>
-                                <a href="/users">
-                                    <i class="simple-icon-people"></i> <span class="d-inline-block">All
-                                        Users</span>
-                                </a>
-                            </li>
-                </li>
-                <li>
-                    <a href="Menu.Subhidden.html">
-                        <i class="simple-icon-user-follow"></i> <span class="d-inline-block">Create
-                            User</span>
-                    </a>
-                </li>
-
-            </ul>
-        </div>
-        </li>
-        <li>
-
-            <div id="collapseMenuLevel" class="collapse" data-parent="#menuTypes">
-                <ul class="list-unstyled inner-level-menu">
-                    <li>
-
-                    </li>
-                    <li>
-                        <a href="#" data-toggle="collapse" data-target="#collapseMenuLevel2" aria-expanded="true"
-                            aria-controls="collapseMenuLevel2" class="rotate-arrow-icon collapsed">
-                            <i class="simple-icon-arrow-down"></i> <span class="d-inline-block">Another
-                                Level</span>
-                        </a>
-                        <div id="collapseMenuLevel2" class="collapse">
-                            <ul class="list-unstyled inner-level-menu">
                                 <li>
-                                    <a href="#">
-                                        <i class="simple-icon-layers"></i> <span class="d-inline-block">Sub
-                                            Level</span>
+                                    <a href="/users">
+                                        <i class="simple-icon-people"></i> <span class="d-inline-block">All
+                                        Users</span>
                                     </a>
                                 </li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </li>
+                            </li>
+                            <li>
+                                <a href="Menu.Subhidden.html">
+                                    <i class="simple-icon-user-follow"></i> <span class="d-inline-block">Create
+                            User</span>
+                                </a>
+                            </li>
 
-        <li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
 
-        </li>
-        </ul>
+                    <div id="collapseMenuLevel" class="collapse" data-parent="#menuTypes">
+                        <ul class="list-unstyled inner-level-menu">
+                            <li>
+
+                            </li>
+                            <li>
+                                <a href="#" data-toggle="collapse" data-target="#collapseMenuLevel2" aria-expanded="true" aria-controls="collapseMenuLevel2" class="rotate-arrow-icon collapsed">
+                                    <i class="simple-icon-arrow-down"></i> <span class="d-inline-block">Another
+                                Level</span>
+                                </a>
+                                <div id="collapseMenuLevel2" class="collapse">
+                                    <ul class="list-unstyled inner-level-menu">
+                                        <li>
+                                            <a href="#">
+                                                <i class="simple-icon-layers"></i> <span class="d-inline-block">Sub
+                                            Level</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <li>
+
+                </li>
+            </ul>
+
+        </div>
 
     </div>
-
-</div>
 </div>
