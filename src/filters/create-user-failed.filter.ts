@@ -1,4 +1,4 @@
-import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, Inject } from '@nestjs/common';
+import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpStatus, Inject } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { INewUserDto } from 'src/dto/new-user.dto';
 import injectionTokenKeys from 'src/injection-tokens';
@@ -11,18 +11,6 @@ export class CreateUserFailedFilter<T> implements ExceptionFilter {
     const response = host.switchToHttp().getResponse<Response>();
     const messages = (exception.getResponse() as { message: string[] }).message;
     const dto = host.switchToHttp().getRequest<Request>().body;
-    response.render('users/users', {
-      view: {
-        appName: this.appName,
-        releaseDate: process.env.NODE_ENV == 'development'
-          ? new Date()
-          : Date.parse(process.env.RELEASE_DATE),
-        principal: this.userService.getPrincipal(),
-      },
-      data: {
-        errors: messages,
-        newUser: dto
-      }
-    });
+    response.status(HttpStatus.BAD_REQUEST).json({ messages, dto });
   }
 }

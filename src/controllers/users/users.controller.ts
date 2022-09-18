@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Inject,
   Logger,
   Param,
@@ -26,9 +27,10 @@ import { AuthGuard } from 'src/guards/auth/auth.guard';
 import injectionTokenKeys from 'src/injection-tokens';
 import { UsersService } from 'src/services/users/users.service';
 import { BaseController } from '../base/base.controller';
-import { validate } from 'class-validator';
+import { IsNumberString, validate } from 'class-validator';
 import { CreateUserFailedFilter } from 'src/filters/create-user-failed.filter';
-import { firstValueFrom, from, lastValueFrom, map, of, reduce, switchMap } from 'rxjs';
+import { catchError, firstValueFrom, from, lastValueFrom, map, of, reduce, switchMap } from 'rxjs';
+import { UpdateUserDto } from 'src/dto/update-user.dto';
 
 @Controller('users')
 @UseGuards(AuthGuard)
@@ -57,8 +59,9 @@ export class UsersController extends BaseController {
     return firstValueFrom(from(this.userService.getUsers(parseInt(startAt), parseInt(size))).pipe(
       switchMap(_users => {
         return of(..._users).pipe(
-          map(({ profile, dateCreated, lastUpdated, roles, creator }) => {
+          map(({ id, profile, dateCreated, lastUpdated, roles, creator }) => {
             return {
+              id,
               profile,
               roles: roles.map(r => r.roleName),
               dateCreated,
@@ -77,21 +80,40 @@ export class UsersController extends BaseController {
   }
 
   @Get(':id')
-  async getUsers(@Param('id') id: number, @Res() res: Response) {
-    const users = await this.userService.getUser(id);
-    return res.json(users);
+  async getUsers(@Param('id') id: string, @Res() res: Response) {
+    return firstValueFrom(from(this.userService.getUser(parseInt(id))).pipe(
+      switchMap(_user => {
+        if (_user) {
+          const dto = new UpdateUserDto();
+          dto.address = _user.profile.address;
+          dto.firstName = _user.profile.firstName;
+          dto.lastName = _user.profile.lastName;
+          dto.gender = _user.profile.gender.toString();
+          dto.id = _user.id;
+          dto.phone = _user.profile.phoneNumber;
+          dto.role = _user.roles[0].roleName as 'admin' | 'staff';
+          return of(dto);
+        } else {
+          return of(null);
+        }
+      }),
+      catchError(() => of(null))
+    )).then(dto => {
+      if (!dto) {
+        res.status(HttpStatus.NOT_FOUND).json({ message: 'User not found with ID: ' + id });
+      } else {
+        res.status(HttpStatus.OK).json({ dto });
+      }
+    });
   }
 
   @Post()
-  @UsePipes(new ValidationPipe({
-    transform: true
-  }))
+  @UsePipes(ValidationPipe)
   @UseFilters(CreateUserFailedFilter)
   async storeUser(
     @Body() createUsersDto: INewUserDto,
     @Res() res: Response,
   ) {
-
     try {
       const stored = await this.userService.createUser(createUsersDto);
 

@@ -16,86 +16,74 @@
                                 </div>
                                 <form method="post" action="" id="new-user-form">
                                     <div class="modal-body">
-                                        <% if(data.errors && data.errors.length> 0) {%>
-                                            <ul class="list-group">
-                                                <% data.errors.forEach(error=> {%>
-                                                    <li class="list-group-item list-group-item-danger">
-                                                        <%= error %>
-                                                    </li>
-                                                    <%})%>
-                                            </ul>
-                                            <%}%>
-                                                <div id="savebtm_result"></div>
-                                                <h4 class="text-muted mb-3">Personal</h4>
-                                                <div class="form-group">
-                                                    <label for="newFirstName">First Name <span
-                                                            class="text-danger error_lastname">*</span></label>
-                                                    <input value="<%= data.newUser.firstName %>" id="newFirstName" type="text" class="form-control" name="firstName">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="newLastName">Last Name</label>
-                                                    <input value="<%= data.newUser.lastName %>" type="text" class="form-control" placeholder="" name="lastName" id="newLastName" autocomplete="off">
-                                                </div>
+                                        <ul class="p-0 my-2 list-group errors-container"></ul>
+                                        <div id="savebtm_result"></div>
+                                        <h4 class="text-muted mb-3">Personal</h4>
+                                        <div class="form-group">
+                                            <label for="newFirstName">First Name <span
+                                                    class="text-danger error_lastname">*</span></label>
+                                            <input value="<%= data.newUser.firstName %>" id="newFirstName" type="text" class="form-control" name="firstName">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="newLastName">Last Name</label>
+                                            <input value="<%= data.newUser.lastName %>" type="text" class="form-control" placeholder="" name="lastName" id="newLastName" autocomplete="off">
+                                        </div>
 
-                                                <div class="form-group">
-                                                    <label for="newGender"> Gender <span class="text-danger">*</span>
-                                                    </label>
-                                                    <select value="<%= data.newUser.gender %>" class="form-control" name="gender" id="newGender">
-                                                        <option value="">-- Select a Gender --</option>
-                                                        <option value="1">Female</option>
-                                                        <option value="0">Male</option>
-                                                    </select>
-                                                </div>
+                                        <div class="form-group">
+                                            <label for="newGender"> Gender <span class="text-danger">*</span>
+                                            </label>
+                                            <select value="<%= data.newUser.gender %>" class="form-control" name="gender" id="newGender">
+                                                <option value="">-- Select a Gender --</option>
+                                                <option value="1">Female</option>
+                                                <option value="0">Male</option>
+                                            </select>
+                                        </div>
 
-                                                <div class="form-group">
-                                                    <label for="newNatId">National ID <span
-                                                            class="text-danger">*</span></label>
-                                                    <input value="<%= data.newUser.natId %>" type="text" class="form-control" id="newNatId" name="natId">
-                                                </div>
+                                        <div class="form-group">
+                                            <label for="newNatId">National ID <span class="text-danger">*</span></label>
+                                            <input value="<%= data.newUser.natId %>" type="text" class="form-control" id="newNatId" name="natId">
+                                        </div>
 
-                                                <div class="form-group">
-                                                    <label for="newPhone">Phone Number
-                                                        <!-- <span
+                                        <div class="form-group">
+                                            <label for="newPhone">Phone Number
+                                                <!-- <span
                                                             class="text-danger">*</span> -->
-                                                    </label>
-                                                    <input value="<%= data.newUser.test %>" type="text" class="form-control" placeholder="" name="phone " id="newPhone" autocomplete="off">
-                                                </div>
+                                            </label>
+                                            <input value="<%= data.newUser.test %>" type="text" class="form-control" placeholder="" name="phone " id="newPhone" autocomplete="off">
+                                        </div>
 
-                                                <div class="form-group">
-                                                    <label for="newAddress">Address <span
-                                                            class="text-danger">*</span></label>
-                                                    <input value="<%= data.newUser.address %>" type="text" name="address" class="form-control" id="newAddress">
-                                                </div>
-                                                <hr />
-                                                <h4 class="text-muted mt-4 mb-3">Account Information</h4>
+                                        <div class="form-group">
+                                            <label for="newAddress">Address <span class="text-danger">*</span></label>
+                                            <input value="<%= data.newUser.address %>" type="text" name="address" class="form-control" id="newAddress">
+                                        </div>
+                                        <hr />
+                                        <h4 class="text-muted mt-4 mb-3">Account Information</h4>
 
-                                                <div class="form-group">
-                                                    <label for="newRole"> Role <span
-                                                            class="text-danger error_lastname">*</span>
-                                                    </label>
-                                                    <select value="<%= data.newUser.role %>" class="form-control" name="role" id="newRole">
-                                                        <option value="staff">Staff</option>
-                                                        <option value="admin">Admin</option>
-                                                    </select>
-                                                </div>
+                                        <div class="form-group">
+                                            <label for="newRole"> Role <span class="text-danger error_lastname">*</span>
+                                            </label>
+                                            <select value="<%= data.newUser.role %>" class="form-control" name="role" id="newRole">
+                                                <option value="staff">Staff</option>
+                                                <option value="admin">Admin</option>
+                                            </select>
+                                        </div>
 
-                                                <div class="form-group">
-                                                    <label for="newUsername">Username <span
-                                                            class="text-danger">*</span></label>
-                                                    <input value="<%= data.newUser.username %>" type="text" name="username" class="form-control" id="newUsername">
-                                                </div>
+                                        <div class="form-group">
+                                            <label for="newUsername">Username <span class="text-danger">*</span></label>
+                                            <input value="<%= data.newUser.username %>" type="text" name="username" class="form-control" id="newUsername">
+                                        </div>
 
-                                                <div class="form-group">
-                                                    <label for="newPassword">Password <span
-                                                            class="text-danger error_lastname">*</span></label>
-                                                    <input type="password" class="form-control" placeholder="" name="password" id="newPassword">
-                                                </div>
+                                        <div class="form-group">
+                                            <label for="newPassword">Password <span
+                                                    class="text-danger error_lastname">*</span></label>
+                                            <input type="password" class="form-control" placeholder="" name="password" id="newPassword">
+                                        </div>
 
-                                                <div class="form-group">
-                                                    <label for="newConfirmPassword">Confirm Password <span
-                                                            class="text-danger error_lastname">*</span></label>
-                                                    <input type="password" class="form-control" placeholder="" name="confirmPassword" id="newConfirmPassword">
-                                                </div>
+                                        <div class="form-group">
+                                            <label for="newConfirmPassword">Confirm Password <span
+                                                    class="text-danger error_lastname">*</span></label>
+                                            <input type="password" class="form-control" placeholder="" name="confirmPassword" id="newConfirmPassword">
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="reset" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
@@ -109,22 +97,63 @@
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title"> Update </h5>
+                                    <h5 class="modal-title">Update</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <form class="needs-validation">
                                     <div class="modal-body">
-                                        <div class="fetcheupdate">
-
+                                        <ul class="p-0 my-2 list-group errors-container-update"></ul>
+                                        <h4 class="text-mutedmb-3">Personal</h4>
+                                        <div class="form-group">
+                                            <label for="updateFirstName">First Name <span
+                                                    class="text-danger">*</span></label>
+                                            <input name="firstName" type="text" id="updateFirstName" class="form-control">
                                         </div>
-                                        <div id="savebtm_result" class="form-group"></div>
-
+                                        <div class="form-group">
+                                            <label for="updateLastName">Last Name</label>
+                                            <input name="lastName" type="text" class="form-control" id="updateLastName">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="updateGender">Gender <span class="text-danger">*</span></label>
+                                            <select class="form-control" name="gender" id="updateGender">
+                                                <option value="">-- Select a Gender --</option>
+                                                <option value="1">Female</option>
+                                                <option value="0">Male</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="updateNatID">National ID <span
+                                                    class="text-danger">*</span></label>
+                                            <input class="form-control" type="text" name="natId" id="updateNatId">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="updatePhone">Phone Number</label>
+                                            <input type="text" name="phone" class="form-control" id="updatePhone">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="updateAddress">Address <span
+                                                    class="text-danger">*</span></label>
+                                            <input name="address" type="text" class="form-control" id="updateAddress">
+                                        </div>
+                                        <hr />
+                                        <h4 class="class text-muted mt-4 mb-3">Account Information</h4>
+                                        <div class="form-group">
+                                            <label for="updateRole">Role <span class="text-danger">*</span></label>
+                                            <select name="role" id="updateRole" class="form-control">
+                                                <option value="staff">Staff</option>
+                                                <option value="admin">Admin</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <span class="d-block text-center text-muted my-4">Username & Password cannot
+                                                be updated from here</span>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-                                        <!-- <button type="button" id="savebtn" onclick="updatebtm()" class="btn btn-primary">Save</button> -->
+                                        <button type="reset" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                        <button type="submit" id="savebtn" class="btn btn-primary">Save</button>
                                     </div>
                                 </form>
                             </div>
@@ -187,10 +216,13 @@
                                                     <td>
                                                         <div class="btn-group">
                                                             <% if(user.addedBy !='N/A' ) { %>
-                                                                <button class="btn btn-sm btn-warning" title="Edit User information">
+                                                                <button data-id="<%= user.id %>" class="btn btn-lock btn-sm btn-primary text-white" title="Lock '<%=`${user.profile.firstName} ${user.profile.lastName || '' }`.trim()%>'s account">
+                                                                    <i class="simple-icon-lock text-white"></i>
+                                                                </button>
+                                                                <button data-id="<%= user.id %>" class="btn btn-edit btn-sm btn-warning" title="Edit User information">
                                                                     <i class="simple-icon-pencil text-white"></i>
                                                                 </button>
-                                                                <button class="btn btn-sm btn-danger" title="Delete '<%=`${user.profile.firstName} ${user.profile.lastName || ''}`.trim()%>'">
+                                                                <button data-id="<%= user.id %>" class="btn btn-sm btn-danger" title="Delete '<%=`${user.profile.firstName} ${user.profile.lastName || ''}`.trim()%>'">
                                                                     <i class="simple-icon-trash text-white"></i>
                                                                 </button>
                                                                 <%} else {%>

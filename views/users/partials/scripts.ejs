@@ -6,8 +6,44 @@
 <script src="/static/js/dore.script.js"></script>
 <script src="/static/js/scripts.js"></script>
 <script src="/static/js/vendor/jquery.validate/jquery.validate.min.js"></script>
+<script src="/static/js/sweetalert.min.js"></script>
 
-<script>
+<script defer>
+    $('#updateUserForm').submit(function(e) {
+        e.preventDefault();
+    });
+
+    $('#table .btn-edit').each(function(e) {
+        $(this).click(function(e) {
+            const button$ = $(this);
+            const userId = button$.data('id');
+            if (userId) {
+                $.ajax({
+                    url: `/users/${userId}`,
+                    method: 'GET',
+                    success: res => {
+                        const {
+                            dto
+                        } = res;
+                        $('#updateUserForm #updateFirstName').val(dto.firstName);
+                        $('#updateUserForm #updateLastName').val(dto.lastName);
+                        $('#updateUserForm #updateGender').val(dto.gender);
+                        $('#updateUserForm #updateNatId').val(dto.natId);
+                        $('#updateUserForm #updatePhone').val(dto.phone);
+                        $('#updateUserForm #updateRole').val(dto.role);
+                        $('#updateUserForm .modal-title').text(`Update: ${dto.firstName} ${dto.lastName}`.trim());
+                        $('#updateUserForm').modal({
+                            backdrop: 'static'
+                        });
+                    },
+                    error: err => {
+                        alert(err.responseJSON.message);
+                    }
+                })
+            }
+        })
+    });
+
     $.validator.addMethod(
         "regex",
         function(value, element, regexp) {
@@ -17,13 +53,13 @@
         "Invalid input"
     );
 
-    const currentURl = new URL(location.href);
-    if (currentURl.searchParams.has('new-user-form-open')) {
-        debugger;
+    const currentURL = new URL(location.href);
+    if (currentURL.searchParams.has('new-user-form-open')) {
         $('#newUserFormModal').modal({
             backdrop: 'static'
         });
     }
+
     const createFormNameRef = '#new-user-form';
     $('#newUserFormModal').on('shown.bs.modal', function() {
         const url = new URL(location.href);
@@ -86,7 +122,7 @@
             },
             natId: {
                 required: true,
-                regex: /^\d{9}$/gm
+                regex: /^(\d{9}|\d{17})$/gm
             },
             address: 'required',
             username: {
@@ -112,7 +148,73 @@
             }
         }
     });
-
+    $('#updateUserForm form').validate({
+        errorClass: 'text-danger is-invalid',
+        messages: {
+            firstName: {
+                required: 'Value is required'
+            },
+            gender: 'Value is required',
+            phoneNumber: {
+                required: 'Value is required',
+                regex: 'Invalid phone number'
+            },
+            natId: {
+                required: 'Value is required',
+                regex: 'Invalid National ID'
+            },
+            address: {
+                required: 'Value is required'
+            },
+            username: {
+                required: 'Value is required',
+                remote: 'This username is not available'
+            },
+            password: {
+                required: 'Value is required',
+                minlength: 'Password must be at least 6 characters long',
+                maxlength: 'Password can only be up to 100 characters long'
+            },
+            confirmPassword: {
+                required: 'Password must be confirmed',
+                equalTo: 'Passwords do not match'
+            }
+        },
+        rules: {
+            firstName: 'required',
+            gender: 'required',
+            phoneNumber: {
+                required: true,
+                regex: /^(((((\+?237)|(\(\+?237\))))\s?)?(([697])|(2))\d{8})$/gm
+            },
+            natId: {
+                required: true,
+                regex: /^(\d{9}|\d{17})$/gm
+            },
+            address: 'required',
+            username: {
+                required: true,
+                remote: {
+                    url: '/users/isUsernameUnique',
+                    type: 'post',
+                    data: {
+                        username: function() {
+                            return $('#newUsername').val();
+                        }
+                    }
+                }
+            },
+            password: {
+                required: true,
+                minlength: 6,
+                maxlength: 100
+            },
+            confirmPassword: {
+                required: true,
+                equalTo: '#newPassword'
+            }
+        }
+    });
     $(createFormNameRef).submit(function(e) {
         e.preventDefault();
         const data = {
@@ -125,28 +227,41 @@
             role: $(`${createFormNameRef} #newRole`).val(),
             username: $(`${createFormNameRef} #newUsername`).val(),
             password: $(`${createFormNameRef} #newPassword`).val(),
-            confirmPasswrd: $(`${createFormNameRef} #newConfirmPassword`).val(),
+            confirmPassword: $(`${createFormNameRef} #newConfirmPassword`).val(),
         };
         $.ajax({
             url: '/users',
             method: 'POST',
             data,
             success: (res) => {
-                $wal.fire({
-                    title: 'Success',
-                    text: res.message,
-                    icon: 'success'
-                }).then(() => {
-                    $('#newUserFormModal').hide();
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1500);
-                })
+                url.searchParams.delete('new-user-form-open');
+                const newUrl = url.toString();
+                history.replaceState({
+                    path: newUrl
+                }, '', newUrl);
+                $('#newUserFormModal').hide();
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
             },
             error: (err) => {
-                debugger;
-                console.error(err);
+                const errors = err.responseJSON;
+                $('.errors-container').empty();
+                for (let error of errors.messages) {
+                    $('.errors-container').before(`<li class="list-group-item list-group-item-danger">${error}</li>`);
+                }
+                $(`${createFormNameRef} #newFirstName`).val(errors.dto.firstName);
+                $(`${createFormNameRef} #newLastName`).val(errors.dto.lastName);
+                $(`${createFormNameRef} #newGender`).val(errors.dto.gender);
+                $(`${createFormNameRef} #newNatId`).val(errors.dto.natId);
+                $(`${createFormNameRef} #newPhone`).val(errors.dto.phone);
+                $(`${createFormNameRef} #newAddress`).val(errors.dto.address);
+                $(`${createFormNameRef} #newRole`).val(errors.dto.role);
+                $(`${createFormNameRef} #newUsername`).val(errors.dto.username);
 
+                document.querySelector('.errors-container').scrollIntoView({
+                    behavior: 'smooth'
+                });
             }
         })
     })
@@ -158,13 +273,13 @@
             url: '/clients/' + id,
             method: 'GET',
             success: (res) => {
-                $('#edit_form').find('#id').val(id)
-                $('#edit_form').find('#first_name').val(res.first_name)
-                $('#edit_form').find('#last_name').val(res.last_name)
-                $('#edit_form').find('#phone').val(res.phoneNumber)
-                $('#edit_form').find('#email').val(res.role)
-                $('#edit_form').find('#address').val(res.address)
-                $('#editModal').modal('show')
+                $('#edit_form').find('#id').val(id);
+                $('#edit_form').find('#first_name').val(res.first_name);
+                $('#edit_form').find('#last_name').val(res.last_name);
+                $('#edit_form').find('#phone').val(res.phoneNumber);
+                $('#edit_form').find('#email').val(res.role);
+                $('#edit_form').find('#address').val(res.address);
+                $('#editModal').modal('show');
             },
             error: (err) => {
                 console.error(err)

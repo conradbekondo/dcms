@@ -14,6 +14,7 @@ export class INewUserDto {
   /* @Matches(/^(((((\+?237)|(\(\+?237\))))\s?)?(([697])|(2))\d{8})$/gm, { message: 'Invalid "Phone number"' })
   @IsNotEmpty({ always: true, message: '"Phone number" is required' }) */
   // @IsString({ message: '"Phone number" needs to be a string' })
+  @IsNumberString({ message: '"Phone number" is required' })
   phoneNumber: string;
 
   @IsString({ message: '"Role" needs to be a string' })
@@ -35,8 +36,8 @@ export class INewUserDto {
   @IsString({ message: '"Notes" needs to be a string' })
   notes?: string;
 
-  @Matches(/^\d{9}$/gm, { message: 'Invalid "National ID"' })
-  @IsString({ message: '"National ID" needs to be a string' })
+  @IsNotEmpty({ message: '"National ID" is required' })
+  @IsNumberString({ message: '"National ID" is invalid' })
   natId?: string;
 
   @IsNotEmpty({ always: true, message: '"Password" is required' })
