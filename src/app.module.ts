@@ -62,11 +62,11 @@ const options: TypeOrmModuleOptions = {
     AppliedPolicy,
     Category,
     Client,
-    ProductServicePrice,
   ],
   namingStrategy: new SnakeNamingStrategy(),
-  synchronize: process.env.NODE_ENV == 'development',
-  dropSchema: false,
+
+  synchronize: false,
+  dropSchema: false
 };
 
 @Module({

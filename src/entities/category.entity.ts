@@ -9,7 +9,6 @@ export class Category extends BaseEntity {
 
     @Column({ nullable: true, type: 'mediumtext' })
     description?: string;
-
     @OneToMany(() => Product, p => p.category)
     products: Promise<Product[]>
 }
