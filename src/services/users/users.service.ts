@@ -9,7 +9,7 @@ import { Roles } from 'src/entities/roles';
 import { LoginEntry } from 'src/entities/user-login-entry.entity';
 import { User } from 'src/entities/user.entity';
 import { IPrincipal } from 'src/models/principal.model';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsSelect, Repository } from 'typeorm';
 import { INewUserDto } from 'src/dto/new-user.dto';
 
 @Injectable()
@@ -114,9 +114,9 @@ export class UsersService {
     return user;
   }
 
+
   async loginUser(dto: ILoginDto) {
     const user = await this.userRepository.findOneBy({
-      isDeleted: false,
       username: dto.username,
     });
     if (!user) {
@@ -162,45 +162,51 @@ export class UsersService {
   }
 
   async createUser(dto: INewUserDto) {
-    const exists = await this.userRepository.findOneBy({
+    const existingUser = await this.userRepository.findOneBy({
       username: dto.username,
     });
-    if (exists) {
+    if (existingUser) {
       const msg = `A user with username: ${dto.username} already exists!`;
       this.logger.error(msg);
       throw new Error(msg);
     }
 
-    const user = new User();
-    const profile = new Profile();
+    let user = new User();
+    let profile = new Profile();
     profile.firstName = dto.firstName;
     profile.lastName = dto.lastName;
     profile.phoneNumber = dto.phoneNumber;
-    profile.gender = dto.gender as Gender;
+    profile.gender = parseInt(`${dto.gender}`) as Gender;
     profile.notes = dto.notes;
     profile.natId = dto.natId;
 
-    user.username = dto.username;
-    return hash(dto.password, 12)
-      .then((_hash) => {
-        user.passwordHash = _hash;
-        if (!(dto.role in Roles)) {
-          const msg = `Role: ${dto.role} is not a valid role in the system`;
-          this.logger.error(msg);
-          throw new Error(msg);
-        }
-        const role = new Role();
-        role.roleName = dto.role;
-        user.profile = profile;
-        user.roles = [role];
+    profile = await this.profileRepository.save(profile);
 
-        return this.userRepository.save(user);
-      })
-      .then((user) => {
-        const msg = `New user created with id: ${user.id}`;
-        this.logger.log(msg);
-        return { success: true, user: user };
-      });
+    const currentUser = await this.getUser(this.getPrincipal());
+    user.username = dto.username;
+    user.creator = currentUser;
+    const _hash = await hash(dto.password, 12);
+    user.passwordHash = _hash;
+    if (!(Object.values(Roles).map(x => x.toString()).includes(dto.role))) {
+      const msg = `Role: ${dto.role} is not a valid role in the system`;
+      this.logger.error(msg);
+      throw new Error(msg);
+    }
+
+    user.profile = profile;
+    const role = await this.roleRepository.findOneBy({ roleName: dto.role });
+    user.roles = [role];
+
+    user = await this.userRepository.save(user);;
+    let msg: string;
+    if (user.id) {
+      msg = `${dto.firstName} ${dto.lastName || ''} account & profile created successfully`;
+      this.logger.debug(msg);
+      return { success: true, message: msg };
+    } else {
+      msg = `Could not create user: '${dto.firstName} ${dto.lastName || ''}'`;
+      return { success: false, message: msg };
+    }
   }
 
   /**
@@ -208,8 +214,20 @@ export class UsersService {
    *
    * @returns
    */
-  async getUsers() {
-    const users = await this.userRepository.createQueryBuilder().getMany();
+  async getUsers(startAt: number = 0, size: number = 50, select?: FindOptionsSelect<User>) {
+    const users = await this.userRepository.find({
+      relations: {
+        profile: true,
+        creator: true
+      },
+      order: {
+        dateCreated: 'DESC',
+        lastUpdated: 'DESC'
+      },
+      select,
+      skip: startAt * size,
+      take: size
+    });
     return users;
   }
 

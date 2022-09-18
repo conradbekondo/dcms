@@ -29,6 +29,7 @@ import { OfferedService } from './entities/service.entity';
 import { LoginEntry } from './entities/user-login-entry.entity';
 import { User } from './entities/user.entity';
 import { AuthFailedFilter } from './filters/auth-failed.filter';
+import { CreateUserFailedFilter } from './filters/create-user-failed.filter';
 import { NotFoundFilter } from './filters/not-found.filter';
 import { RoleCheckFailedFilter } from './filters/role-check-failed.filter';
 import injectionTokenKeys from './injection-tokens';
@@ -107,6 +108,10 @@ const options: TypeOrmModuleOptions = {
     {
       provide: APP_FILTER,
       useClass: AuthFailedFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: CreateUserFailedFilter
     },
     {
       provide: APP_FILTER,

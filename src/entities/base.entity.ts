@@ -9,10 +9,4 @@ export abstract class BaseEntity {
 
     @UpdateDateColumn({ type: 'datetime' })
     lastUpdated: Date;
-
-    @Column({ default: false })
-    isDeleted: boolean;
-
-    @DeleteDateColumn()
-    dateDeleted?: Date;
 }

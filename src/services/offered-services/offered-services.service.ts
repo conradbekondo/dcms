@@ -14,7 +14,7 @@ export class OfferedServicesService {
 
     async serviceExistsWithName(name: string) {
         return this.offeredServicesRepository.findOneBy({
-            isDeleted: false, name
+            name
         }).then(service => service != null);
     }
 

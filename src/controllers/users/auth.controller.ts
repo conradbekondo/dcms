@@ -8,9 +8,13 @@ import {
   Render,
   Req,
   Res,
+  UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ILoginDto } from 'src/dto/login.dto';
+import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
 import injectionTokenKeys from 'src/injection-tokens';
 import { UsersService } from 'src/services/users/users.service';
 import { BaseController } from '../base/base.controller';
@@ -36,6 +40,14 @@ export class AuthController extends BaseController {
     };
     this.viewBag.pageTitle = 'Sign in to Your Account';
     return { data, view: this.viewBag };
+  }
+
+  @Post('/logout')
+  @UseGuards(AuthGuard)
+  @UseFilters(AuthFailedFilter)
+  handleLogout(@Res() res: Response) {
+    res.cookie('Authorization', null);
+    res.redirect('/');
   }
 
   @Post()

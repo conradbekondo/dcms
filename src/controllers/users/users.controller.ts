@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Render,
   Req,
   Res,
@@ -25,6 +26,9 @@ import { AuthGuard } from 'src/guards/auth/auth.guard';
 import injectionTokenKeys from 'src/injection-tokens';
 import { UsersService } from 'src/services/users/users.service';
 import { BaseController } from '../base/base.controller';
+import { validate } from 'class-validator';
+import { CreateUserFailedFilter } from 'src/filters/create-user-failed.filter';
+import { firstValueFrom, from, lastValueFrom, map, of, reduce, switchMap } from 'rxjs';
 
 @Controller('users')
 @UseGuards(AuthGuard)
@@ -41,10 +45,35 @@ export class UsersController extends BaseController {
   }
 
   @Get()
-  @Render('users/users')
-  async viewUsers() {
-    const users = await this.userService.getUsers();
-    return { data: { users: users }, view: this.viewBag };
+  async viewUsers(@Query('startAt') startAt: string, @Query('size') size: string, @Res() res: Response) {
+    if (!startAt || startAt == '' || !/^-?\d+$/gm.test(startAt) || parseInt(startAt) < 0) {
+      startAt = '0';
+    }
+
+    if (!size || size == '' || !/^-?\d+$/gm.test(size) || parseInt(size) <= 0) {
+      size = '50';
+    }
+
+    return firstValueFrom(from(this.userService.getUsers(parseInt(startAt), parseInt(size))).pipe(
+      switchMap(_users => {
+        return of(..._users).pipe(
+          map(({ profile, dateCreated, lastUpdated, roles, creator }) => {
+            return {
+              profile,
+              roles: roles.map(r => r.roleName),
+              dateCreated,
+              lastUpdated,
+              addedBy: !creator ? 'N/A' : `${creator.profile.firstName} ${creator.profile.lastName || ''}`.trim()
+            }
+          }),
+          reduce((acc: any[], curr) => [...acc, curr], [])
+        )
+      })
+    )).then(users => {
+      this.viewBag.pageTitle = 'System Users';
+      const v = { data: { users: users, errors: [], newUser: new INewUserDto() }, view: this.viewBag };
+      res.render('users/users', v);
+    });
   }
 
   @Get(':id')
@@ -54,19 +83,14 @@ export class UsersController extends BaseController {
   }
 
   @Post()
-  @UsePipes(ValidationPipe)
-  async storeUsers(
+  @UsePipes(new ValidationPipe({
+    transform: true
+  }))
+  @UseFilters(CreateUserFailedFilter)
+  async storeUser(
     @Body() createUsersDto: INewUserDto,
     @Res() res: Response,
   ) {
-    // const errors: string[] = [];
-
-    /* if (!createUsersDto.firstName || createUsersDto.firstName.length <= 0) {
-      errors.push('User name required');
-      return res
-        .status(400)
-        .json({ message: 'Unable to create User.', errors: errors });
-    } */
 
     try {
       const stored = await this.userService.createUser(createUsersDto);
@@ -95,7 +119,6 @@ export class UsersController extends BaseController {
   @Delete(':id')
   async deleteUsers(
     @Param('id') id: number,
-    @Req() req: Request,
     @Res() res: Response,
   ) {
     const deleted = await this.userService.deleteUser(id);
@@ -103,5 +126,11 @@ export class UsersController extends BaseController {
     if (deleted.success)
       return res.json({ message: 'User deleted successfully.' });
     else return res.status(500).json({ message: 'Unable to delete user.' });
+  }
+
+  @Post('isUsernameUnique')
+  async isUsernameUnique(@Body() { username }: { username: string }) {
+    const user = await this.userService.getUser(username);
+    return `${(user == null)}`;
   }
 }

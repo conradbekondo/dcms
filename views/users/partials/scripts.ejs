@@ -8,72 +8,151 @@
 <script src="/static/js/vendor/jquery.validate/jquery.validate.min.js"></script>
 
 <script>
+    $.validator.addMethod(
+        "regex",
+        function(value, element, regexp) {
+            var re = new RegExp(regexp);
+            return this.optional(element) || re.test(value);
+        },
+        "Invalid input"
+    );
+
+    const currentURl = new URL(location.href);
+    if (currentURl.searchParams.has('new-user-form-open')) {
+        debugger;
+        $('#newUserFormModal').modal({
+            backdrop: 'static'
+        });
+    }
     const createFormNameRef = '#new-user-form';
-    $('#new-user-form').submit(function (e) {
-        e.preventDefault()
-        const data = {
-            first_name: $('#create_form #first_name').val(),
-            last_name: $('#create_form #last_name').val(),
-            phoneNumber: $('#create_form #phone').val(),
-            role: $('#create_form #email').val(),
-            address: $('#create_form #address').val(),
-            description: $('#create_form #description').val(),
+    $('#newUserFormModal').on('shown.bs.modal', function() {
+        const url = new URL(location.href);
+        if (url.searchParams.has('new-user-form-open')) return;
+        url.searchParams.append('new-user-form-open', true);
+        const newUrl = url.toString();
+        history.replaceState({
+            path: newUrl
+        }, '', newUrl);
+    });
+
+    $('#newUserFormModal').on('hidden.bs.modal', function() {
+        const url = new URL(location.href);
+        if (!url.searchParams.has('new-user-form-open')) return;
+        url.searchParams.delete('new-user-form-open');
+        const newUrl = url.toString();
+        history.replaceState({
+            path: newUrl
+        }, '', newUrl);
+    });
+
+    $(createFormNameRef).validate({
+        errorClass: 'text-danger is-invalid',
+        messages: {
+            firstName: {
+                required: 'Value is required'
+            },
+            gender: 'Value is required',
+            phoneNumber: {
+                required: 'Value is required',
+                regex: 'Invalid phone number'
+            },
+            natId: {
+                required: 'Value is required',
+                regex: 'Invalid National ID'
+            },
+            address: {
+                required: 'Value is required'
+            },
+            username: {
+                required: 'Value is required',
+                remote: 'This username is not available'
+            },
+            password: {
+                required: 'Value is required',
+                minlength: 'Password must be at least 6 characters long',
+                maxlength: 'Password can only be up to 100 characters long'
+            },
+            confirmPassword: {
+                required: 'Password must be confirmed',
+                equalTo: 'Passwords do not match'
+            }
+        },
+        rules: {
+            firstName: 'required',
+            gender: 'required',
+            phoneNumber: {
+                required: true,
+                regex: /^(((((\+?237)|(\(\+?237\))))\s?)?(([697])|(2))\d{8})$/gm
+            },
+            natId: {
+                required: true,
+                regex: /^\d{9}$/gm
+            },
+            address: 'required',
+            username: {
+                required: true,
+                remote: {
+                    url: '/users/isUsernameUnique',
+                    type: 'post',
+                    data: {
+                        username: function() {
+                            return $('#newUsername').val();
+                        }
+                    }
+                }
+            },
+            password: {
+                required: true,
+                minlength: 6,
+                maxlength: 100
+            },
+            confirmPassword: {
+                required: true,
+                equalTo: '#newPassword'
+            }
         }
+    });
+
+    $(createFormNameRef).submit(function(e) {
+        e.preventDefault();
+        const data = {
+            firstName: $(`${createFormNameRef} #newFirstName`).val(),
+            lastName: $(`${createFormNameRef} #newLastName`).val(),
+            gender: $(`${createFormNameRef} #newGender`).val(),
+            natId: $(`${createFormNameRef} #newNatId`).val(),
+            phone: $(`${createFormNameRef} #newPhone`).val(),
+            address: $(`${createFormNameRef} #newAddress`).val(),
+            role: $(`${createFormNameRef} #newRole`).val(),
+            username: $(`${createFormNameRef} #newUsername`).val(),
+            password: $(`${createFormNameRef} #newPassword`).val(),
+            confirmPasswrd: $(`${createFormNameRef} #newConfirmPassword`).val(),
+        };
         $.ajax({
             url: '/users',
             method: 'POST',
-            data: data,
+            data,
             success: (res) => {
-                Swal.fire({
+                $wal.fire({
                     title: 'Success',
                     text: res.message,
                     icon: 'success'
-                }).then(() => window.location.reload())
+                }).then(() => {
+                    $('#newUserFormModal').hide();
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                })
             },
             error: (err) => {
-                console.error(err)
-                Swal.fire({
-                    title: 'Error',
-                    text: err.responseJSON.message || "Unable to create user.",
-                    icon: 'error'
-                })
+                debugger;
+                console.error(err);
+
             }
         })
     })
-    $('#edit_form').submit(function (e) {
-        e.preventDefault();
-        // const client = $('#edit_form #id').val()
-        const data = {
-            first_name: $('#new-user-form #first-name').val(),
-            last_name: $('#edit_form #last_name').val(),
-            phoneNumber: $('#edit_form #phone').val(),
-            role: $('#edit_form #email').val(),
-            address: $('#edit_form #address').val(),
-            description: $('#edit_form #description').val(),
-        }
-        $.ajax({
-            url: `/uers/${users}`,
-            method: 'PUT',
-            data: data,
-            success: (res) => {
-                Swal.fire({
-                    title: 'Success',
-                    text: res.message,
-                    icon: 'success'
-                }).then(() => window.location.reload())
-            },
-            error: (err) => {
-                console.error(err)
-                Swal.fire({
-                    title: 'Error',
-                    text: err.responseJSON.message || "Unable to update user.",
-                    icon: 'error'
-                })
-            }
-        })
-    })
+
     // actions buttons
-    $('table').on('click', '.edit-btn', function (e) {
+    $('table').on('click', '.edit-btn', function(e) {
         const id = $(this).data('id')
         $.ajax({
             url: '/clients/' + id,
@@ -97,7 +176,7 @@
             }
         })
     })
-    $('table').on('click', '.delete-btn', function (e) {
+    $('table').on('click', '.delete-btn', function(e) {
         const id = $(this).data('id')
         Swal.fire({
             title: 'Are you sure?',

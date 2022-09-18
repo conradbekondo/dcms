@@ -1,6 +1,6 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { IsNotEmpty, IsNumberString, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { IsEqualTo } from "src/decorators/validators/is-equal-to.decorator";
 import { Gender } from "src/entities/profile.entity";
-import { Roles } from "src/entities/roles";
 
 export class INewUserDto {
   @IsNotEmpty({ always: true, message: '"First name" is required for system user' })
@@ -11,15 +11,14 @@ export class INewUserDto {
   @IsOptional()
   lastName?: string;
 
-  @Matches(/^(((((\+?237)|(\(\+?237\))))\s?)?(([697])|(2))\d{8})$/gm, { message: 'Invalid "Phone number"' })
-  @IsNotEmpty({ always: true, message: '"Phone number" is required' })
-  @IsString({ message: '"Phone number" needs to be a string' })
-  phoneNumber?: string;
+  /* @Matches(/^(((((\+?237)|(\(\+?237\))))\s?)?(([697])|(2))\d{8})$/gm, { message: 'Invalid "Phone number"' })
+  @IsNotEmpty({ always: true, message: '"Phone number" is required' }) */
+  // @IsString({ message: '"Phone number" needs to be a string' })
+  phoneNumber: string;
 
-  @IsEnum(Roles, { message: 'Invalid value for "Role"' })
   @IsString({ message: '"Role" needs to be a string' })
   @IsOptional()
-  role: string;
+  role: 'admin' | 'staff';
 
   @IsNotEmpty({ always: true, message: '"Username" for new user is required' })
   @IsString({ message: '"Username" needs to be a string' })
@@ -29,14 +28,14 @@ export class INewUserDto {
   @IsOptional()
   address?: string;
 
-  @IsEnum(Gender)
-  gender?: 0 | 1;
+  @IsNumberString()
+  gender?: Gender;
 
   @IsOptional()
   @IsString({ message: '"Notes" needs to be a string' })
   notes?: string;
 
-  @Matches(/^\d{$/gm, { message: 'Invalid "National ID"' })
+  @Matches(/^\d{9}$/gm, { message: 'Invalid "National ID"' })
   @IsString({ message: '"National ID" needs to be a string' })
   natId?: string;
 
@@ -46,7 +45,7 @@ export class INewUserDto {
   @MaxLength(100, { message: '"Password" can have at most 100 characters' })
   password?: string;
 
-  @Matches('password')
+  @IsEqualTo('password')
   @IsString({ message: '"Confirm Password" needs to be a string' })
   confirmPassword?: string;
 }
