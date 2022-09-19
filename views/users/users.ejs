@@ -104,7 +104,7 @@
                                 </div>
                                 <form class="needs-validation">
                                     <div class="modal-body">
-                                        <ul class="p-0 my-2 list-group errors-container-update"></ul>
+                                        <ul class="p-0 my-2 list-group errors-container"></ul>
                                         <h4 class="text-mutedmb-3">Personal</h4>
                                         <div class="form-group">
                                             <label for="updateFirstName">First Name <span
@@ -222,7 +222,7 @@
                                                                 <button data-id="<%= user.id %>" class="btn btn-edit btn-sm btn-warning" title="Edit User information">
                                                                     <i class="simple-icon-pencil text-white"></i>
                                                                 </button>
-                                                                <button data-id="<%= user.id %>" class="btn btn-sm btn-danger" title="Delete '<%=`${user.profile.firstName} ${user.profile.lastName || ''}`.trim()%>'">
+                                                                <button data-id="<%= user.id %>" class="btn btn-delete btn-sm btn-danger" title="Delete '<%=`${user.profile.firstName} ${user.profile.lastName || ''}`.trim()%>'">
                                                                     <i class="simple-icon-trash text-white"></i>
                                                                 </button>
                                                                 <%} else {%>

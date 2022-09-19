@@ -257,14 +257,22 @@ export class UsersService {
     profile.gender = parseInt(dto.gender as '0' | '1');
     profile.natId = dto.natId;
 
-    if (dto.role && !roles.every((r) => r.roleName !== dto.role)) {
-      if (!(Object.values(Roles).map(r => r.toString()).every(r => r != dto.role))) {
+    await this.profileRepository.save(profile);
+
+    if (dto.role && roles.every((r) => r.roleName !== dto.role)) {
+      if (dto.role != Roles.ADMIN && dto.role != Roles.STAFF) {
         const msg = `Role: ${dto.role} is not a valid role in the system`;
         this.logger.error(msg);
         throw new Error(msg);
       }
 
-      const role = await this.roleRepository.findOneBy({ roleName: dto.role });
+      let role = await this.roleRepository.findOneBy({ roleName: dto.role });
+      if (!role) {
+        role = new Role();
+        role.roleName = dto.role;
+        role = await this.roleRepository.save(role);
+      }
+
       role.roleName = role.roleName;
       user.roles = [role];
     }

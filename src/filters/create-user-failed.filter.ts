@@ -1,6 +1,5 @@
 import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpStatus, Inject } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { INewUserDto } from 'src/dto/new-user.dto';
 import injectionTokenKeys from 'src/injection-tokens';
 import { UsersService } from 'src/services/users/users.service';
 

@@ -33,7 +33,7 @@ export class User extends BaseEntity {
   @Column({ name: 'profile_id' })
   profileId: number;
 
-  @OneToOne(() => Profile, { eager: true })
+  @OneToOne(() => Profile, { eager: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'profile_id' })
   profile: Profile;
 

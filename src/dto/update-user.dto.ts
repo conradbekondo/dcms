@@ -26,6 +26,6 @@ export class UpdateUserDto {
     @IsOptional()
     role: 'admin' | 'staff';
 
-    @IsNumber()
-    id: number;
+    @IsNumberString()
+    id: string;
 }

@@ -9,26 +9,80 @@
 <script src="/static/js/sweetalert.min.js"></script>
 
 <script defer>
-    $('#updateUserForm').submit(function(e) {
+    $('#updateUserForm form').submit(function(e) {
         e.preventDefault();
-        const userId = $(this).data('id');
+        const userId = $('#updateUserForm').data('id');
+        if (!userId) return;
+        const data = {
+            firstName: $('#updateUserForm #updateFirstName').val(),
+            lastName: $('#updateUserForm #updateLastName').val(),
+            phoneNumber: $('#updateUserForm #updatePhone').val(),
+            gender: $('#updateUserForm #updateGender').val(),
+            natId: $('#updateUserForm #updateNatId').val(),
+            phone: $('#updateUserForm #updatePhone').val(),
+            address: $('#updateUserForm #updateAddress').val(),
+            role: $('#updateUserForm #updateRole').val(),
+            id: parseInt(userId),
+        }
         $.ajax({
             url: `/users/${userId}`,
             method: 'PUT',
+            data,
             success: (res) => {
                 $('#updateUserForm').hide(0);
+                const url = new URL(location.href);
+                if (!url.searchParams.has('update-user-form-open', true)) return;
+                url.searchParams.delete('update-user-form-open');
+                const newURL = url.toString();
+                history.replaceState({
+                    path: newURL
+                }, '', newURL);
                 setTimeout(() => location.reload(), 1000);
+            },
+            error: (err) => {
+                console.error(err.responseText);
+                const errors = err.responseJSON;
+                $('#updateUserForm .errors-container').children().each(function(_, e) {
+                    e.remove();
+                });
+
+                for (let e of errors.messages) {
+                    $('#updateUserForm .errors-container').before(`<li class="list-group-item list-group-item-danger">${e}</li>`);
+                }
+
+                const {
+                    dto
+                } = errors;
+                const {
+                    firstName,
+                    lastName,
+                    gender,
+                    natId,
+                    phone,
+                    address,
+                    role
+                } = dto;
+                $('#updateUserForm #updateFirstName').val(firstName);
+                $('#updateUserForm #updateLastName').val(lastName);
+                $('#updateUserForm #updateGender').val(gender);
+                $('#updateUserForm #updateNatId').val(natId);
+                $('#updateUserForm #updatePhone').val(phone);
+                $('#updateUserForm #updateRole').val(role);
+
+                document.querySelector('#updateUserForm .errors-container').scrollIntoView({
+                    behavior: "smooth"
+                });
             }
-        })
+        });
     });
 
-    $('#table .btn-edit').each(function(e) {
+    $('#table .btn-edit').each(function() {
         $(this).click(function(e) {
-            const button$ = $(this);
-            const userId = button$.data('id');
+            e.preventDefault();
+            const userId = $(this).data('id');
             if (userId) {
                 $.ajax({
-                    url: `/users/${userId}`,
+                    url: `/users/update/${userId}`,
                     method: 'GET',
                     success: res => {
                         const {
@@ -39,6 +93,7 @@
                         $('#updateUserForm #updateLastName').val(dto.lastName);
                         $('#updateUserForm #updateGender').val(dto.gender);
                         $('#updateUserForm #updateNatId').val(dto.natId);
+                        $('#updateUserForm #updateAddress').val(dto.address);
                         $('#updateUserForm #updatePhone').val(dto.phone);
                         $('#updateUserForm #updateRole').val(dto.role);
                         $('#updateUserForm .modal-title').text(`Update: ${dto.firstName} ${dto.lastName}`.trim());
@@ -51,7 +106,25 @@
                     }
                 })
             }
-        })
+        });
+    });
+
+    $('#table .btn-delete').each(function() {
+        $(this).click(function(e) {
+            e.preventDefault();
+            const userId = $(this).data('id');
+            if (!userId) return;
+            debugger;
+            if (!confirm(`Are you sure to delete this user's account? This cannot be undone`)) return;
+            $.ajax({
+                url: `/users/${userId}`,
+                method: 'DELETE',
+                success: res => {
+                    alert('Operation successful');
+                    setTimeout(() => location.reload(), 1000);
+                }
+            });
+        });
     });
 
     $.validator.addMethod(
@@ -70,11 +143,12 @@
         });
     }
 
-    if (currentURL.has('update-user-form-open')) {
+    if (currentURL.searchParams.has('update-user-form-open')) {
         $('#updateUserForm').modal({
             backdrop: 'static'
         });
     }
+
 
     $('#updateUserForm').on('show.bs.modal', function() {
         const url = new URL(location.href);
@@ -82,17 +156,18 @@
         url.searchParams.append('update-user-form-open', true);
         const newURl = url.toString();
         history.replaceState({
-            path: newUrl
-        }, '', newUrl);
+            path: newURl
+        }, '', newURl);
     });
 
     $('#updateUserForm').on('hidden.bs.modal', function() {
         const url = new URL(location.href);
-        if (url.searchParams.has('update-user-form-open', true));
+        if (!url.searchParams.has('update-user-form-open', true)) return;
+        url.searchParams.delete('update-user-form-open');
         const newURL = url.toString();
         history.replaceState({
-            path: newUrl
-        }, '', newUrl);
+            path: newURL
+        }, '', newURL);
     });
 
     const createFormNameRef = '#new-user-form';
@@ -257,7 +332,7 @@
             lastName: $(`${createFormNameRef} #newLastName`).val(),
             gender: $(`${createFormNameRef} #newGender`).val(),
             natId: $(`${createFormNameRef} #newNatId`).val(),
-            phone: $(`${createFormNameRef} #newPhone`).val(),
+            phoneNumber: $(`${createFormNameRef} #newPhone`).val(),
             address: $(`${createFormNameRef} #newAddress`).val(),
             role: $(`${createFormNameRef} #newRole`).val(),
             username: $(`${createFormNameRef} #newUsername`).val(),
@@ -283,7 +358,7 @@
                 const errors = err.responseJSON;
                 $('.errors-container').empty();
                 for (let error of errors.messages) {
-                    $('.errors-container').before(`<li class="list-group-item list-group-item-danger">${error}</li>`);
+                    $('#new-user-form .errors-container').before(`<li class="list-group-item list-group-item-danger">${error}</li>`);
                 }
                 $(`${createFormNameRef} #newFirstName`).val(errors.dto.firstName);
                 $(`${createFormNameRef} #newLastName`).val(errors.dto.lastName);

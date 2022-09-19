@@ -7,6 +7,7 @@ import {
   Inject,
   Logger,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -105,7 +106,7 @@ export class UsersController extends BaseController {
     });
   }
 
-  @Get(':id')
+  @Get('/update/:id')
   async getUsers(@Param('id') id: string, @Res() res: Response) {
     return firstValueFrom(from(this.userService.getUser(parseInt(id))).pipe(
       switchMap(_user => {
@@ -114,8 +115,9 @@ export class UsersController extends BaseController {
           dto.address = _user.profile.address;
           dto.firstName = _user.profile.firstName;
           dto.lastName = _user.profile.lastName;
+          dto.natId = _user.profile.natId;
           dto.gender = _user.profile.gender.toString();
-          dto.id = _user.id;
+          dto.id = _user.id.toString();
           dto.phone = _user.profile.phoneNumber;
           dto.role = _user.roles[0].roleName as 'admin' | 'staff';
           return of(dto);
@@ -166,7 +168,7 @@ export class UsersController extends BaseController {
 
   @Delete(':id')
   async deleteUsers(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Res() res: Response,
   ) {
     const deleted = await this.userService.deleteUser(id);
