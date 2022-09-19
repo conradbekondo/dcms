@@ -6,6 +6,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { I18nModule } from 'nestjs-i18n';
 import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { BackupController } from './backup/backup.controller';
 import { CategoriesController } from './controllers/categories/categories.controller';
 import { ClientsController } from './controllers/clients/clients.controller';
 import { LangController } from './controllers/lang/lang.controller';
@@ -62,10 +63,11 @@ const options: TypeOrmModuleOptions = {
     AppliedPolicy,
     Category,
     Client,
+    ProductServicePrice
   ],
   namingStrategy: new SnakeNamingStrategy(),
 
-  synchronize: false,
+  synchronize: true,
   dropSchema: false
 };
 
@@ -95,7 +97,8 @@ const options: TypeOrmModuleOptions = {
     ProductsController,
     ServicesController,
     UsersController,
-    LangController
+    LangController,
+    BackupController
   ],
   providers: [
     UsersService,

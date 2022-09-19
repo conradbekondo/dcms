@@ -13,7 +13,12 @@
         e.preventDefault();
         const userId = $(this).data('id');
         $.ajax({
-            url: `/users/${userId}`
+            url: `/users/${userId}`,
+            method: 'PUT',
+            success: (res) => {
+                $('#updateUserForm').hide(0);
+                setTimeout(() => location.reload(), 1000);
+            }
         })
     });
 
@@ -64,6 +69,31 @@
             backdrop: 'static'
         });
     }
+
+    if (currentURL.has('update-user-form-open')) {
+        $('#updateUserForm').modal({
+            backdrop: 'static'
+        });
+    }
+
+    $('#updateUserForm').on('show.bs.modal', function() {
+        const url = new URL(location.href);
+        if (url.searchParams.has('update-user-form-open')) return;
+        url.searchParams.append('update-user-form-open', true);
+        const newURl = url.toString();
+        history.replaceState({
+            path: newUrl
+        }, '', newUrl);
+    });
+
+    $('#updateUserForm').on('hidden.bs.modal', function() {
+        const url = new URL(location.href);
+        if (url.searchParams.has('update-user-form-open', true));
+        const newURL = url.toString();
+        history.replaceState({
+            path: newUrl
+        }, '', newUrl);
+    });
 
     const createFormNameRef = '#new-user-form';
     $('#newUserFormModal').on('shown.bs.modal', function() {

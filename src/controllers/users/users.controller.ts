@@ -79,6 +79,32 @@ export class UsersController extends BaseController {
     });
   }
 
+  @UsePipes(ValidationPipe)
+  @Put(':id')
+  async updateUser(@Param('id') id: string, @Body() body: UpdateUserDto, @Res() res: Response) {
+    return firstValueFrom(from(this.userService.getUser(parseInt(id))).pipe(
+      switchMap(user => {
+        if (user) {
+          return from(this.userService.updateUser(body, parseInt(id)));
+        }
+      }),
+      catchError((error, user) => {
+        if (user) {
+          return user;
+        } {
+          this.logger.error(error.message);
+          return of({ success: false, user: null });
+        }
+      })
+    )).then(x => {
+      if (x.success) {
+        res.status(HttpStatus.ACCEPTED).send({ message: 'OK' });
+      } else {
+        res.status(HttpStatus.NOT_FOUND).send({ message: 'User not found' });
+      }
+    });
+  }
+
   @Get(':id')
   async getUsers(@Param('id') id: string, @Res() res: Response) {
     return firstValueFrom(from(this.userService.getUser(parseInt(id))).pipe(
@@ -124,7 +150,7 @@ export class UsersController extends BaseController {
     }
   }
 
-  @Put(':id')
+  /* @Put(':id')
   async updateUsers(
     @Body() updateUsersDto: INewUserDto,
     @Param('id') id: number,
@@ -136,7 +162,7 @@ export class UsersController extends BaseController {
     if (updated.success)
       return res.json({ message: 'User updated successfully.' });
     else return res.status(500).json({ message: 'Unable to update user.' });
-  }
+  } */
 
   @Delete(':id')
   async deleteUsers(

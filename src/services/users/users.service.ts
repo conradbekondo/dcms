@@ -1,8 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
-import { BehaviorSubject, share, shareReplay, startWith } from 'rxjs';
+import { BehaviorSubject, startWith } from 'rxjs';
 import { ILoginDto } from 'src/dto/login.dto';
+import { INewUserDto } from 'src/dto/new-user.dto';
+import { UpdateUserDto } from 'src/dto/update-user.dto';
 import { Gender, Profile } from 'src/entities/profile.entity';
 import { Role } from 'src/entities/Role';
 import { Roles } from 'src/entities/roles';
@@ -10,7 +12,6 @@ import { LoginEntry } from 'src/entities/user-login-entry.entity';
 import { User } from 'src/entities/user.entity';
 import { IPrincipal } from 'src/models/principal.model';
 import { DataSource, FindOptionsSelect, Repository } from 'typeorm';
-import { INewUserDto } from 'src/dto/new-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -238,7 +239,7 @@ export class UsersService {
    * @param id Client to update
    * @returns
    */
-  async updateUser(dto: INewUserDto, id: number) {
+  async updateUser(dto: UpdateUserDto, id: number) {
     const user = await this.userRepository.findOneBy({ id: id });
 
     if (!user) {
@@ -250,19 +251,22 @@ export class UsersService {
     const { profile, roles } = user;
 
     profile.firstName = dto.firstName;
-    profile.phoneNumber = dto.phoneNumber;
+    profile.phoneNumber = dto.phone;
     profile.lastName = dto.lastName;
+    profile.address = dto.address;
+    profile.gender = parseInt(dto.gender as '0' | '1');
+    profile.natId = dto.natId;
 
     if (dto.role && !roles.every((r) => r.roleName !== dto.role)) {
-      if (!(dto.role in Roles)) {
+      if (!(Object.values(Roles).map(r => r.toString()).every(r => r != dto.role))) {
         const msg = `Role: ${dto.role} is not a valid role in the system`;
         this.logger.error(msg);
         throw new Error(msg);
       }
 
-      const role = new Role();
-      role.roleName = dto.role;
-      user.roles = [...user.roles, role];
+      const role = await this.roleRepository.findOneBy({ roleName: dto.role });
+      role.roleName = role.roleName;
+      user.roles = [role];
     }
 
     await this.userRepository.save(user);
