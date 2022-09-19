@@ -42,7 +42,7 @@ export class AuthController extends BaseController {
     return { data, view: this.viewBag };
   }
 
-  @Post('/logout')
+  @Get('logout')
   @UseGuards(AuthGuard)
   @UseFilters(AuthFailedFilter)
   handleLogout(@Res() res: Response) {

@@ -22,7 +22,7 @@ export class User extends BaseEntity {
   @Column({ default: false })
   isLocked: boolean;
 
-  @ManyToMany(() => Role, { eager: true })
+  @ManyToMany(() => Role, { eager: true, onDelete: 'CASCADE' })
   @JoinTable({
     name: 'user_roles',
     joinColumn: { name: 'user_id' },

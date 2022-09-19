@@ -83,7 +83,6 @@ export class UsersService {
 
   async isUserInRoles(roleNames: string[], username: string) {
     return this.userRepository.findOne({
-      relations: { roles: true },
       where: { username },
       select: { roles: { roleName: true } }
     }).then(user => {

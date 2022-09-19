@@ -79,6 +79,7 @@ export class OfferedServicesService {
             skip: startAt * size,
             take: size
         })
+        return services;
     }
 
     async deleteService(serivceId: number) {

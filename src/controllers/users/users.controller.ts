@@ -10,33 +10,31 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Query,
-  Render,
-  Req,
-  Res,
+  Query, Res,
   UseFilters,
   UseGuards,
   UsePipes,
   ValidationPipe
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { catchError, firstValueFrom, from, map, of, reduce, switchMap } from 'rxjs';
 import { Role } from 'src/decorators/role.decorator';
 import { INewUserDto } from 'src/dto/new-user.dto';
+import { UpdateUserDto } from 'src/dto/update-user.dto';
 import { Roles } from 'src/entities/roles';
 import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
+import { CreateUserFailedFilter } from 'src/filters/create-user-failed.filter';
+import { RoleCheckFailedFilter } from 'src/filters/role-check-failed.filter';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { RoleGuard } from 'src/guards/auth/role.guard';
 import injectionTokenKeys from 'src/injection-tokens';
 import { UsersService } from 'src/services/users/users.service';
 import { BaseController } from '../base/base.controller';
-import { IsNumberString, validate } from 'class-validator';
-import { CreateUserFailedFilter } from 'src/filters/create-user-failed.filter';
-import { catchError, firstValueFrom, from, lastValueFrom, map, of, reduce, switchMap } from 'rxjs';
-import { UpdateUserDto } from 'src/dto/update-user.dto';
 
 @Controller('users')
-@UseGuards(AuthGuard)
-@UseFilters(AuthFailedFilter)
+@UseFilters(AuthFailedFilter, RoleCheckFailedFilter)
 @Role(Roles.ADMIN, Roles.SYSTEM)
+@UseGuards(AuthGuard, RoleGuard)
 export class UsersController extends BaseController {
   private readonly logger = new Logger(UsersController.name);
 
