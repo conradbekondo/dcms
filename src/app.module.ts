@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
@@ -34,7 +34,7 @@ import { CreateUserFailedFilter } from './filters/create-user-failed.filter';
 import { NotFoundFilter } from './filters/not-found.filter';
 import { RoleCheckFailedFilter } from './filters/role-check-failed.filter';
 import injectionTokenKeys from './injection-tokens';
-import { LangInterceptor } from './interceptors/lang.interceptor';
+import { IdleUserTrackerMiddleware } from './middlewares/idle-user-tracker.middleware';
 import { CategoriesService } from './services/categories/categories.service';
 import { ClientsService } from './services/clients/clients.service';
 import { OfferedServicesService } from './services/offered-services/offered-services.service';
@@ -133,4 +133,8 @@ const options: TypeOrmModuleOptions = {
     ProductsService
   ],
 })
-export class AppModule { }
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(IdleUserTrackerMiddleware).forRoutes('*');
+  }
+}
