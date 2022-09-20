@@ -78,7 +78,7 @@ export class UsersService {
   }
 
   get principal$() {
-    return this.principalSubject.pipe(startWith(this.principalSubject.getValue()));
+    return this.principalSubject.asObservable();
   }
 
   async isUserInRoles(roleNames: string[], username: string) {
@@ -247,7 +247,7 @@ export class UsersService {
       throw new Error(msg);
     }
 
-    const { profile, roles } = user;
+    let { profile, roles } = user;
 
     profile.firstName = dto.firstName;
     profile.phoneNumber = dto.phone;
@@ -256,7 +256,7 @@ export class UsersService {
     profile.gender = parseInt(dto.gender as '0' | '1');
     profile.natId = dto.natId;
 
-    await this.profileRepository.save(profile);
+    profile = await this.profileRepository.save(profile);
 
     if (dto.role && roles.every((r) => r.roleName !== dto.role)) {
       if (dto.role != Roles.ADMIN && dto.role != Roles.STAFF) {
@@ -276,6 +276,7 @@ export class UsersService {
       user.roles = [role];
     }
 
+    user.profile = profile;
     await this.userRepository.save(user);
     this.logger.log(`Client with ID #${user.id} updated`);
 

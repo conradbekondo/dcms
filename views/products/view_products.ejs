@@ -20,46 +20,46 @@
 
                                     <div id="savebtm_result" class="form-group text-success w-50"></div>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
 
                                 </div>
                                 <form class="needs-validation" id="create_form">
                                     <div class="modal-body">
-                                        <div class="row">
-                                            <div class="form-group position-relative error-l-50 col-2">
+                                        <!-- <div class="form-group position-relative error-l-50 col-2">
                                                 <label>Num </label>
                                                 <input type="text" class="form-control" placeholder="" name="num" id="num" autocomplete="off" value="" readonly="readonly">
-                                            </div>
-                                            <div class="form-group col-6">
-                                                <label> Name <span class="text-danger ">*</span></label>
-                                                <input type="text" class="form-control reqred" placeholder="" name="name" id="name" autocomplete="off">
-                                            </div>
-                                            <div class="form-group col-4">
-                                                <label> Categories <span class="text-danger ">*</span></label>
-                                                <select name="category" class="form-control reqred" id="category">
-                          <option value="">Select category</option>
-                          <% data.categories.forEach(category=> { %>
-                            <option value="<%= category.id %>">
-                              <%= category.name %>
-                            </option>
-                            <% }) %>
-                        </select>
-                                            </div>
+                                            </div> -->
+                                        <div class="form-group">
+                                            <label> Name <span class="text-danger ">*</span></label>
+                                            <input type="text" class="form-control reqred" placeholder="" name="name" id="name" autocomplete="off">
+                                        </div>
+                                        <div class="form-group">
+                                            <label> Categories <span class="text-danger ">*</span></label>
+                                            <select name="category" class="form-control reqred" id="category">
+                                                <option value="">Select category</option>
+                                                <% data.categories.forEach(category=> { %>
+                                                    <option value="<%= category.id %>">
+                                                        <%= category.name %>
+                                                    </option>
+                                                    <% }) %>
+                                            </select>
                                         </div>
 
                                         <% data.services.forEach(service=> { %>
                                             <div class="row">
                                                 <div class="form-group col-6">
                                                     <label>
-                            <%= service.name %> Normal (XAF) <span class="text-danger ">*</span>
-                          </label>
+                                                        <%= service.name %> Normal (XAF) <span
+                                                                class="text-danger ">*</span>
+                                                    </label>
                                                     <input type="number" min="0" class="form-control service_price" name="<%= service.name %>_normal" id="<%= service.name %>_normal" data-service="<%= service.id %>" data-type="normal">
                                                 </div>
                                                 <div class="form-group col-6">
                                                     <label>
-                            <%= service.name %> Fast (XAF)<span class="text-danger ">*</span>
-                          </label>
+                                                        <%= service.name %> Fast (XAF)<span
+                                                                class="text-danger ">*</span>
+                                                    </label>
                                                     <input type="number" min="0" class="form-control service_price" name="<%= service.name %>_fast" id="<%= service.name %>_fast" data-service="<%= service.id %>" data-type="fast">
                                                 </div>
                                             </div>
@@ -68,7 +68,7 @@
                                                 <div class="row">
                                                     <div class="form-group col-12">
                                                         <button type="button" class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block" data-toggle="modal" data-backdrop="static" data-target="#iconshow"> Add an icon <i
-                                class="glyph-icon simple-icon-plus"></i> </button>
+                                                                class="glyph-icon simple-icon-plus"></i> </button>
                                                         <span id="icon_select" style="font-size: 40px;"></span>
                                                         <input type="hidden" id="icons">
                                                     </div>
@@ -79,8 +79,9 @@
                                                     <% data.additional.forEach(service=> { %>
                                                         <div class="form-group col-4">
                                                             <label>
-                                <%= service.name %> (XAF) <span class="text-danger "></span>
-                              </label>
+                                                                <%= service.name %> (XAF) <span
+                                                                        class="text-danger "></span>
+                                                            </label>
                                                             <input type="number" min="0" class="form-control service_price" name="<%= service.name %>_additional" id="<%= service.name %>_additional" data-service="<%= service.id %>" data-type="additional" value="0">
                                                         </div>
                                                         <% }) %>
@@ -101,8 +102,8 @@
                                 <div class="modal-header p-3" style="flex:0 0 3px">
                                     <h5 class="modal-title">Update </h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                                     <span id="updatebtm_result" class="form-group text-success"></span>
 
                                 </div>
@@ -128,12 +129,12 @@
 
                                 <div class="modal-body">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                                     <br>
                                     <hr>
                                     <div class="simple-line-icons">
-                                        <a href="#" onclick="add_icon('glyph-icon iconsminds-t-shirt','iconsminds')">
+                                        <!-- <a href="#" onclick="add_icon('glyph-icon iconsminds-t-shirt','iconsminds')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <i class="glyph-icon iconsminds-t-shirt" style="font-size: 60px;"></i>
                                             </div>
@@ -282,7 +283,7 @@
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/hats.svg">
                                             </div>
-                                        </a>
+                                        </a> -->
 
                                     </div>
                                 </div>
@@ -296,16 +297,18 @@
                             <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
                                 <ol class="breadcrumb pt-0">
                                     <li class="breadcrumb-item">
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-target="#exampleModalRight">Add product <i class="glyph-icon simple-icon-plus"></i> </button>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-target="#exampleModalRight">Add product <i
+                                                class="glyph-icon simple-icon-plus"></i> </button>
                                     </li>
 
                                     <li class="breadcrumb-item">
                                         <a href="/categories"><button type="button" class="btn btn-primary"><i
-                          class="glyph-icon simple-icon-list"></i> Categories </button></a>
+                                                    class="glyph-icon simple-icon-list"></i> Categories </button></a>
                                     </li>
                                     <li class="breadcrumb-item">
-                                        <a href="/products?additional_services_only=true"><button type="button" class="btn btn-primary"><i
-                          class="glyph-icon simple-icon-list"></i> Additional services </button></a>
+                                        <a href="/products?additional_services_only=true"><button type="button"
+                                                class="btn btn-primary"><i class="glyph-icon simple-icon-list"></i>
+                                                Additional services </button></a>
                                     </li>
 
                                 </ol>
@@ -322,11 +325,9 @@
                                     <table id="table" class="table">
                                         <thead>
                                             <tr>
-                                                <th>#</th>
-                                                <th>Image</th>
-                                                <th>Product name</th>
+                                                <th>ID</th>
+                                                <th>Name</th>
                                                 <th>Category</th>
-
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -334,12 +335,10 @@
                                             <% data.products.forEach(product=> { %>
                                                 <tr>
                                                     <td>
-                                                        <%= product.id %>
-                                                    </td>
-                                                    <td>
                                                         <% if (product.iconUrl) { %>
                                                             <i class="<%= product.iconUrl %>"></i>
                                                             <% } %>
+                                                                <%= product.id %>
                                                     </td>
                                                     <td>
                                                         <%= product.name %>
@@ -352,7 +351,7 @@
                                                             <a href="#" class="btn btn-primary more-btn" data-id="<%= product.id %>">
                                                                 <i class="glyph-icon simple-icon-eye"></i>
                                                             </a>
-                                                            <a href="#" class="btn btn-primary edit-btn" data-id="<%= product.id %>">
+                                                            <a href="#" class="btn btn-warning edit-btn" data-id="<%= product.id %>">
                                                                 <i class="glyph-icon simple-icon-pencil"></i>
                                                             </a>
                                                             <a href="#" class="btn btn-danger delete-btn" data-id="<%= product.id %>">
