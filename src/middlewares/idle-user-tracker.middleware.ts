@@ -1,4 +1,4 @@
-import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
+import { Inject, Injectable, Logger, NestMiddleware } from '@nestjs/common';
 import { Request, Response } from 'express';
 import injectionTokenKeys from 'src/injection-tokens';
 import { UsersService } from 'src/services/users/users.service';
@@ -6,6 +6,7 @@ import { UsersService } from 'src/services/users/users.service';
 @Injectable()
 export class IdleUserTrackerMiddleware implements NestMiddleware {
   private lastActivityTimeSubject?: number;
+  private logger: Logger = new Logger(IdleUserTrackerMiddleware.name);
   constructor(@Inject(injectionTokenKeys.identityMaxAge) private readonly maxAge: number,
     private userService: UsersService) {
     this.lastActivityTimeSubject = null;
@@ -21,6 +22,7 @@ export class IdleUserTrackerMiddleware implements NestMiddleware {
 
     if (this.lastActivityTimeSubject + this.maxAge >= now) {
       this.lastActivityTimeSubject = now;
+      this.logger.debug(`Last active time updated => ${new Date(this.lastActivityTimeSubject).toLocaleString()}`);
       return next();
     } else {
       res.clearCookie('Authorization');

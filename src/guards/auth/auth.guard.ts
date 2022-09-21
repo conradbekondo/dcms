@@ -1,9 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { Observable } from 'rxjs';
-import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 import { IPrincipal } from 'src/models/principal.model';
 import { UsersService } from 'src/services/users/users.service';
 
@@ -17,16 +15,14 @@ export class AuthGuard implements CanActivate {
         context: ExecutionContext
     ): boolean | Promise<boolean> | Observable<boolean> {
         const request: Request = context.switchToHttp().getRequest();
-        return of(request.cookies).pipe(
-            switchMap(({ Authorization }) => {
-                if (!Authorization || Authorization == '') {
-                    throw new UnauthorizedException();
-                }
-                const principal: IPrincipal = this.jwtService.verify(Authorization) as IPrincipal;
-                this.usersService.principal = principal;
-
-                return of(true);
-            })
-        )
+        const { Authorization } = request.cookies;
+        if (!Authorization || Authorization == '') throw new UnauthorizedException();
+        try {
+            const principal: IPrincipal = this.jwtService.verify(Authorization) as IPrincipal;
+            this.usersService.principal = principal;
+            return true;
+        } catch (_) {
+            return false;
+        }
     }
 }

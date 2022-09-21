@@ -46,7 +46,7 @@ export class AuthController extends BaseController {
   @UseGuards(AuthGuard)
   @UseFilters(AuthFailedFilter)
   handleLogout(@Res() res: Response) {
-    res.cookie('Authorization', null);
+    res.clearCookie('Authorization');
     res.redirect('/');
   }
 

@@ -21,6 +21,7 @@ import { Client } from './entities/client.entity';
 import { OrderEntryAttribute } from './entities/order-entry-attribute.entity';
 import { OrderEntry } from './entities/order-entry.entity';
 import { Order } from './entities/order.entity';
+import { PricedCategoriesView } from './entities/priced-categories.view.entity';
 import { Policy } from './entities/processing-policy.entity';
 import { ProductServicePrice } from './entities/product-service-price.entity';
 import { Product } from './entities/product.entity';
@@ -63,7 +64,8 @@ const options: TypeOrmModuleOptions = {
     AppliedPolicy,
     Category,
     Client,
-    ProductServicePrice
+    ProductServicePrice,
+    PricedCategoriesView
   ],
   namingStrategy: new SnakeNamingStrategy(),
 

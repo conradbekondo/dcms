@@ -6,8 +6,10 @@ import {
   Inject,
   Logger,
   Param,
+  ParseBoolPipe,
   Post,
   Put,
+  Query,
   Render,
   Req,
   Res,
@@ -34,6 +36,12 @@ export class CategoriesController extends BaseController {
 
   constructor(private readonly categoryService: CategoriesService, @Inject(injectionTokenKeys.appName) appName: string, usersService: UsersService) {
     super(appName, usersService);
+  }
+
+  @Get('priced')
+  async getPricedCategories() {
+    const pricedCategories = await this.categoryService.findPricedCategories();
+    return { pricedCategories };
   }
 
   @Get()

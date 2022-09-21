@@ -1,3 +1,3 @@
-export interface INewOrderDto {
+export class NewOrderDto {
 
 }

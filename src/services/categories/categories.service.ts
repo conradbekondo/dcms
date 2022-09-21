@@ -1,15 +1,23 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ICreateCategoryDto } from 'src/dto/create_category.dto';
 import { Category } from 'src/entities/category.entity';
+import { PricedCategoriesView } from 'src/entities/priced-categories.view.entity';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class CategoriesService {
   private readonly categoryRepository: Repository<Category>;
+  private readonly pricedCategoriesRepository: Repository<PricedCategoriesView>;
   private readonly logger = new Logger(CategoriesService.name)
 
-  constructor (datasource: DataSource) {
+  constructor(datasource: DataSource) {
     this.categoryRepository = datasource.getRepository(Category);
+    this.pricedCategoriesRepository = datasource.getRepository(PricedCategoriesView);
+  }
+
+  async findPricedCategories() {
+    const pricedCategories = await this.pricedCategoriesRepository.find();
+    return pricedCategories;
   }
 
 
@@ -47,7 +55,7 @@ export class CategoriesService {
 
     category.name = dto.name
     category.description = dto.description
-    
+
     await this.categoryRepository.save(category)
     this.logger.log(`Category with ID #${category.id} updated`)
 
@@ -62,7 +70,7 @@ export class CategoriesService {
    */
   async deleteCategory(id: number) {
     const category = await this.categoryRepository.findOneBy({ id: id })
-    
+
     if (category) {
       await this.categoryRepository.delete(id)
       return { success: true }

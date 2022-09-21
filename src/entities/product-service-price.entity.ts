@@ -17,9 +17,9 @@ export class ProductServicePrice extends BaseEntity {
     @Column({ type: 'double', nullable: true, default: 0 })
     fastPrice: number;
 
-    // @ManyToOne(() => Product)
-    // @JoinColumn({ name: 'product_id' })
-    // product: Promise<Product>;
+    @ManyToOne(() => Product)
+    @JoinColumn({ name: 'product_id', })
+    product: Product;
 
     @ManyToOne(() => OfferedService)
     @JoinColumn({ name: 'service_id' })
