@@ -65,12 +65,12 @@ const options: TypeOrmModuleOptions = {
     Category,
     Client,
     ProductServicePrice,
-    PricedCategoriesView
+    PricedCategoriesView,
   ],
   namingStrategy: new SnakeNamingStrategy(),
 
   synchronize: true,
-  dropSchema: false
+  dropSchema: false,
 };
 
 @Module({
@@ -86,8 +86,8 @@ const options: TypeOrmModuleOptions = {
       loaderOptions: {
         path: join(__dirname, '/i18n/'),
         watch: true,
-      }
-    })
+      },
+    }),
   ],
   controllers: [
     AuthController,
@@ -100,7 +100,7 @@ const options: TypeOrmModuleOptions = {
     ServicesController,
     UsersController,
     LangController,
-    BackupController
+    BackupController,
   ],
   providers: [
     UsersService,
@@ -116,11 +116,11 @@ const options: TypeOrmModuleOptions = {
     },
     {
       provide: APP_FILTER,
-      useClass: CreateUserFailedFilter
+      useClass: CreateUserFailedFilter,
     },
     {
       provide: APP_FILTER,
-      useClass: RoleCheckFailedFilter
+      useClass: RoleCheckFailedFilter,
     },
     {
       provide: injectionTokenKeys.appName,
@@ -132,7 +132,7 @@ const options: TypeOrmModuleOptions = {
     },
     CategoriesService,
     ClientsService,
-    ProductsService
+    ProductsService,
   ],
 })
 export class AppModule {

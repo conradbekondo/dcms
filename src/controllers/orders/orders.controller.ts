@@ -1,6 +1,24 @@
-import { Controller, Get, Inject, Logger, Query, Render, Req, Res, UseFilters, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Inject,
+  Logger,
+  Query,
+  Render,
+  Req,
+  Res,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
-import { distinctUntilKeyChanged, lastValueFrom, map, of, reduce, switchMap } from 'rxjs';
+import {
+  distinctUntilKeyChanged,
+  lastValueFrom,
+  map,
+  of,
+  reduce,
+  switchMap,
+} from 'rxjs';
 import { Role } from 'src/decorators/role.decorator';
 import { NewOrderDto } from 'src/dto/new-order.dto';
 import { Category } from 'src/entities/category.entity';
@@ -18,38 +36,46 @@ import { BaseController } from '../base/base.controller';
 @UseGuards(AuthGuard, RoleGuard)
 @Role(Roles.STAFF, Roles.ADMIN, Roles.SYSTEM)
 export class OrdersController extends BaseController {
-    private readonly logger = new Logger(OrdersController.name);
+  private readonly logger = new Logger(OrdersController.name);
 
-    constructor(@Inject(injectionTokenKeys.appName) appName: string,
-        userService: UsersService,
-        private readonly orderService: OrdersService) {
-        super(appName, userService);
+  constructor(
+    @Inject(injectionTokenKeys.appName) appName: string,
+    userService: UsersService,
+    private readonly orderService: OrdersService,
+  ) {
+    super(appName, userService);
+  }
+
+  @Get('/create')
+  @Render('orders/new/create-order')
+  async createOrder() {
+    this.viewBag.pageTitle = 'Create an Order';
+    return { data: { dto: new NewOrderDto() }, view: this.viewBag };
+  }
+
+  @Get()
+  @Render('orders/orders')
+  @UseFilters(BadQueryFilter)
+  async viewOrders(
+    @Res() res: Response,
+    @Req() req: Request,
+    @Query('startAt') startAt?: string,
+    @Query('size') size?: string,
+  ) {
+    if (!startAt || !size) {
+      throw new BadQueryParamsException({
+        startAt: startAt || 0,
+        size: size || 50,
+      });
     }
 
-    @Get('/create')
-    @Render('orders/new/create-order')
-    async createOrder() {
-        this.viewBag.pageTitle = 'Create an Order';
-        return { data: { dto: new NewOrderDto() }, view: this.viewBag };
-    }
-
-    @Get()
-    @Render('orders/orders')
-    @UseFilters(BadQueryFilter)
-    async viewOrders(
-        @Res() res: Response,
-        @Req() req: Request,
-        @Query('startAt') startAt?: string,
-        @Query('size') size?: string
-    ) {
-
-        if (!startAt || !size) {
-            throw new BadQueryParamsException({ startAt: startAt || 0, size: size || 50 });
-        }
-
-        this.viewBag.pageTitle = 'All Orders';
-        const principal = this.userService.getPrincipal();
-        const pageInfo = await this.orderService.getOrdersAvailableForUser(principal, parseInt(startAt), parseInt(size));
-        return { data: pageInfo, view: this.viewBag };
-    }
+    this.viewBag.pageTitle = 'All Orders';
+    const principal = this.userService.getPrincipal();
+    const pageInfo = await this.orderService.getOrdersAvailableForUser(
+      principal,
+      parseInt(startAt),
+      parseInt(size),
+    );
+    return { data: pageInfo, view: this.viewBag };
+  }
 }

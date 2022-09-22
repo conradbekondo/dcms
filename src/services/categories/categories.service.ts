@@ -8,11 +8,12 @@ import { DataSource, Repository } from 'typeorm';
 export class CategoriesService {
   private readonly categoryRepository: Repository<Category>;
   private readonly pricedCategoriesRepository: Repository<PricedCategoriesView>;
-  private readonly logger = new Logger(CategoriesService.name)
+  private readonly logger = new Logger(CategoriesService.name);
 
   constructor(datasource: DataSource) {
     this.categoryRepository = datasource.getRepository(Category);
-    this.pricedCategoriesRepository = datasource.getRepository(PricedCategoriesView);
+    this.pricedCategoriesRepository =
+      datasource.getRepository(PricedCategoriesView);
   }
 
   async findPricedCategories() {
@@ -20,83 +21,84 @@ export class CategoriesService {
     return pricedCategories;
   }
 
-
   /**
    * Store newly created category.
-   * 
+   *
    * @param dto New category data
-   * @returns 
+   * @returns
    */
   async createCategory(dto: ICreateCategoryDto) {
-    const exists = await this.categoryRepository.findOneBy({ name: dto.name })
+    const exists = await this.categoryRepository.findOneBy({ name: dto.name });
     if (exists) {
-      this.logger.warn(`Failed category creation attempt - Category with same name already exists.`)
-      return { success: false, error: 'Category already exists' }
+      this.logger.warn(
+        `Failed category creation attempt - Category with same name already exists.`,
+      );
+      return { success: false, error: 'Category already exists' };
     }
 
-    let category = new Category()
-    category.name = dto.name
-    category.description = dto.description
-    category = await this.categoryRepository.save(category)
+    let category = new Category();
+    category.name = dto.name;
+    category.description = dto.description;
+    category = await this.categoryRepository.save(category);
 
-    this.logger.log(`New category created with ID #${category.id}`)
-    return { success: true, category: category }
+    this.logger.log(`New category created with ID #${category.id}`);
+    return { success: true, category: category };
   }
 
   /**
    * Update the given category.
-   * 
+   *
    * @param dto New category data
    * @param id Category to update
-   * @returns 
+   * @returns
    */
   async updateCategory(dto: ICreateCategoryDto, id: number) {
-    const category = await this.categoryRepository.findOneBy({ id: id })
+    const category = await this.categoryRepository.findOneBy({ id: id });
 
-    category.name = dto.name
-    category.description = dto.description
+    category.name = dto.name;
+    category.description = dto.description;
 
-    await this.categoryRepository.save(category)
-    this.logger.log(`Category with ID #${category.id} updated`)
+    await this.categoryRepository.save(category);
+    this.logger.log(`Category with ID #${category.id} updated`);
 
-    return { success: true, category: category }
+    return { success: true, category: category };
   }
 
   /**
    * Delete the given category.
-   * 
+   *
    * @param id Category to delete
-   * @returns 
+   * @returns
    */
   async deleteCategory(id: number) {
-    const category = await this.categoryRepository.findOneBy({ id: id })
+    const category = await this.categoryRepository.findOneBy({ id: id });
 
     if (category) {
-      await this.categoryRepository.delete(id)
-      return { success: true }
+      await this.categoryRepository.delete(id);
+      return { success: true };
     } else {
-      return { success: false, error: "Category doesn't exists" }
+      return { success: false, error: "Category doesn't exists" };
     }
   }
 
   /**
    * Get categories index.
-   * 
-   * @returns 
+   *
+   * @returns
    */
   async getCategories() {
-    const categories = await this.categoryRepository.find()
-    return categories
+    const categories = await this.categoryRepository.find();
+    return categories;
   }
 
   /**
    * Get given category data.
-   * 
-   * @param id 
-   * @returns 
+   *
+   * @param id
+   * @returns
    */
   async getCategory(id: number) {
-    const category = await this.categoryRepository.findOneBy({ id: id })
-    return category
+    const category = await this.categoryRepository.findOneBy({ id: id });
+    return category;
   }
 }

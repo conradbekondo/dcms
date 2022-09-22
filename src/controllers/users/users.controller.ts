@@ -10,14 +10,23 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Query, Res,
+  Query,
+  Res,
   UseFilters,
   UseGuards,
   UsePipes,
-  ValidationPipe
+  ValidationPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { catchError, firstValueFrom, from, map, of, reduce, switchMap } from 'rxjs';
+import {
+  catchError,
+  firstValueFrom,
+  from,
+  map,
+  of,
+  reduce,
+  switchMap,
+} from 'rxjs';
 import { Role } from 'src/decorators/role.decorator';
 import { INewUserDto } from 'src/dto/new-user.dto';
 import { UpdateUserDto } from 'src/dto/update-user.dto';
@@ -46,8 +55,17 @@ export class UsersController extends BaseController {
   }
 
   @Get()
-  async viewUsers(@Query('startAt') startAt: string, @Query('size') size: string, @Res() res: Response) {
-    if (!startAt || startAt == '' || !/^-?\d+$/gm.test(startAt) || parseInt(startAt) < 0) {
+  async viewUsers(
+    @Query('startAt') startAt: string,
+    @Query('size') size: string,
+    @Res() res: Response,
+  ) {
+    if (
+      !startAt ||
+      startAt == '' ||
+      !/^-?\d+$/gm.test(startAt) ||
+      parseInt(startAt) < 0
+    ) {
       startAt = '0';
     }
 
@@ -55,47 +73,63 @@ export class UsersController extends BaseController {
       size = '50';
     }
 
-    return firstValueFrom(from(this.userService.getUsers(parseInt(startAt), parseInt(size))).pipe(
-      switchMap(_users => {
-        return of(..._users).pipe(
-          map(({ id, profile, dateCreated, lastUpdated, roles, creator }) => {
-            return {
-              id,
-              profile,
-              roles: roles.map(r => r.roleName),
-              dateCreated,
-              lastUpdated,
-              addedBy: !creator ? 'N/A' : `${creator.profile.firstName} ${creator.profile.lastName || ''}`.trim()
-            }
-          }),
-          reduce((acc: any[], curr) => [...acc, curr], [])
-        )
-      })
-    )).then(users => {
+    return firstValueFrom(
+      from(this.userService.getUsers(parseInt(startAt), parseInt(size))).pipe(
+        switchMap((_users) => {
+          return of(..._users).pipe(
+            map(({ id, profile, dateCreated, lastUpdated, roles, creator }) => {
+              return {
+                id,
+                profile,
+                roles: roles.map((r) => r.roleName),
+                dateCreated,
+                lastUpdated,
+                addedBy: !creator
+                  ? 'N/A'
+                  : `${creator.profile.firstName} ${
+                      creator.profile.lastName || ''
+                    }`.trim(),
+              };
+            }),
+            reduce((acc: any[], curr) => [...acc, curr], []),
+          );
+        }),
+      ),
+    ).then((users) => {
       this.viewBag.pageTitle = 'System Users';
-      const v = { data: { users: users, errors: [], newUser: new INewUserDto() }, view: this.viewBag };
+      const v = {
+        data: { users: users, errors: [], newUser: new INewUserDto() },
+        view: this.viewBag,
+      };
       res.render('users/users', v);
     });
   }
 
   @UsePipes(ValidationPipe)
   @Put(':id')
-  async updateUser(@Param('id') id: string, @Body() body: UpdateUserDto, @Res() res: Response) {
-    return firstValueFrom(from(this.userService.getUser(parseInt(id))).pipe(
-      switchMap(user => {
-        if (user) {
-          return from(this.userService.updateUser(body, parseInt(id)));
-        }
-      }),
-      catchError((error, user) => {
-        if (user) {
-          return user;
-        } {
-          this.logger.error(error.message);
-          return of({ success: false, user: null });
-        }
-      })
-    )).then(x => {
+  async updateUser(
+    @Param('id') id: string,
+    @Body() body: UpdateUserDto,
+    @Res() res: Response,
+  ) {
+    return firstValueFrom(
+      from(this.userService.getUser(parseInt(id))).pipe(
+        switchMap((user) => {
+          if (user) {
+            return from(this.userService.updateUser(body, parseInt(id)));
+          }
+        }),
+        catchError((error, user) => {
+          if (user) {
+            return user;
+          }
+          {
+            this.logger.error(error.message);
+            return of({ success: false, user: null });
+          }
+        }),
+      ),
+    ).then((x) => {
       if (x.success) {
         res.status(HttpStatus.ACCEPTED).send({ message: 'OK' });
       } else {
@@ -106,27 +140,31 @@ export class UsersController extends BaseController {
 
   @Get('/update/:id')
   async getUsers(@Param('id') id: string, @Res() res: Response) {
-    return firstValueFrom(from(this.userService.getUser(parseInt(id))).pipe(
-      switchMap(_user => {
-        if (_user) {
-          const dto = new UpdateUserDto();
-          dto.address = _user.profile.address;
-          dto.firstName = _user.profile.firstName;
-          dto.lastName = _user.profile.lastName;
-          dto.natId = _user.profile.natId;
-          dto.gender = _user.profile.gender.toString();
-          dto.id = _user.id.toString();
-          dto.phone = _user.profile.phoneNumber;
-          dto.role = _user.roles[0].roleName as 'admin' | 'staff';
-          return of(dto);
-        } else {
-          return of(null);
-        }
-      }),
-      catchError(() => of(null))
-    )).then(dto => {
+    return firstValueFrom(
+      from(this.userService.getUser(parseInt(id))).pipe(
+        switchMap((_user) => {
+          if (_user) {
+            const dto = new UpdateUserDto();
+            dto.address = _user.profile.address;
+            dto.firstName = _user.profile.firstName;
+            dto.lastName = _user.profile.lastName;
+            dto.natId = _user.profile.natId;
+            dto.gender = _user.profile.gender.toString();
+            dto.id = _user.id.toString();
+            dto.phone = _user.profile.phoneNumber;
+            dto.role = _user.roles[0].roleName as 'admin' | 'staff';
+            return of(dto);
+          } else {
+            return of(null);
+          }
+        }),
+        catchError(() => of(null)),
+      ),
+    ).then((dto) => {
       if (!dto) {
-        res.status(HttpStatus.NOT_FOUND).json({ message: 'User not found with ID: ' + id });
+        res
+          .status(HttpStatus.NOT_FOUND)
+          .json({ message: 'User not found with ID: ' + id });
       } else {
         res.status(HttpStatus.OK).json({ dto });
       }
@@ -136,10 +174,7 @@ export class UsersController extends BaseController {
   @Post()
   @UsePipes(ValidationPipe)
   @UseFilters(CreateUserFailedFilter)
-  async storeUser(
-    @Body() createUsersDto: INewUserDto,
-    @Res() res: Response,
-  ) {
+  async storeUser(@Body() createUsersDto: INewUserDto, @Res() res: Response) {
     try {
       const stored = await this.userService.createUser(createUsersDto);
 
@@ -179,6 +214,6 @@ export class UsersController extends BaseController {
   @Post('isUsernameUnique')
   async isUsernameUnique(@Body() { username }: { username: string }) {
     const user = await this.userService.getUser(username);
-    return `${(user == null)}`;
+    return `${user == null}`;
   }
 }

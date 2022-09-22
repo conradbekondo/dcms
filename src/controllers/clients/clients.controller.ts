@@ -12,7 +12,7 @@ import {
   Req,
   Res,
   UseFilters,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Role } from 'src/decorators/role.decorator';

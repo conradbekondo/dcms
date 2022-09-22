@@ -8,7 +8,57 @@
 <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
 <script src="/static/js/sweetalert.min.js"></script>
 <script>
-    const services = []
+    const services = [];
+
+    $(document).ready(function() {
+        $('#iconshow > a').each(e => {
+            $(this).click(function(event) {
+                event.preventDefault();
+
+                const children = $(this).children();
+                console.log(children);
+            })
+        });
+
+        $('#table .edit-btn').each(function() {
+            const button = $(this);
+            button.click(function(e) {
+                const productId = button.data('id');
+                if (!productId) return;
+
+                $.ajax({
+                    method: 'GET',
+                    url: `/products/${productId}?withServicePrices=true`,
+                    success: (response) => {
+                        debugger;
+
+                    },
+                    error: e => {
+                        debugger;
+                    }
+                })
+            });
+        })
+
+    });
+
+    function add_icon(v, k) {
+        $('#iconshow').modal('hide');
+        const value = `${k}:${v}`;
+        $('#selected-icon-input').val(value);
+        const x = document.getElementById('selected-icon');
+        while (x.firstChild) {
+            x.firstChild.remove();
+        }
+
+        if (k == 'svg') {
+            x.innerHTML = '<div class="glyph mr-1 mb-1"><img style="width: 65px;" class="mt-3" src="/static/icons/' + v + '"></div>';
+        } else {
+            x.innerHTML = '<div style="font-size: 80px" class="glyph mr-1 mb-1"><i class="' + v + '"></i></div>';
+        }
+        // $('#selected-icon').after('<figcaption class="d-flex justify-content-around text-center align-items-center">Selected Icon <button type="button" onclick="removeSelectedIcon()" class="text-danger btn btn-outline-danger">&times;</button></figcaption>');
+    }
+
 
     $('.service_price').change(function() {
         const price = $(this).val()
@@ -30,12 +80,12 @@
     })
 
     $('#create_form').submit(function(e) {
-        e.preventDefault()
+        e.preventDefault();
 
         const data = {
             name: $('#create_form #name').val(),
             category: $('#create_form #category').val(),
-            icon: $('#create_form #icon').val(),
+            icon: $('#create_form #selected-icon-input').val(),
             services: services,
         }
 
@@ -44,6 +94,7 @@
             method: 'POST',
             data: data,
             success: (res) => {
+                debugger;
                 Swal.fire({
                     title: 'Success',
                     text: res.message || "Product created successfully.",
@@ -51,6 +102,7 @@
                 }).then(() => window.location.reload())
             },
             error: (err) => {
+                debugger;
                 console.error(err)
                 Swal.fire({
                     title: 'Error',

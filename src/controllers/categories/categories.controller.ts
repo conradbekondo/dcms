@@ -14,7 +14,7 @@ import {
   Req,
   Res,
   UseFilters,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Role } from 'src/decorators/role.decorator';
@@ -34,7 +34,11 @@ import { BaseController } from '../base/base.controller';
 export class CategoriesController extends BaseController {
   private readonly logger = new Logger(CategoriesController.name);
 
-  constructor(private readonly categoryService: CategoriesService, @Inject(injectionTokenKeys.appName) appName: string, usersService: UsersService) {
+  constructor(
+    private readonly categoryService: CategoriesService,
+    @Inject(injectionTokenKeys.appName) appName: string,
+    usersService: UsersService,
+  ) {
     super(appName, usersService);
   }
 

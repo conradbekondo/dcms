@@ -15,9 +15,8 @@ export class BadQueryFilter implements ExceptionFilter {
     const entries = Object.entries(exception.queryMap).entries();
     for (const [_, [k, v]] of entries) {
       if (typeof v === 'object')
-        url.searchParams.append(`${k}`, `${(JSON.stringify(v))}`);
-      else
-        url.searchParams.append(`${k}`, `${(v as unknown)}`);
+        url.searchParams.append(`${k}`, `${JSON.stringify(v)}`);
+      else url.searchParams.append(`${k}`, `${v as unknown}`);
     }
     res.redirect(url.toString());
   }

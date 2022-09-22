@@ -46,47 +46,59 @@
                                             </select>
                                         </div>
 
-                                        <% data.services.forEach(service=> { %>
-                                            <div class="row">
-                                                <div class="form-group col-6">
-                                                    <label>
-                                                        <%= service.name %> Normal (XAF) <span
-                                                                class="text-danger ">*</span>
-                                                    </label>
-                                                    <input type="number" min="0" class="form-control service_price" name="<%= service.name %>_normal" id="<%= service.name %>_normal" data-service="<%= service.id %>" data-type="normal">
-                                                </div>
-                                                <div class="form-group col-6">
-                                                    <label>
-                                                        <%= service.name %> Fast (XAF)<span
-                                                                class="text-danger ">*</span>
-                                                    </label>
-                                                    <input type="number" min="0" class="form-control service_price" name="<%= service.name %>_fast" id="<%= service.name %>_fast" data-service="<%= service.id %>" data-type="fast">
-                                                </div>
-                                            </div>
-                                            <% }) %>
-
+                                        <% if(data.services && data.services.length> 0) { %>
+                                            <% data.services.forEach(service=> { %>
                                                 <div class="row">
-                                                    <div class="form-group col-12">
-                                                        <button type="button" class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block" data-toggle="modal" data-backdrop="static" data-target="#iconshow"> Add an icon <i
-                                                                class="glyph-icon simple-icon-plus"></i> </button>
-                                                        <span id="icon_select" style="font-size: 40px;"></span>
-                                                        <input type="hidden" id="icons">
+                                                    <div class="form-group col-6">
+                                                        <label>
+                                                            <%= service.name %> Normal (XAF) <span
+                                                                    class="text-danger ">*</span>
+                                                        </label>
+                                                        <input type="number" min="0" class="form-control service_price" name="<%= service.name %>_normal" id="<%= service.name %>_normal" data-service="<%= service.id %>" data-type="normal">
+                                                    </div>
+                                                    <div class="form-group col-6">
+                                                        <label>
+                                                            <%= service.name %> Fast (XAF)<span
+                                                                    class="text-danger ">*</span>
+                                                        </label>
+                                                        <input type="number" min="0" class="form-control service_price" name="<%= service.name %>_fast" id="<%= service.name %>_fast" data-service="<%= service.id %>" data-type="fast">
                                                     </div>
                                                 </div>
-
-                                                <hr>
-                                                <div class="row">
-                                                    <% data.additional.forEach(service=> { %>
-                                                        <div class="form-group col-4">
-                                                            <label>
-                                                                <%= service.name %> (XAF) <span
-                                                                        class="text-danger "></span>
-                                                            </label>
-                                                            <input type="number" min="0" class="form-control service_price" name="<%= service.name %>_additional" id="<%= service.name %>_additional" data-service="<%= service.id %>" data-type="additional" value="0">
+                                                <% }) %>
+                                                    <%} else {%>
+                                                        <div class="form-group">
+                                                            <label class="text-muted">Services</label>
+                                                            <p class="alert alert-info text-center">
+                                                                No services could be found. Create <a href="/services">here</a>
+                                                            </p>
                                                         </div>
-                                                        <% }) %>
-                                                </div>
-                                                <div class="error_validateclt text-danger"></div>
+                                                        <% } %>
+                                                            <div class="row">
+                                                                <input type="hidden" id="selected-icon-input" name="icon">
+                                                                <div class="form-group col-12 d-flex align-items-center justify-content-center">
+                                                                    <div id="selected-icon">
+                                                                    </div>
+                                                                    <button type="button" class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block" data-toggle="modal" data-backdrop="static" data-target="#iconshow"> Select icon <i
+                                                                            class="glyph-icon simple-icon-plus"></i>
+                                                                    </button>
+                                                                    <span id="icon_select" style="font-size: 40px;"></span>
+                                                                    <input type="hidden" id="icons">
+                                                                </div>
+                                                            </div>
+
+                                                            <hr>
+                                                            <div class="row">
+                                                                <% data.additional.forEach(service=> { %>
+                                                                    <div class="form-group col-4">
+                                                                        <label>
+                                                                            <%= service.name %> (XAF) <span
+                                                                                    class="text-danger "></span>
+                                                                        </label>
+                                                                        <input type="number" min="0" class="form-control service_price" name="<%= service.name %>_additional" id="<%= service.name %>_additional" data-service="<%= service.id %>" data-type="additional" value="0">
+                                                                    </div>
+                                                                    <% }) %>
+                                                            </div>
+                                                            <div class="error_validateclt text-danger"></div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
@@ -109,15 +121,27 @@
                                 </div>
                                 <form class="needs-validation">
                                     <div class="modal-body">
-                                        <div class="fetcheupdate">
-
+                                        <input id="id" name="id" type="hidden">
+                                        <div class="form-group">
+                                            <label for="updateName">Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="name" id="updateName">
                                         </div>
-                                        <div id="savebtm_result" class="form-group"></div>
-
+                                        <div class="form-group">
+                                            <label for="updateCategories">Categories <span
+                                                    class="text-danger"></span></label>
+                                            <select name="category" id="updateCategories" class="form-control">
+                                                <option value="">Select a category</option>
+                                                <% data.categories.forEach(category=> {%>
+                                                    <option value="<%= category.id%>">
+                                                        <%= category.name %>
+                                                    </option>
+                                                    <%})%>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-                                        <button type="button" id="savebtn" onclick="updatebtm()" class="btn btn-primary">Save</button>
+                                        <button type="button" id="savebtn" class="btn btn-primary">Save</button>
                                     </div>
                                 </form>
                             </div>
@@ -134,152 +158,152 @@
                                     <br>
                                     <hr>
                                     <div class="simple-line-icons">
-                                        <a href="#" onclick="add_icon('glyph-icon iconsminds-t-shirt','iconsminds')">
+                                        <a onclick="add_icon('glyph-icon iconsminds-t-shirt','iconsminds')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <i class="glyph-icon iconsminds-t-shirt" style="font-size: 60px;"></i>
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('glyph-icon iconsminds-jeans','iconsminds')">
+                                        <a onclick="add_icon('glyph-icon iconsminds-jeans','iconsminds')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <i class="glyph-icon iconsminds-jeans" style="font-size: 60px;"></i>
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('glyph-icon iconsminds-blouse','iconsminds')">
+                                        <a onclick="add_icon('glyph-icon iconsminds-blouse','iconsminds')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <i class="glyph-icon iconsminds-blouse" style="font-size: 60px;"></i>
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('glyph-icon iconsminds-jacket','iconsminds')">
+                                        <a onclick="add_icon('glyph-icon iconsminds-jacket','iconsminds')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <i class="glyph-icon iconsminds-jacket" style="font-size: 60px;"></i>
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('glyph-icon iconsminds-tie','iconsminds')">
+                                        <a onclick="add_icon('glyph-icon iconsminds-tie','iconsminds')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <i class="glyph-icon iconsminds-tie" style="font-size: 60px;"></i>
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('glyph-icon iconsminds-baby-clothes','iconsminds')">
+                                        <a onclick="add_icon('glyph-icon iconsminds-baby-clothes','iconsminds')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <i class="glyph-icon iconsminds-baby-clothes" style="font-size: 60px;"></i>
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('glyph-icon iconsminds-bikini','iconsminds')">
+                                        <a onclick="add_icon('glyph-icon iconsminds-bikini','iconsminds')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <i class="glyph-icon iconsminds-bikini" style="font-size: 60px;"></i>
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('glyph-icon iconsminds-dress','iconsminds')">
+                                        <a onclick="add_icon('glyph-icon iconsminds-dress','iconsminds')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <i class="glyph-icon iconsminds-dress" style="font-size: 60px;"></i>
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('glyph-icon iconsminds-walkie-talkie','iconsminds')">
+                                        <a onclick="add_icon('glyph-icon iconsminds-walkie-talkie','iconsminds')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <i class="glyph-icon iconsminds-walkie-talkie" style="font-size: 60px;"></i>
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('glyph-icon iconsminds-cap','iconsminds')">
+                                        <a onclick="add_icon('glyph-icon iconsminds-cap','iconsminds')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <i class="glyph-icon iconsminds-cap" style="font-size: 60px;"></i>
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('glyph-icon iconsminds-gloves','iconsminds')">
+                                        <a onclick="add_icon('glyph-icon iconsminds-gloves','iconsminds')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <i class="glyph-icon iconsminds-gloves" style="font-size: 60px;"></i>
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('glyph-icon iconsminds-boot','iconsminds')">
+                                        <a onclick="add_icon('glyph-icon iconsminds-boot','iconsminds')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <i class="glyph-icon iconsminds-boot" style="font-size: 60px;"></i>
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('clothes.svg','svg')">
+                                        <a onclick="add_icon('baby-pants-svgrepo-com.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/baby-pants-svgrepo-com.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('laundry.svg','svg')">
+                                        <a onclick="add_icon('static/icons/coat-svgrepo-com.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/coat-svgrepo-com.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('mattress.svg','svg')">
+                                        <a onclick="add_icon('dress-garment-svgrepo-com.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/dress-garment-svgrepo-com.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('shirts.svg','svg')">
+                                        <a onclick="add_icon('baby-pants-svgrepo-com.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/baby-pants-svgrepo-com.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('jacket.svg','svg')">
+                                        <a onclick="add_icon('hat-svgrepo-com.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/hat-svgrepo-com.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('sneaker.svg','svg')">
+                                        <a onclick="add_icon('jacket-fur-svgrepo-com.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/jacket-fur-svgrepo-com.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('trench-coat.svg','svg')">
+                                        <a onclick="add_icon('jacket-svgrepo-com.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/jacket-svgrepo-com.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('cap.svg','svg')">
+                                        <a onclick="add_icon('oxford-wave-blazer-svgrepo-com.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/oxford-wave-blazer-svgrepo-com.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('pant.svg','svg')">
+                                        <a onclick="add_icon('pillow-svgrepo-com.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/pillow-svgrepo-com.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('t-shirt.svg','svg')">
+                                        <a onclick="add_icon('t-shirt.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
-                                                <img style="width: 65px;" class="mt-3" src="/static/icons/oxford-wave-blazer-svgrepo-com">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/t-shirt.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('sweatshirt.svg','svg')">
-                                            <div class="glyph border border-success mr-1 mb-1">
-                                                <img style="width: 65px;" class="mt-3" src="/static/icons/skirt-svgrepo-com.svg">
-                                            </div>
-                                        </a>
-                                        <a href="#" onclick="add_icon('blazer.svg','svg')">
+                                        <a onclick="add_icon('skirt-svgrepo-com.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/skirt-svgrepo-com.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('batik-skirt.svg','svg')">
+                                        <a onclick="add_icon('blazer.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/blazer.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon('sleeveless-t-shirt-svgrepo-com.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/sleeveless-t-shirt-svgrepo-com.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('vest.svg','vest')">
+                                        <a onclick="add_icon('sneakers-svgrepo-com.svg','vest')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/sneakers-svgrepo-com.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('uniform.svg','svg')">
+                                        <a onclick="add_icon('sweatshirt-svgrepo-com.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/sweatshirt-svgrepo-com.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('uniform-medical.svg','svg')">
+                                        <a onclick="add_icon('vest-svgrepo-com.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/vest-svgrepo-com.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('leather-jacket.svg','svg')">
+                                        <a onclick="add_icon('leather-jacket.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
-                                                <img style="width: 65px;" class="mt-3" src="/static/icons/skirt-svgrepo-com.svg">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/leather-jacket.svg">
                                             </div>
                                         </a>
-                                        <a href="#" onclick="add_icon('bed-sheets.svg','svg')">
+                                        <a onclick="add_icon('hats.svg','svg')">
                                             <div class="glyph border border-success mr-1 mb-1">
                                                 <img style="width: 65px;" class="mt-3" src="/static/icons/hats.svg">
                                             </div>
@@ -293,7 +317,9 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <h1>Products list</h1>
+                            <h1>
+                                <%= view.pageTitle %>
+                            </h1>
                             <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
                                 <ol class="breadcrumb pt-0">
                                     <li class="breadcrumb-item">
@@ -303,12 +329,12 @@
 
                                     <li class="breadcrumb-item">
                                         <a href="/categories"><button type="button" class="btn btn-primary"><i
-                                                    class="glyph-icon simple-icon-list"></i> Categories </button></a>
+                                                    class="glyph-icon simple-icon-grid"></i> Categories </button></a>
                                     </li>
                                     <li class="breadcrumb-item">
-                                        <a href="/products?additional_services_only=true"><button type="button"
+                                        <a href="/services?additional_services_only=true"><button type="button"
                                                 class="btn btn-primary"><i class="glyph-icon simple-icon-list"></i>
-                                                Additional services </button></a>
+                                                Services </button></a>
                                     </li>
 
                                 </ol>
@@ -335,13 +361,19 @@
                                             <% data.products.forEach(product=> { %>
                                                 <tr>
                                                     <td>
-                                                        <% if (product.iconUrl) { %>
-                                                            <i class="<%= product.iconUrl %>"></i>
-                                                            <% } %>
-                                                                <%= product.id %>
+                                                        <%= product.id %>
                                                     </td>
                                                     <td>
-                                                        <%= product.name %>
+                                                        <% if (product.iconUrl) { %>
+                                                            <% if (product.iconUrl.split(':')[0]==='iconsminds' ) {%>
+                                                                <div style="font-size: 30px" class="d-inline glyph mr-1 mb-1"><i class="<%= product.iconUrl.split(':')[1] %>"></i>
+                                                                </div>
+                                                                <%} else { %>
+                                                                    <div class=" d-inline  glyph mt-3 mr-1 mb-1"><img style="width: 35px;" class="mt-3" src="/static/icons/<%= product.iconUrl.split(':')[1] %>">
+                                                                    </div>
+                                                                    <%}%>
+                                                                        <% } %>
+                                                                            <%= product.name %>
                                                     </td>
                                                     <td>
                                                         <%= product.category.name %>

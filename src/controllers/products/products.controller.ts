@@ -7,11 +7,12 @@ import {
   Logger,
   Param,
   Post,
+  Query,
   Render,
   Req,
   Res,
   UseFilters,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Role } from 'src/decorators/role.decorator';
@@ -46,49 +47,69 @@ export class ProductsController extends BaseController {
   @Get()
   @Render('products/view_products')
   async viewProducts() {
-    const products = await this.productService.getProducts()
-    const categories = await this.categoryService.getCategories()
-    const services = await this.serviceService.getServices()
-    const additional = await this.serviceService.getAdditional()
+    const products = await this.productService.getProducts();
+    const categories = await this.categoryService.getCategories();
+    const services = await this.serviceService.getServices();
+    const additional = await this.serviceService.getAdditional();
+    this.viewBag.pageTitle = 'Products';
 
-    return { data: { products, categories, services, additional }, view: this.viewBag };
+    return {
+      data: { products, categories, services, additional },
+      view: this.viewBag,
+    };
   }
 
   @Post()
-  async storeProduct(@Body() data: IProductDto, @Req() req: Request, @Res() res: Response) {
+  async storeProduct(
+    @Body() data: IProductDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     const errors: string[] = [];
 
     if (!data.name || data.name.length <= 0) {
-      errors.push('Product name required')
-      return res.status(400).json({ message: 'Unable to create product.', errors: errors })
+      errors.push('Product name required');
+      return res
+        .status(400)
+        .json({ message: 'Unable to create product.', errors: errors });
     }
 
     if (!data.category || data.category <= 0) {
-      errors.push('Product category required')
-      return res.status(400).json({ message: 'Unable to create product.', errors: errors })
+      errors.push('Product category required');
+      return res
+        .status(400)
+        .json({ message: 'Unable to create product.', errors: errors });
     }
 
-    const stored = await this.productService.createProduct(data)
+    const stored = await this.productService.createProduct(data);
 
     if (stored.success)
-      return res.status(201).json({ message: "Product created successfully." })
-    else
-      return res.status(500).json({ message: stored.error })
+      return res.status(201).json({ message: 'Product created successfully.' });
+    else return res.status(500).json({ message: stored.error });
   }
 
   @Get(':id')
-  async getProduct(@Param('id') id: number, @Res() res: Response) {
-    const product = await this.productService.getProduct(id)
-    return res.json(product)
+  async getProduct(@Param('id') id: number,
+    @Query('withServicePrices') withServicePrices: 'true' | 'false',
+    @Res() res: Response) {
+
+    if (withServicePrices == 'true') {
+      await this.productService.getProductWithServicePrices(id);
+    }
+    const product = await this.productService.getProduct(id);
+    return res.json(product);
   }
 
   @Delete(':id')
-  async deleteProduct(@Param('id') id: number, @Req() req: Request, @Res() res: Response) {
-    const deleted = await this.productService.deleteProduct(id)
+  async deleteProduct(
+    @Param('id') id: number,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const deleted = await this.productService.deleteProduct(id);
 
     if (deleted.success)
-      return res.json({ message: "Product deleted successfully." })
-    else
-      return res.status(500).json({ message: "Unable to delete product." })
+      return res.json({ message: 'Product deleted successfully.' });
+    else return res.status(500).json({ message: 'Unable to delete product.' });
   }
 }

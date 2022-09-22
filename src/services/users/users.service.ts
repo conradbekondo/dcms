@@ -32,10 +32,10 @@ export class UsersService {
       // this.seed();
     }
 
-    this.principalSubject.subscribe(p => {
+    this.principalSubject.subscribe((p) => {
       if (!p) return;
       this.logger.debug('Principal updated => ' + JSON.stringify(p));
-    })
+    });
   }
 
   private async seed() {
@@ -82,16 +82,18 @@ export class UsersService {
   }
 
   async isUserInRoles(roleNames: string[], username: string) {
-    return this.userRepository.findOne({
-      where: { username },
-      select: { roles: { roleName: true } }
-    }).then(user => {
-      for (let roleName of roleNames) {
-        if (user.roles.some(role => role.roleName === roleName))
-          return true;
-      }
-      return false;
-    });
+    return this.userRepository
+      .findOne({
+        where: { username },
+        select: { roles: { roleName: true } },
+      })
+      .then((user) => {
+        for (let roleName of roleNames) {
+          if (user.roles.some((role) => role.roleName === roleName))
+            return true;
+        }
+        return false;
+      });
   }
 
   async getUser(arg: IPrincipal | number | string) {
@@ -114,7 +116,6 @@ export class UsersService {
     return user;
   }
 
-
   async loginUser(dto: ILoginDto) {
     const user = await this.userRepository.findOneBy({
       username: dto.username,
@@ -133,8 +134,9 @@ export class UsersService {
     const verificationResult = await compare(dto.password, user.passwordHash);
     if (!verificationResult) {
       this.logger.warn(
-        `Invalid login credentials provided for: '${profile.firstName} ${profile.lastName?.trim() || ''
-          }'`.trim(),
+        `Invalid login credentials provided for: '${profile.firstName} ${
+          profile.lastName?.trim() || ''
+        }'`.trim(),
       );
       return { success: false, error: 'Invalid username or password' };
     }
@@ -187,7 +189,11 @@ export class UsersService {
     user.creator = currentUser;
     const _hash = await hash(dto.password, 12);
     user.passwordHash = _hash;
-    if (!(Object.values(Roles).map(x => x.toString()).includes(dto.role))) {
+    if (
+      !Object.values(Roles)
+        .map((x) => x.toString())
+        .includes(dto.role)
+    ) {
       const msg = `Role: ${dto.role} is not a valid role in the system`;
       this.logger.error(msg);
       throw new Error(msg);
@@ -197,10 +203,12 @@ export class UsersService {
     const role = await this.roleRepository.findOneBy({ roleName: dto.role });
     user.roles = [role];
 
-    user = await this.userRepository.save(user);;
+    user = await this.userRepository.save(user);
     let msg: string;
     if (user.id) {
-      msg = `${dto.firstName} ${dto.lastName || ''} account & profile created successfully`;
+      msg = `${dto.firstName} ${
+        dto.lastName || ''
+      } account & profile created successfully`;
       this.logger.debug(msg);
       return { success: true, message: msg };
     } else {
@@ -214,19 +222,23 @@ export class UsersService {
    *
    * @returns
    */
-  async getUsers(startAt: number = 0, size: number = 50, select?: FindOptionsSelect<User>) {
+  async getUsers(
+    startAt: number = 0,
+    size: number = 50,
+    select?: FindOptionsSelect<User>,
+  ) {
     const users = await this.userRepository.find({
       relations: {
         profile: true,
-        creator: true
+        creator: true,
       },
       order: {
         dateCreated: 'DESC',
-        lastUpdated: 'DESC'
+        lastUpdated: 'DESC',
       },
       select,
       skip: startAt * size,
-      take: size
+      take: size,
     });
     return users;
   }

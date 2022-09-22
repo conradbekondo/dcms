@@ -1,4 +1,9 @@
-import { ArgumentsHost, Catch, ExceptionFilter, NotFoundException } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  NotFoundException,
+} from '@nestjs/common';
 import { renderFile } from 'ejs';
 import { Response } from 'express';
 import { join } from 'path';
@@ -9,7 +14,6 @@ export class NotFoundFilter<T> implements ExceptionFilter {
     const context = host.switchToHttp();
     const response: Response = context.getResponse();
     const path = join(process.cwd(), 'views', 'not-found.ejs');
-    renderFile(path, { exception })
-      .then(s => response.status(404).send(s));
+    renderFile(path, { exception }).then((s) => response.status(404).send(s));
   }
 }

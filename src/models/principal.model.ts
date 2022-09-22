@@ -1,7 +1,6 @@
-
 export interface IPrincipal {
-    username: string;
-    displayName: string;
-    loginTime: Date;
-    roles: string[];
+  username: string;
+  displayName: string;
+  loginTime: Date;
+  roles: string[];
 }

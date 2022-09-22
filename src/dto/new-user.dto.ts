@@ -1,9 +1,20 @@
-import { IsNotEmpty, IsNumberString, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
-import { IsEqualTo } from "src/decorators/validators/is-equal-to.decorator";
-import { Gender } from "src/entities/profile.entity";
+import {
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
+import { IsEqualTo } from 'src/decorators/validators/is-equal-to.decorator';
+import { Gender } from 'src/entities/profile.entity';
 
 export class INewUserDto {
-  @IsNotEmpty({ always: true, message: '"First name" is required for system user' })
+  @IsNotEmpty({
+    always: true,
+    message: '"First name" is required for system user',
+  })
   @IsString()
   firstName: string;
 
