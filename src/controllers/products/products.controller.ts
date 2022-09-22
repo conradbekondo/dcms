@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Inject,
   Logger,
   Param,
@@ -57,6 +58,14 @@ export class ProductsController extends BaseController {
       data: { products, categories, services, additional },
       view: this.viewBag,
     };
+  }
+
+  @Get('all')
+  async getAllProducts(
+    @Res() res: Response
+  ) {
+    const products = await this.productService.getProducts();
+    res.status(HttpStatus.OK).json(products);
   }
 
   @Post()
