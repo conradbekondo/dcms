@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Inject,
   Logger,
   Param, Post,
@@ -38,9 +39,12 @@ export class CategoriesController extends BaseController {
     super(appName, usersService);
   }
 
-  @Get()
-  async getAllCategories() {
+  @Get('all')
+  async getAllCategories(
+    @Res() res: Response
+  ) {
     const categories = await this.categoryService.getCategories();
+    return res.status(HttpStatus.OK).json(categories);
   }
 
   @Get()

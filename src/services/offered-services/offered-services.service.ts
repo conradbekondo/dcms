@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { INewServiceDto } from 'src/dto/new-service.dto';
 import { OfferedService } from 'src/entities/service.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindManyOptions, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 
 @Injectable()
@@ -65,16 +65,17 @@ export class OfferedServicesService {
   }
 
   async getServices(startAt: number = 0, size = 50) {
+    let query: FindManyOptions<OfferedService> = {
+      relations: { creator: true },
+      skip: startAt * size,
+      take: size,
+      order: {
+        dateCreated: 'DESC',
+        lastUpdated: 'DESC',
+      },
+    };
     const services: OfferedService[] =
-      await this.offeredServicesRepository.find({
-        relations: { creator: true },
-        skip: startAt * size,
-        take: size,
-        order: {
-          dateCreated: 'DESC',
-          lastUpdated: 'DESC',
-        },
-      });
+      await this.offeredServicesRepository.find(query);
     return services;
   }
 

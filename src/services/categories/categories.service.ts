@@ -87,9 +87,10 @@ export class CategoriesService {
    * @returns
    */
   async getCategories() {
-    const categories = await this.categoryRepository.find({
-
-    });
+    const categories = await this.categoryRepository
+      .createQueryBuilder()
+      .distinct(true)
+      .getMany();
     return categories;
   }
 
