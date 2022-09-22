@@ -5,16 +5,12 @@ import {
   Get,
   Inject,
   Logger,
-  Param,
-  ParseBoolPipe,
-  Post,
-  Put,
-  Query,
-  Render,
+  Param, Post,
+  Put, Render,
   Req,
   Res,
   UseFilters,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Role } from 'src/decorators/role.decorator';
@@ -42,10 +38,9 @@ export class CategoriesController extends BaseController {
     super(appName, usersService);
   }
 
-  @Get('priced')
-  async getPricedCategories() {
-    const pricedCategories = await this.categoryService.findPricedCategories();
-    return { pricedCategories };
+  @Get()
+  async getAllCategories() {
+    const categories = await this.categoryService.getCategories();
   }
 
   @Get()

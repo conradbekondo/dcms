@@ -87,7 +87,9 @@ export class CategoriesService {
    * @returns
    */
   async getCategories() {
-    const categories = await this.categoryRepository.find();
+    const categories = await this.categoryRepository.find({
+
+    });
     return categories;
   }
 
