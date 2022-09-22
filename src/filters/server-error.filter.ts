@@ -1,7 +1,8 @@
 import {
   ArgumentsHost,
   Catch,
-  ExceptionFilter, InternalServerErrorException
+  ExceptionFilter,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { Response } from 'express';
 

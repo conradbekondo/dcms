@@ -118,9 +118,10 @@ export class ProductsService {
   }
 
   async getProductWithServicePrices(id: number) {
-    const result = await this.datasource.createQueryBuilder()
+    const result = await this.datasource
+      .createQueryBuilder()
       .select('')
       .from(OfferedService, 's')
-      .leftJoin(ProductServicePrice, 'psp', 'psp.product_id')
+      .leftJoin(ProductServicePrice, 'psp', 'psp.product_id');
   }
 }

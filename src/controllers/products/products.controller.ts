@@ -89,10 +89,11 @@ export class ProductsController extends BaseController {
   }
 
   @Get(':id')
-  async getProduct(@Param('id') id: number,
+  async getProduct(
+    @Param('id') id: number,
     @Query('withServicePrices') withServicePrices: 'true' | 'false',
-    @Res() res: Response) {
-
+    @Res() res: Response,
+  ) {
     if (withServicePrices == 'true') {
       await this.productService.getProductWithServicePrices(id);
     }
