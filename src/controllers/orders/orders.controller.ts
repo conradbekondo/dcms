@@ -1,14 +1,18 @@
 import {
+  Body,
   Controller,
   Get,
   Inject,
   Logger,
+  Post,
   Query,
   Render,
   Req,
   Res,
   UseFilters,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import {
@@ -28,9 +32,12 @@ import { BadQueryFilter } from 'src/filters/bad-query.filter';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { RoleGuard } from 'src/guards/auth/role.guard';
 import injectionTokenKeys from 'src/injection-tokens';
+import { CategoriesService } from 'src/services/categories/categories.service';
 import { OrdersService } from 'src/services/orders/orders.service';
+import { ProductsService } from 'src/services/products/products.service';
 import { UsersService } from 'src/services/users/users.service';
 import { BaseController } from '../base/base.controller';
+import { CategoriesController } from '../categories/categories.controller';
 
 @Controller(['', 'orders'])
 @UseGuards(AuthGuard, RoleGuard)
@@ -41,6 +48,8 @@ export class OrdersController extends BaseController {
   constructor(
     @Inject(injectionTokenKeys.appName) appName: string,
     userService: UsersService,
+    private readonly categoriesService: CategoriesService,
+    private readonly productsService: ProductsService,
     private readonly orderService: OrdersService,
   ) {
     super(appName, userService);
@@ -48,9 +57,15 @@ export class OrdersController extends BaseController {
 
   @Get('/create')
   @Render('orders/new/create-order')
-  async createOrder() {
+  async createOrderView() {
     this.viewBag.pageTitle = 'Create an Order';
     return { data: { dto: new NewOrderDto() }, view: this.viewBag };
+  }
+
+  @Post('/create')
+  @UsePipes(ValidationPipe)
+  async createOrder(@Body() dto: NewOrderDto) {
+    console.log(dto);
   }
 
   @Get()

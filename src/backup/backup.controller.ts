@@ -36,13 +36,13 @@ export class BackupController extends BaseController {
     dataSource: DataSource,
   ) {
     super(appName, userService);
-    if (!existsSync(BACKUP_FOLDER_PATH)) {
+    /* if (!existsSync(BACKUP_FOLDER_PATH)) {
       mkdirSync(BACKUP_FOLDER_PATH);
-    }
+    } */
   }
 
   @Post('')
-  performBackup() {}
+  performBackup() { }
 
   @Get()
   @Render('settings/backup')
