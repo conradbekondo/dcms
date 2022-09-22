@@ -49,8 +49,8 @@ export class ProductsController extends BaseController {
   async viewProducts() {
     const products = await this.productService.getProducts();
     const categories = await this.categoryService.getCategories();
-    const services = await this.serviceService.getServices();
-    const additional = await this.serviceService.getAdditional();
+    const services = await this.serviceService.getServices(undefined, undefined, false);
+    const additional = await this.serviceService.getServices(undefined, undefined, true);
     this.viewBag.pageTitle = 'Products';
 
     return {

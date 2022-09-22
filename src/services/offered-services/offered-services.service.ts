@@ -64,7 +64,7 @@ export class OfferedServicesService {
     }
   }
 
-  async getServices(startAt: number = 0, size = 50) {
+  async getServices(startAt: number = 0, size = 50, additionaOnly?: boolean) {
     let query: FindManyOptions<OfferedService> = {
       relations: { creator: true },
       skip: startAt * size,
@@ -73,7 +73,15 @@ export class OfferedServicesService {
         dateCreated: 'DESC',
         lastUpdated: 'DESC',
       },
+
     };
+    if (additionaOnly === true || additionaOnly === false) {
+      query = {
+        ...query, where: {
+          isAdditional: additionaOnly
+        }
+      };
+    }
     const services: OfferedService[] =
       await this.offeredServicesRepository.find(query);
     return services;
