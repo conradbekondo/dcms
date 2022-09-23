@@ -33,6 +33,8 @@ import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { RoleGuard } from 'src/guards/auth/role.guard';
 import injectionTokenKeys from 'src/injection-tokens';
 import { CategoriesService } from 'src/services/categories/categories.service';
+import { ClientsService } from 'src/services/clients/clients.service';
+import { OfferedServicesService } from 'src/services/offered-services/offered-services.service';
 import { OrdersService } from 'src/services/orders/orders.service';
 import { ProductsService } from 'src/services/products/products.service';
 import { UsersService } from 'src/services/users/users.service';
@@ -50,7 +52,9 @@ export class OrdersController extends BaseController {
     userService: UsersService,
     private readonly categoriesService: CategoriesService,
     private readonly productsService: ProductsService,
+    private readonly offeredServicesService: OfferedServicesService,
     private readonly orderService: OrdersService,
+    private readonly clientService: ClientsService
   ) {
     super(appName, userService);
   }
@@ -59,7 +63,11 @@ export class OrdersController extends BaseController {
   @Render('orders/new/create-order')
   async createOrderView() {
     this.viewBag.pageTitle = 'Create an Order';
-    return { data: { dto: new NewOrderDto() }, view: this.viewBag };
+    const categories = await this.categoriesService.getCategories();
+    const services = await this.offeredServicesService.getServices(0, 999999999999, false);
+    const products = await this.productsService.getProducts();
+    const clients = await this.clientService.getClients();
+    return { data: { clients, categories, services, products, dto: new NewOrderDto() }, view: this.viewBag };
   }
 
   @Post('/create')

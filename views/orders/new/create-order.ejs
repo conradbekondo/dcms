@@ -4,532 +4,197 @@
         <%- include('../../partials/navbar.ejs') %>
             <%- include('../../partials/menu.ejs')%>
 
-                <main>
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-12">
-                                <h1>
-                                    <%= view.pageTitle %>
-                                </h1>
-                                <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
-
-
-                                </nav>
-                                <div class="separator mb-5"></div>
-                            </div>
+                <form action="" method="post" id="new-order-form">
+                    <main>
+                        <div class="container-fluid">
                             <div class="row">
-                                <div class="col-xl-6 col-lg-12 mb-0">
-                                    <div class="card">
-                                        <div class="card-body p-2">
-                                            <div class="nav nav-tabs categories-nav w-100 mb-2">
-
-                                                <a href="#"><button type="button"
-                                                        class="btn btn-primary btn-lg mb-1 text-center default categories selectedGat"
-                                                        id="">All</button></a>
-                                                <a href="#"><button type="button"
-                                                        class="btn btn-primary btn-lg mb-1 text-center default categories"
-                                                        id="2">Women</button></a>
-
-                                                <a href="#"><button type="button"
-                                                        class="btn btn-primary btn-lg mb-1 text-center default categories"
-                                                        id="3">Men</button></a>
-                                                <a href="#"><button type="button"
-                                                        class="btn btn-primary btn-lg mb-1 text-center default categories"
-                                                        id="5">Covers</button></a>
-                                            </div>
-                                            <div id="product-tabs" class="tab-content">
-
-                                            </div>
-                                            <!-- <div class="scroll dashboard-list-with-thumbs ps ps--active-y" id="productList" style="display:block;">
-
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR001" onclick="add_prodpos('18')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/pants.svg" width="70%">
-                                                        <p class="card-text mb-2">Pants</p>
-
-                                                        <input type="hidden" id="idname-18" name="name" value="pants" />
-                                                        <input type="hidden" id="category" name="category" value="2" />
-                                                        <input type="hidden" id="price-18" name="category" value="2" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR020" onclick="add_prodpos('20')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/jacket.svg" width="70%">
-                                                        <p class="card-text mb-2">Jacket</p>
-
-                                                        <input type="hidden" id="idname-20" name="name" value="jacket" />
-                                                        <input type="hidden" id="category" name="category" value="3" />
-                                                        <input type="hidden" id="price-20" name="category" value="3" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR021" onclick="add_prodpos('21')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/carpet.svg" width="70%">
-                                                        <p class="card-text mb-2">Carpets</p>
-
-                                                        <input type="hidden" id="idname-21" name="name" value="Carpets" />
-                                                        <input type="hidden" id="category" name="category" value="4" />
-                                                        <input type="hidden" id="price-21" name="category" value="4" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR022" onclick="add_prodpos('22')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/coat.svg" width="70%">
-                                                        <p class="card-text mb-2">Coat</p>
-
-                                                        <input type="hidden" id="idname-22" name="name" value="coat" />
-                                                        <input type="hidden" id="category" name="category" value="2" />
-                                                        <input type="hidden" id="price-22" name="category" value="2" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR023" onclick="add_prodpos('23')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/shirt.svg" width="70%">
-                                                        <p class="card-text mb-2">Shirt</p>
-
-                                                        <input type="hidden" id="idname-23" name="name" value="t-shirt" />
-                                                        <input type="hidden" id="category" name="category" value="3" />
-                                                        <input type="hidden" id="price-23" name="category" value="3" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR024" onclick="add_prodpos('24')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/dress.svg" width="70%">
-                                                        <p class="card-text mb-2">Dress</p>
-
-                                                        <input type="hidden" id="idname-24" name="name" value="dress" />
-                                                        <input type="hidden" id="category" name="category" value="2" />
-                                                        <input type="hidden" id="price-24" name="category" value="2" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR024" onclick="add_prodpos('25')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/t-shirts.svg" width="70%">
-                                                        <p class="card-text mb-2">T-Shirt</p>
-
-                                                        <input type="hidden" id="idname-25" name="name" value="t-shirt" />
-                                                        <input type="hidden" id="category" name="category" value="3" />
-                                                        <input type="hidden" id="price-25" name="category" value="3" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR026" onclick="add_prodpos('26')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/t-shirt.svg" width="70%">
-                                                        <p class="card-text mb-2">Shirt</p>
-
-                                                        <input type="hidden" id="idname-26" name="name" value="Shirt" />
-                                                        <input type="hidden" id="category" name="category" value="3" />
-                                                        <input type="hidden" id="price-26" name="category" value="3" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR027" onclick="add_prodpos('27')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/towels.svg" width="70%">
-                                                        <p class="card-text mb-2">Towel</p>
-
-                                                        <input type="hidden" id="idname-27" name="name" value="towel" />
-                                                        <input type="hidden" id="category" name="category" value="4" />
-                                                        <input type="hidden" id="price-27" name="category" value="4" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR025" onclick="add_prodpos('28')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/spant.svg" width="50%">
-                                                        <p class="card-text mb-2">Sweat Pants</p>
-
-                                                        <input type="hidden" id="idname-28" name="name" value="Sweat pants" />
-                                                        <input type="hidden" id="category" name="category" value="3" />
-                                                        <input type="hidden" id="price-28" name="category" value="3" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR029" onclick="add_prodpos('29')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/shoes.svg" width="70%">
-                                                        <p class="card-text mb-2">Shoes</p>
-
-                                                        <input type="hidden" id="idname-29" name="name" value="shoes" />
-                                                        <input type="hidden" id="category" name="category" value="3" />
-                                                        <input type="hidden" id="price-29" name="category" value="3" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR028" onclick="add_prodpos('30')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/cap.svg" width="70%">
-                                                        <p class="card-text mb-2">Cap</p>
-
-                                                        <input type="hidden" id="idname-30" name="name" value="cap" />
-                                                        <input type="hidden" id="category" name="category" value="3" />
-                                                        <input type="hidden" id="price-30" name="category" value="3" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR031" onclick="add_prodpos('31')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/Hat.svg" width="70%">
-                                                        <p class="card-text mb-2">Hat</p>
-
-                                                        <input type="hidden" id="idname-31" name="name" value="Hat" />
-                                                        <input type="hidden" id="category" name="category" value="2" />
-                                                        <input type="hidden" id="price-31" name="category" value="2" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR032" onclick="add_prodpos('32')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/towels.svg" width="70%">
-                                                        <p class="card-text mb-2">Skirt</p>
-
-                                                        <input type="hidden" id="idname-32" name="name" value="skirt" />
-                                                        <input type="hidden" id="category" name="category" value="2" />
-                                                        <input type="hidden" id="price-32" name="category" value="2" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR033" onclick="add_prodpos('33')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/coat-jacket.svg" width="70%">
-                                                        <p class="card-text mb-2">Costume</p>
-
-                                                        <input type="hidden" id="idname-33" name="name" value="costume" />
-                                                        <input type="hidden" id="category" name="category" value="3" />
-                                                        <input type="hidden" id="price-33" name="category" value="3" />
-
-                                                    </div>
-
-
-                                                </a>
-
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR035" onclick="add_prodpos('35')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/chef.svg" width="50%">
-                                                        <p class="card-text mb-2">Medical Suit</p>
-
-                                                        <input type="hidden" id="idname-35" name="name" value="Medical suit" />
-                                                        <input type="hidden" id="category" name="category" value="2" />
-                                                        <input type="hidden" id="price-35" name="category" value="2" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR036" onclick="add_prodpos('36')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/vest.svg" width="70%">
-                                                        <p class="card-text mb-2">Vest</p>
-
-                                                        <input type="hidden" id="idname-36" name="name" value="vest" />
-                                                        <input type="hidden" id="category" name="category" value="3" />
-                                                        <input type="hidden" id="price-36" name="category" value="3" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR037" onclick="add_prodpos('37')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/denim-jacket.svg" width="50%">
-                                                        <p class="card-text mb-2">Queer Jacket</p>
-
-                                                        <input type="hidden" id="idname-37" name="name" value="Queer jacket" />
-                                                        <input type="hidden" id="category" name="category" value="3" />
-                                                        <input type="hidden" id="price-37" name="category" value="3" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR038" onclick="add_prodpos('41')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/jacket-.svg" width="70%">
-                                                        <p class="card-text mb-2">Jacket</p>
-
-                                                        <input type="hidden" id="idname-41" name="name" value="Jacket" />
-                                                        <input type="hidden" id="category" name="category" value="3" />
-                                                        <input type="hidden" id="price-41" name="category" value="3" />
-
-                                                    </div>
-
-
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top:4px solid #138496; height:100px" id="PR042" onclick="add_prodpos('42')">
-                                                    <div class="card-body text-center p-1">
-                                                        <img class="mt-1 mb-1" src="/static/icons/hats.svg" width="50%">
-                                                        <p class="card-text mb-2">Kameez</p>
-
-                                                        <input type="hidden" id="idname-42" name="name" value="Kameez & Shalwar" />
-                                                        <input type="hidden" id="category" name="category" value="3" />
-                                                        <input type="hidden" id="price-42" name="category" value="3" />
-
-                                                    </div>
-
-
-                                                </a>
-
-
-                                            </div> -->
-
-
+                                <div class="col-12">
+                                    <div class="d-flex mb-4 justify-content-between align-items-center">
+                                        <h1>
+                                            <%= view.pageTitle %>
+                                        </h1>
+                                        <div class="btn-group">
+                                            <button class="btn btn-success" style="font-size: 20px;" type="submit"><i
+                                                    class="fa-solid fa-check"></i> Paid</button>
+                                            <button class="btn btn-danger" style="font-size: 20px;" type="reset">
+                                                <i class="fa-solid fa-trash"></i> Cancel
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xl-2 col-lg-12 mb-0">
+                                <hr />
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="card h-100">
+                                            <div class="card-body p-3">
+                                                <div class="row">
+                                                    <div class="col-7">
+                                                        <h4 class="text-muted card-title my-2">Products by Categories
+                                                        </h4>
+                                                        <ul role="tablist" class="nav nav-pills categories-nav w-100 mb-2">
 
-                                    <div class="card">
-
-                                        <form>
-                                            <div class="card-body p-2">
-
-                                                <div class=" ps ps--active-y">
-                                                    <button type="button" class="btn btn-light  btn-lg mb-1 w-100 text-center default selectype1" style="border-top:4px solid #138496;" id="laundry">Laundry</button>
-                                                    <button type="button" class="btn btn-light  btn-lg mb-1 w-100 text-center default selectype1" style="border-top:4px solid #138496;" id="lroning">Ironing</button>
-                                                    <button type="button" class="btn btn-light  btn-lg mb-1 w-100 text-center default selectype1" style="border-top:4px solid #138496;" id="laundrylroning">Laundry and Ironing
-
-                                                    </button>
-                                                    <button type="button" class="btn btn-light  btn-lg mb-1 w-100 text-center default selectype1" style="border-top:4px solid #138496;" id="dry">Dry Wash</button>
-                                                    <button type="button" class="btn btn-light  btn-lg mb-1 w-100 text-center default selectype1" style="border-top:4px solid #138496;" id="other">Other Service
-                                                    </button>
-
-                                                    <button type="button" class="btn btn-light  btn-lg mb-1 w-100 text-center default selectype2" style="border-top:4px solid #138496;" id="normal">Normal
-                                                    </button>
-                                                    <button type="button" class="btn btn-light  btn-lg mb-1 w-100 text-center default selectype2" style="border-top:4px solid #138496;" id="fast">Fast </button>
-                                                    <div class="w-100">
-                                                        <input type="number" value="1" min="1" max="100" step="1" id="" name="qtecart" />
+                                                            <li class="nav-item">
+                                                                <a class="nav-link active" data-toggle="pill" role="tab" aria-controls="#all-products" aria-selected="true" href="#all-products">All</a>
+                                                            </li>
+                                                            <% data.categories.forEach(category=> {%>
+                                                                <li class="nav-item">
+                                                                    <a class="nav-link" data-toggle="pill" href="#CAT00<%= category.id %>">
+                                                                        <%= category.name %>
+                                                                    </a>
+                                                                </li>
+                                                                <%})%>
+                                                        </ul>
+                                                        <div id="product-tabs" class="tab-content">
+                                                            <div class="tab-pane p-3 show fade in active border border-primary" id="all-products" style="max-height: 350px; overflow-y: auto;overflow-x: hidden">
+                                                                <% data.products.forEach(product=> {%>
+                                                                    <a href="javascript:void(0)" class="overflow-hidden btn btn-outline-primary default mb-1 mr-1 addPct" style="color: black;width: 18.8%!important; border-top-width: 4px;height: 100px" id="ALL_PR00<%= product.id %>" onclick="add_product('<%= product.id %>')">
+                                                                        <% if (product.iconUrl) { const
+                                                                            icon=product.iconUrl;
+                                                                            if(icon.split(':')[0]=='svg' ) { %>
+                                                                            <img class="mt-1 mb-1" src="/static/icons/<%= icon.split(':')[1] %>" width="45%">
+                                                                            <%} else {%>
+                                                                                <i class="<%= icon.split(':')[1] %>" style="font-size: 45px"></i>
+                                                                                <%} %>
+                                                                                    <%} %>
+                                                                                        <p class="card-text mb-2">
+                                                                                            <%= product.name %>
+                                                                                        </p>
+                                                                                        <input name="selectedProduct" type="hidden" value="<%= product.id %>">
+                                                                    </a>
+                                                                    <%})%>
+                                                            </div>
+                                                            <% for(let i=0; i < data.categories.length; i++) { %>
+                                                                <div style="max-height: 350px; overflow-y: auto;overflow-x: hidden" class="p-3 border border-primary tab-pane fade in" id="CAT00<%= data.categories[i].id%>">
+                                                                    <% for(let j=0; j < data.products.length; j++) {
+                                                                        if(data.products[j].categoryId
+                                                                        !=data.categories[i].id) continue;%>
+                                                                        <a href="javascript:void(0)" class="btn btn-outline-primary default mb-1 mr-1 addPct overflow-hidden" style="color: black; width: 18.8%!important; border-top-width: 4px;height: 100px" id="PR00<%= data.products[j].id %>" onclick="add_product('<%= data.products[j].id %>')">
+                                                                            <% if(data.products[j].iconUrl) { const
+                                                                                icon=data.products[j].iconUrl;
+                                                                                if(icon.split(':')[0]=='svg' ) {%>
+                                                                                <img class="mt-1 mb-1" src="/static/icons/<%= icon.split(':')[1] %>" width="45%">
+                                                                                <%} else {%>
+                                                                                    <i class="<%= icon.split(':')[1] %>" style="font-size: 45px"></i>
+                                                                                    <%}%>
+                                                                                        <%}%>
+                                                                                            <p class="card-text mb-2">
+                                                                                                <%= data.products[j].name
+                                                                                                    %>
+                                                                                            </p>
+                                                                                            <input name="selectedProduct" type="hidden" value="<%= data.products[j].id %>">
+                                                                        </a>
+                                                                        <%}%>
+                                                                </div>
+                                                                <%}%>
+                                                        </div>
                                                     </div>
-                                                    <hr>
-                                                    <select id="color" name="color" class="form-control mb-4" data-width="100%" data-height="20%" required>
-                                                        <option value="Blanc" style="background-color: #ffffff;">Color
-                                                        </option>
+                                                    <div class="col-5">
+                                                        <h4 class="text-muted card-title my-2">Services</h4>
+                                                        <div class="service-container d-flex flex-wrap gap-3">
+                                                            <% for(let service of data.services ) {%>
+                                                                <button type="button" class="btn mt-1 ml-1 btn-outline-primary">
+                                                                    <input type="hidden" value="<%= service.id %>">
+                                                                    <%= service.name %>
+                                                                </button>
+                                                                <%}%>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row my-2">
+                                                    <div class="col-6">
+                                                        <h4 class="text-muted card-title p-0 mt-4 mb-2">Quantity</h4>
+                                                        <div class="form-group">
+                                                            <input class="form-control" step="1" max="100" type="number" min="1">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                                        <option value="Extra Brite" style="background-color:#f1efef;">
-                                                            Extra
-                                                            Brite
-                                                        </option>
-                                                        <option value="background-color"
-                                                            style="background-color:#0937f1;">
-                                                        </option>
-                                                        <option value="Red" style="background-color:#fb092d;"> Red
-                                                        </option>
-                                                        <option value="Blue" style="background-color:#0937f1;"> Blue
-                                                        </option>
-                                                        <option value="Green" style="background-color:#10e044;"> Green
-                                                        </option>
-                                                        <option value="Gray" style="background-color:#b6afaf;"> Gray
-                                                        </option>
-                                                        <option value="Black" style="background-color:#0a0000;"> Black
-                                                        </option>
+                                    <div class="col-4">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h4 class="text-muted card-title">Billing</h4>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="text" id="salesearch" class="form-control col-9" placeholder="Find an Order" style="font-size: 15px;">
+                                                        <div class="input-group-append">
+                                                            <button type="button" class="btn btn-primary  text-center default mr-2 ml-2" onclick="SaleSearch()">
+                                                                Search<i class="simple-icon-magnifier"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <span id="errorsale_searsh" class="text-danger"></span>
+                                                </div>
+                                                <div class="form-group p-0 my-1">
+                                                    <select id="customerSelect" name="customerId" class="form-control select2-single " data-width="50%" data-height="20%">
+                                                        <option value="">Select a client</option>
+                                                        <% for(let client of data.clients) {%>
+                                                            <option value="<%= client.id %>">
+                                                                <%= `${client.first_name} ${client.last_name || ''
+                                                                    }`.trim() %>
+                                                            </option>
+                                                            <%} %>
                                                     </select>
-
-                                                    <button type="button" class="btn btn-primary  btn-lg mb-1 w-100 text-center default" onclick="add_posale()"> Ajouter </button>
-
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="col-xl-4 col-lg-12 mb-0">
-
-                                    <div class="card">
-                                        <div class="row px-4 py-1">
-                                            <input type="text" id="salesearch" class="form-control col-8" placeholder=" Trouver une facture " style="font-size: 15px;">
-                                            <button type="button" class="btn btn-primary  text-center default mr-2 ml-2" onclick="SaleSearch()">
-                                                Search<i class="simple-icon-magnifier"></i>
-                                            </button>
-                                            <span id="errorsale_searsh" class="text-danger"></span>
-                                        </div>
-                                        <div class="card-body px-2 py-0">
-
-                                            <div class="row p-3">
-
-                                                <select id="customerSelect" name="" class="form-control select2-single" data-width="50%" data-height="20%">
-                                                    <option value="0">Default client</option>
-                                                    <option value="7">ahmed bader</option>
-                                                    <option value="10">Serge MUSABLE</option>
-                                                    <option value="11">ali karim</option>
-                                                    <option value="12">Abdullah Majed</option>
-                                                    <option value="14">John Paul David</option>
-                                                    <option value="15">Jdsfjfo kmkfvmpmj</option>
-                                                    <option value="16">sunit pattanayak</option>
-                                                    <option value="17">walkcustomer Karim</option>
-                                                    <option value="18">SHAFI KALLANTHOD</option>
-                                                    <option value="19">JALEEL MUKKAM</option>
-                                                    <option value="20">Shaf KK</option>
-                                                    <option value="21">Joel Andam</option>
-                                                    <option value="22">Hafiz Muhammad</option>
-                                                    <option value="24">pjsdkljdaffs daskldfasl</option>
-                                                    <option value="25">Mark No</option>
-                                                    <option value="26">1234 4444</option>
-                                                    <option value="27">Cash new</option>
-                                                </select>
-                                                <button type="button" class="btn btn-primary  text-center default mr-2 ml-2" data-toggle="modal" data-target="#clientModal">
-                                                    Add a new Client <i class="simple-icon-user-follow"></i>
-                                                </button>
-                                            </div>
-
-                                            <div class="dashboard-list-with-thumbs ps ps--active-y">
-
-
-
-                                                <div class="col-md-13">
-                                                    <div class="info mt-4">
-                                                        <div class="row mt-2 pb-1" style="border-bottom:1px solid #138496; color:#0b414a">
-                                                            <div class="col-md-3 product-name">
-                                                                <div>Default Product </div>
-                                                            </div>
-                                                            <div class="col-md-3 product-name">
-                                                                <div>Default Service </div>
-                                                            </div>
-
-                                                            <div class="col-md-3 price text-center">
-                                                                <span>Quantity</span>
-                                                            </div>
-                                                            <div class="col-md-2 price text-center">
-                                                                <span>Price</span>
-                                                            </div>
-                                                            <div class="col-md-1  text-center">
-                                                                <span></span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="scrollbar" id="style-1">
-                                                            <div class="cartview" id="cartview">
-
-
-                                                                <br><span class="m-5 text-center col-md-12">Vide</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="table-responsive col-sm-12 totalTab" style="background-color: #f8f8f8; border:1px solid #f1efef">
-                                                            <table class="table">
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td class="active" width="40%" style="padding:3px">
-                                                                            Subtotal total
-                                                                        </td>
-                                                                        <td class="whiteBg" width="60%" style="padding:3px">
-                                                                            <span id="Subtot">0.00</span> xaf <span class="float-right"><b
-                                                                                    id="ItemsNum"><span>0</span> Number of services</b>
-                                                                            </span>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td class="active" style="padding:3px">Tax</td>
-                                                                        <td class="whiteBg" style="padding:3px"><input type="text" value="0" onchange="total_change()" id="taxValue" class="total-input TAX form-control" placeholder="" maxlength="5">
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td class="active" style="padding:3px">Discounts
-                                                                        </td>
-                                                                        <td class="whiteBg" style="padding:3px"><input type="text" value="0" onchange="total_change()" id="RemiseValue" class="total-input Remise form-control" placeholder="" maxlength="5">
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td class="active" style="padding:3px">Total
-                                                                        </td>
-                                                                        <td class="whiteBg light-blue text-bold" style="padding:3px"><span id="total">0.00</span> xaf
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-
-                                                    </div>
+                                                    <button type="button" class="btn btn-primary  text-center default mr-2 ml-2" data-toggle="modal" data-target="#clientModal">
+                                                        Add a new Client <i class="simple-icon-user-follow"></i>
+                                                    </button>
                                                 </div>
 
+                                                <table class="table table-hover table-striped table-bordered my-2">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Selected Product</th>
+                                                            <th>Quantity</th>
+                                                            <th>Service</th>
+                                                            <th>Additional Services</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>tkldjsf</td>
+                                                            <td>5</td>
+                                                            <td>kljdslkfj</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
 
+                                                <table class="table mt-3 w-100">
+                                                    <tr class="d-flex align-items-center">
+                                                        <td>Tax (XAF)</td>
+                                                        <td class="w-100">
+                                                            <input name="tax" class=form-control "></td>
+                                                    </tr>
 
+                                                    <tr class=" d-flex align-items-center ">
+                                                        <td>Discount (XAF)</td>
+                                                        <td class=" w-100 ">
+                                                            <input name=" tax " class=form-control ">
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr class="d-flex align-items-center">
+                                                        <td>Total (XAF)</td>
+                                                        <td class="w-100"><span class="text-bold" style="font-size:2rem">50</span></td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-xl-4 col-lg-12 mb-4">
-                                    <div class="card">
-                                        <div class="card-body p-2">
-                                            <button class="btn btn-success default w-100" onclick="DailyReport()">
-                                                <h3><i class="glyph-icon iconsminds-money-bag"></i> Daily Sales :
-                                                    <span id="total_sales">
-                                                        0.00 </span> xaf
-                                                </h3>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-4 col-lg-12 mb-4">
-                                    <div class="card">
-                                        <div class="card-body p-2">
-                                            <div class="btn btn-success default w-100">
-                                                <h3><i class="glyph-icon simple-icon-calculator"></i> Number of Daily Orders :
-                                                    <span id="number_sales">0</span>
-                                                </h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-4 col-lg-12 mb-4">
-                                    <div class="card">
-                                        <div class="card-body p-2">
-                                            <div class="">
-                                                <button type="button" class="btn btn-success btn-lg default float-left text-center mr-1" style="width: 51%!important;" data-toggle="modal" data-target="#AddSale">
-                                                    <h4>Paid</h4>
-                                                </button>
-                                                <button type="button" class="btn btn-danger btn-lg default float-left text-center" style="width: 47%!important;" onclick="cancelPOS()">
-                                                    <h4>Close</h4>
-                                                </button>
 
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
-
                         </div>
-
-
-
-
-
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                </main>
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+                    </main>
+                </form>
 
                 <%- include('../../partials/main-footer.ejs') %>
                     <%- include('partials/scripts.ejs') %>
