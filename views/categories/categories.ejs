@@ -4,7 +4,8 @@
         <%- include('../partials/navbar.ejs') %>
             <%- include('../partials/menu.ejs') %>
                 <main>
-                    <div class="modal fade modal-right" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModal" aria-hidden="true">
+                    <div class="modal fade modal-right" id="createModal" tabindex="-1" role="dialog"
+                        aria-labelledby="createModal" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -22,24 +23,28 @@
                                         </div> -->
                                         <div class="form-group">
                                             <label> Name <span class="text-danger error_lastname">*</span></label>
-                                            <input type="text" class="form-control" placeholder="Enter category name" name="name" id="name" required>
+                                            <input type="text" class="form-control" placeholder="Enter category name"
+                                                name="name" id="name" required>
                                         </div>
                                         <div class="form-group">
                                             <label> Description</label>
-                                            <textarea name="description" id="description" cols="30" rows="5" class="form-control"></textarea>
+                                            <textarea name="description" id="description" cols="30" rows="5"
+                                                class="form-control"></textarea>
                                         </div>
 
                                         <div class="error_validateclt text-danger"></div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-outline-primary"
+                                            data-dismiss="modal">Close</button>
                                         <button type="submit" id="savebtn" class="btn btn-primary">Save</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade modal-right" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">
+                    <div class="modal fade modal-right" id="editModal" tabindex="-1" role="dialog"
+                        aria-labelledby="editModal" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -59,17 +64,20 @@
                                         </div> -->
                                         <div class="form-group">
                                             <label> Name <span class="text-danger error_lastname">*</span></label>
-                                            <input type="text" class="form-control" placeholder="Enter category name" name="name" id="name" required>
+                                            <input type="text" class="form-control" placeholder="Enter category name"
+                                                name="name" id="name" required>
                                         </div>
                                         <div class="form-group">
                                             <label> Description</label>
-                                            <textarea name="description" id="description" cols="30" rows="5" class="form-control"></textarea>
+                                            <textarea name="description" id="description" cols="30" rows="5"
+                                                class="form-control"></textarea>
                                         </div>
 
                                         <div class="error_validateclt text-danger"></div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-outline-primary"
+                                            data-dismiss="modal">Close</button>
                                         <button type="submit" id="updatebtn" class="btn btn-primary">Save</button>
                                     </div>
                                 </form>
@@ -80,10 +88,12 @@
                     <div class="row">
                         <div class="col-12">
                             <h1> Categories </h1>
-                            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block"
+                                aria-label="breadcrumb">
                                 <ol class="breadcrumb pt-0">
                                     <li class="breadcrumb-item">
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-target="#createModal">Add a new category
+                                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-backdrop="static" data-target="#createModal">Add a new category
                                             <i class="glyph-icon simple-icon-plus"></i> </button>
                                     </li>
                                     <li class="breadcrumb-item">
@@ -127,10 +137,12 @@
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a href="#" class="btn btn-primary edit-btn" data-id="<%= category.id %>">
+                                                            <a href="#" class="btn btn-primary edit-btn"
+                                                                data-id="<%= category.id %>">
                                                                 <i class="glyph-icon simple-icon-pencil"></i>
                                                             </a>
-                                                            <a href="#" class="btn btn-danger delete-btn" data-id="<%= category.id %>">
+                                                            <a href="#" class="btn btn-danger delete-btn"
+                                                                data-id="<%= category.id %>">
                                                                 <i class="glyph-icon simple-icon-trash"></i>
                                                             </a>
                                                         </div>
