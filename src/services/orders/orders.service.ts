@@ -35,7 +35,14 @@ export class OrdersService {
     return prices;
   }
 
-  async createOrder(createOrderDto: NewOrderDto) {}
+  async findOrdersWithCodeLike(code: string) {
+    const order = await this.ordersRepository.createQueryBuilder()
+      .where('code LIKE :c', { c: `%${code}%` })
+      .getMany();
+    return order;
+  }
+
+  async createOrder(createOrderDto: NewOrderDto) { }
 
   async getOrdersAvailableForUser(
     user: IPrincipal | number | string,

@@ -5,15 +5,14 @@ import {
   Get,
   HttpStatus,
   Inject,
-  Logger,
-  Param,
+  Logger, Param,
   Post,
   Query,
   Render,
   Req,
   Res,
   UseFilters,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Role } from 'src/decorators/role.decorator';
@@ -27,6 +26,8 @@ import { OfferedServicesService } from 'src/services/offered-services/offered-se
 import { ProductsService } from 'src/services/products/products.service';
 import { UsersService } from 'src/services/users/users.service';
 import { BaseController } from '../base/base.controller';
+
+class ProductServicePriceRequest { productId: string; serviceIds: string[]; }
 
 @Controller(['products'])
 @UseGuards(AuthGuard)
@@ -43,6 +44,12 @@ export class ProductsController extends BaseController {
     usersService: UsersService,
   ) {
     super(appName, usersService);
+  }
+
+  @Post('prices')
+  async getProductServicePrices(@Body() { requests }: { requests: ProductServicePriceRequest }, @Res() res: Response) {
+    const prices = await this.productService.getProductPrices({ productId: parseInt(requests.productId), serviceIds: requests.serviceIds.map(id => parseInt(id)) });
+    return res.status(HttpStatus.OK).json(prices);
   }
 
   @Get()

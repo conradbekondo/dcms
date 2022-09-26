@@ -2,8 +2,10 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Inject,
   Logger,
+  Param,
   Post,
   Query,
   Render,
@@ -64,10 +66,21 @@ export class OrdersController extends BaseController {
   async createOrderView() {
     this.viewBag.pageTitle = 'Create an Order';
     const categories = await this.categoriesService.getCategories();
-    const services = await this.offeredServicesService.getServices(0, 999999999999, false);
+    const services = await this.offeredServicesService.getServices(0, 999999999999);
     const products = await this.productsService.getProducts();
     const clients = await this.clientService.getClients();
     return { data: { clients, categories, services, products, dto: new NewOrderDto() }, view: this.viewBag };
+  }
+
+  @Get('/order/:code')
+  async getOrderByCode(@Param('code') code: string, @Res() res: Response) {
+    const orders = await this.orderService.findOrdersWithCodeLike(code);
+
+    if (orders.length <= 0) {
+      return res.status(HttpStatus.NOT_FOUND).send();
+    } else {
+      return res.status(HttpStatus.OK).json(orders);
+    }
   }
 
   @Post('/create')

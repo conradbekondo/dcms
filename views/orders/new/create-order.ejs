@@ -13,26 +13,30 @@
                                         <h1>
                                             <%= view.pageTitle %>
                                         </h1>
-                                        <div class="btn-group">
-                                            <button class="btn btn-success" style="font-size: 20px;" type="submit"><i
-                                                    class="fa-solid fa-check"></i> Paid</button>
+                                        <div class="d-flex gap-3">
+                                            <div class="btn-group mx-2">
+                                                <button class="btn btn-success" style="font-size: 20px;" type="submit"><i class="fa-solid fa-check"></i>
+                                                    Paid</button>
+                                                <button class="btn btn-info" style="font-size: 20px;" type="submit">
+                                                    <i class="fa-solid fa-save"></i> Save
+                                                </button>
+                                            </div>
                                             <button class="btn btn-danger" style="font-size: 20px;" type="reset">
-                                                <i class="fa-solid fa-trash"></i> Cancel
+                                                <i class="fa-solid fa-trash"></i> Discard
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                                 <hr />
                                 <div class="row">
-                                    <div class="col-8">
+                                    <div class="col-6">
                                         <div class="card h-100">
                                             <div class="card-body p-3">
                                                 <div class="row">
-                                                    <div class="col-7">
-                                                        <h4 class="text-muted card-title my-2">Products by Categories
+                                                    <div class="col-12">
+                                                        <h4 class="text-muted card-title my-2">Products by Category
                                                         </h4>
                                                         <ul role="tablist" class="nav nav-pills categories-nav w-100 mb-2">
-
                                                             <li class="nav-item">
                                                                 <a class="nav-link active" data-toggle="pill" role="tab" aria-controls="#all-products" aria-selected="true" href="#all-products">All</a>
                                                             </li>
@@ -47,13 +51,13 @@
                                                         <div id="product-tabs" class="tab-content">
                                                             <div class="tab-pane p-3 show fade in active border border-primary" id="all-products" style="max-height: 350px; overflow-y: auto;overflow-x: hidden">
                                                                 <% data.products.forEach(product=> {%>
-                                                                    <a href="javascript:void(0)" class="overflow-hidden btn btn-outline-primary default mb-1 mr-1 addPct" style="color: black;width: 18.8%!important; border-top-width: 4px;height: 100px" id="ALL_PR00<%= product.id %>" onclick="add_product('<%= product.id %>')">
+                                                                    <a data-product-id="<%= product.id %>" href="javascript:void(0)" class="overflow-hidden btn btn-outline-primary default mb-1 mr-1 addPct" style="color: black;width: 18.8%!important; border-top-width: 4px;height: 100px" id="ALL_PR00<%= product.id %>">
                                                                         <% if (product.iconUrl) { const
                                                                             icon=product.iconUrl;
                                                                             if(icon.split(':')[0]=='svg' ) { %>
-                                                                            <img class="mt-1 mb-1" src="/static/icons/<%= icon.split(':')[1] %>" width="45%">
+                                                                            <img style="fill: var(--theme-color-1)" class="mt-1 mb-1" src="/static/icons/<%= icon.split(':')[1] %>" width="35%">
                                                                             <%} else {%>
-                                                                                <i class="<%= icon.split(':')[1] %>" style="font-size: 45px"></i>
+                                                                                <i class="<%= icon.split(':')[1] %>" style="font-size: 35px"></i>
                                                                                 <%} %>
                                                                                     <%} %>
                                                                                         <p class="card-text mb-2">
@@ -68,7 +72,7 @@
                                                                     <% for(let j=0; j < data.products.length; j++) {
                                                                         if(data.products[j].categoryId
                                                                         !=data.categories[i].id) continue;%>
-                                                                        <a href="javascript:void(0)" class="btn btn-outline-primary default mb-1 mr-1 addPct overflow-hidden" style="color: black; width: 18.8%!important; border-top-width: 4px;height: 100px" id="PR00<%= data.products[j].id %>" onclick="add_product('<%= data.products[j].id %>')">
+                                                                        <a data-product-id="<%= data.products[j].id %>" href="javascript:void(0)" class="btn btn-outline-primary default mb-1 mr-1 addPct overflow-hidden" style="color: black; width: 18.8%!important; border-top-width: 4px;height: 100px" id="PR00<%= data.products[j].id %>">
                                                                             <% if(data.products[j].iconUrl) { const
                                                                                 icon=data.products[j].iconUrl;
                                                                                 if(icon.split(':')[0]=='svg' ) {%>
@@ -87,99 +91,159 @@
                                                                 </div>
                                                                 <%}%>
                                                         </div>
-                                                    </div>
-                                                    <div class="col-5">
-                                                        <h4 class="text-muted card-title my-2">Services</h4>
-                                                        <div class="service-container d-flex flex-wrap gap-3">
-                                                            <% for(let service of data.services ) {%>
-                                                                <button type="button" class="btn mt-1 ml-1 btn-outline-primary">
-                                                                    <input type="hidden" value="<%= service.id %>">
-                                                                    <%= service.name %>
-                                                                </button>
-                                                                <%}%>
+
+                                                        <div class="row my-3">
+                                                            <div class="col-12">
+                                                                <h4 class="text-muted card-title my-2">Services</h4>
+                                                                <div class="service-container d-flex flex-wrap gap-3">
+                                                                    <% for(let service of data.services ) {
+                                                                        if(service.isAdditional) continue; 
+                                                                        else{%>
+                                                                        <button data-service-id="<%= service.id %>" type="button" class="btn mt-1 ml-1 btn-outline-primary">
+                                                                            <%= service.name %>
+                                                                        </button>
+                                                                        <%}%>
+                                                                            <%}%>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row my-4">
+                                                            <div class="col-12">
+                                                                <h4 class="text-muted card-title my-2">Additional Services
+                                                                </h4>
+                                                                <div class="additional-service-container d-flex flex-wrap gap-3">
+                                                                    <% for(let service of data.services ) {
+                                                                        if(!service.isAdditional) continue; 
+                                                                        else{%>
+                                                                        <button data-additional-service-id="<%= service.id %>" type="button" class="btn mt-1 ml-1 btn-outline-primary">
+                                                                            <%= service.name %>
+                                                                        </button>
+                                                                        <%}%>
+                                                                            <%}%>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr />
+                                                        <div class="row my-4">
+                                                            <div class="col-4">
+                                                                <div class="form-group">
+                                                                    <h4 class="text-muted card-title mb-1" for="entryQuantity">Quantity</h4>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-prepend">
+                                                                            <button type="button" id="decrementQuantity" class="btn btn-primary">-</button>
+                                                                        </div>
+                                                                        <input type="number" min="1" value="1" max="100" class="form-control" id="entryQuantity">
+                                                                        <div class="input-group-append">
+                                                                            <button type="button" id="incrementQuantity" class="btn btn-primary">+</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <div class="form-group">
+                                                                    <h4 class="text-muted card-title mb-1" for="entryColour">Colour</h4>
+                                                                    <input value="#ffffff" type="color" class="form-control" id="entryColour">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <div class="form-group">
+                                                                    <h4 class="text-muted card-title mb-1">Pricing Mode</h4>
+                                                                    <select id="pricingModeInput" class="form-control">
+                                                                        <option value="normal">NORMAL</option>
+                                                                        <option value="fast">FAST</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row align-self-end">
+                                                            <div class="col-12">
+                                                                <button id="addEntryToCartButton" type="button" class="btn btn-primary w-100 d-block">Add</button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="row my-2">
+
+                                                <!-- <div class="row my-2">
                                                     <div class="col-6">
                                                         <h4 class="text-muted card-title p-0 mt-4 mb-2">Quantity</h4>
                                                         <div class="form-group">
                                                             <input class="form-control" step="1" max="100" type="number" min="1">
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> -->
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="col-4">
+                                    <div class="col-6">
                                         <div class="card">
                                             <div class="card-body">
                                                 <h4 class="text-muted card-title">Billing</h4>
                                                 <div class="form-group">
                                                     <div class="input-group">
-                                                        <input type="text" id="salesearch" class="form-control col-9" placeholder="Find an Order" style="font-size: 15px;">
-                                                        <div class="input-group-append">
-                                                            <button type="button" class="btn btn-primary  text-center default mr-2 ml-2" onclick="SaleSearch()">
-                                                                Search<i class="simple-icon-magnifier"></i>
-                                                            </button>
-                                                        </div>
+                                                        <input list="salesearchList" name="orderId" type="text" id="salesearch" class="form-control" placeholder="Find an Order" style="font-size: 15px;">
+                                                        <datalist id="salesearchList"></datalist>
                                                     </div>
                                                     <span id="errorsale_searsh" class="text-danger"></span>
                                                 </div>
                                                 <div class="form-group p-0 my-1">
-                                                    <select id="customerSelect" name="customerId" class="form-control select2-single " data-width="50%" data-height="20%">
-                                                        <option value="">Select a client</option>
-                                                        <% for(let client of data.clients) {%>
-                                                            <option value="<%= client.id %>">
-                                                                <%= `${client.first_name} ${client.last_name || ''
-                                                                    }`.trim() %>
-                                                            </option>
-                                                            <%} %>
-                                                    </select>
-                                                    <button type="button" class="btn btn-primary  text-center default mr-2 ml-2" data-toggle="modal" data-target="#clientModal">
-                                                        Add a new Client <i class="simple-icon-user-follow"></i>
-                                                    </button>
+                                                    <div class="input-group">
+                                                        <select name="clientId" type="text" id="clientsearch" class="form-control" placeholder="Find a client" style="font-size: 15px;">
+                                                            <option value="">Select a client</option>
+                                                            <% for(let client of data.clients) {%>
+                                                                <option data-client-id="<%=client.id%>"
+                                                                    value="<%= client.id %>">
+                                                                    <%= `${client.first_name} ${client.last_name || ''
+                                                                        }`.trim() %>
+                                                                </option>
+                                                                <%} %>
+                                                        </select>
+                                                        <div class="input-group-append">
+                                                            <button type="button" class="btn btn-primary  text-center default mr-2 ml-2" data-toggle="modal" data-target="#clientModal">
+                                                                Add a new Client <i class="simple-icon-user-follow"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
-                                                <table class="table table-hover table-striped table-bordered my-2">
+                                                <table id="entries-table" class="table table-hover table-striped table-bordered my-2">
                                                     <thead>
                                                         <tr>
                                                             <th>Selected Product</th>
                                                             <th>Quantity</th>
                                                             <th>Service</th>
                                                             <th>Additional Services</th>
+                                                            <!-- <th>Price Mode</th> -->
+                                                            <th>Price</th>
                                                             <th></th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>tkldjsf</td>
-                                                            <td>5</td>
-                                                            <td>kljdslkfj</td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
+                                                    <tbody id="billing-table-body" style="max-height: 500px; overflow-x: hidden; overflow-y: auto">
                                                     </tbody>
                                                 </table>
 
                                                 <table class="table mt-3 w-100">
                                                     <tr class="d-flex align-items-center">
-                                                        <td>Tax (XAF)</td>
+                                                        <td>Tax</td>
                                                         <td class="w-100">
-                                                            <input name="tax" class=form-control "></td>
+                                                            <input value="0" type="number" min="0" id="taxInput" name="tax" class="form-control"></td>
                                                     </tr>
 
-                                                    <tr class=" d-flex align-items-center ">
-                                                        <td>Discount (XAF)</td>
-                                                        <td class=" w-100 ">
-                                                            <input name=" tax " class=form-control ">
+                                                    <tr class="d-flex align-items-center">
+                                                        <td>Discount</td>
+                                                        <td class="w-100">
+                                                            <input value="0" type="number" min="0" name="discount" id="discountInput" class="form-control">
                                                         </td>
                                                     </tr>
 
                                                     <tr class="d-flex align-items-center">
-                                                        <td>Total (XAF)</td>
-                                                        <td class="w-100"><span class="text-bold" style="font-size:2rem">50</span></td>
+                                                        <td>Total</td>
+                                                        <td class="w-100"><span id="total" class="text-bold" style="font-size: 1.5rem">0</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="d-flex align-items-center">
+                                                        <td>Net Payable</td>
+                                                        <td class="w-100"><span id="net-payable" class="text-bold" style="font-size: 2rem">0</span></td>
                                                     </tr>
                                                 </table>
                                             </div>

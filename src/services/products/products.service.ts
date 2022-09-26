@@ -29,6 +29,21 @@ export class ProductsService {
     return products;
   }
 
+  async getProductPrices(map: { productId: number, serviceIds: number[] }) {
+    const resMap: { productId: number, servicePrices: { serviceId: number, normalPrice: number, fastPrice: number }[] } = { productId: map.productId, servicePrices: [] };
+    for (let serviceId of map.serviceIds) {
+      const price = await this.productServiceRepository.findOne({
+        where: { productId: map.productId, serviceId }
+      });
+      if (!price) {
+        resMap.servicePrices.push({ serviceId, normalPrice: 0, fastPrice: 0 });
+      } else {
+        resMap.servicePrices.push({ serviceId, normalPrice: price.normalPrice || 0, fastPrice: price.fastPrice || 0 });
+      }
+    }
+    return resMap;
+  }
+
   /**
    * Get given product data.
    *

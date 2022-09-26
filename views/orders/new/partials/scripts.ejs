@@ -17,50 +17,364 @@
 <script src="/static/js/dore.script.js"></script>
 <script src="/static/js/scripts.js"></script>
 <script src="/static/js/sweetalert.min.js"></script>
+<script src="/static/js/vendor/jquery.validate/jquery.validate.min.js"></script>
 
 <script>
-    const services = [];
-    let products = [];
-    let categories = [];
+    let entries = [];
+    let priceMap = {};
+    const defaultEditingEntry = {
+        productId: null,
+        productName: null,
+        serviceName: null,
+        serviceId: null,
+        quantity: 1,
+        price: function() {
+            const priceMapEntry = priceMap[`${this.productId}`];
+            if (!priceMapEntry) return 0;
 
-    $(document).ready(function() {
-        return;
-        const categoriesContainer = document.querySelector('.categories-nav');
-        categoriesContainer.innerHTML = '<a href="#"><button type="button" class="btn btn-primary btn-lg mb-1 text-center default categories selectedGet">All</button></a>';
-        $.ajax({
-            method: 'GET',
-            url: '/categories/all',
-            success: c => {
-                categories = [...(c || [])];
-                for (let cat of categories) {
-                    categoriesContainer.innerHTML += `<a href="#"><button type="button" class="btn btn-primary btn-lg mb-1 text-center default categories selectedGet">${cat.name}</button></a>`;
+            let _price = this.priceMode == 'normal' ? priceMapEntry[`${this.serviceId}`].normalPrice : priceMapEntry[`${this.serviceId}`].fastPrice;
+
+            for (let {
+                    serviceId
                 }
+                of this.additionalServices) {
+                if (!priceMapEntry[`${serviceId}`]) continue;
+                _price += this.priceMode == 'normal' ? priceMapEntry[`${serviceId}`].normalPrice : priceMapEntry[`${serviceId}`].fastPrice;
+            }
+            return _price * this.quantity;
+        },
+        priceMode: 'normal',
+        additionalServices: [],
+        isValid: function() {
+            const ans = this.productId != null && this.productId > 0 &&
+                this.productName != null && this.productName !== '' &&
+                this.serviceName != null && this.serviceName !== '' &&
+                this.serviceId != null && this.serviceId > 0 &&
+                this.quantity >= 1
+            return ans;
+        }
+    };
+    let editingEntry = {
+        ...defaultEditingEntry
+    };
+    $(document).ready(function() {
+        $('#salesearch').keyup(function(e) {
+            const orderId = $(this).val();
+            if (!orderId || orderId == '') return;
+
+            $.ajax({
+                method: 'GET',
+                url: `/orders/order/${orderId}`,
+                success: orders => {
+                    console.log(orders);
+                }
+            })
+        });
+
+        $('#product-tabs a').each(function() {
+            $(this).click(function(e) {
+                e.preventDefault();
+                const productId = $(this).data('productId');
+                if (editingEntry.productId === productId) {
+                    $(`#product-tabs a[data-product-id=${productId}]`).each(function() {
+                        $(this).removeClass('btn-primary');
+                        $(this).addClass('btn-outline-primary');
+                    });
+                    if (editingEntry.serviceId && editingEntry.serviceId.length > 0) {
+                        $(`button[data-service-id=${editingEntry.serviceId}]`).each(function() {
+                            $(this).removeClass('btn-primary');
+                            $(this).addClass('btn-outline-primary');
+                        })
+                    }
+                    if (editingEntry.additionalServices.length > 0) {
+                        for (let additionalService of editingEntry.additionalServices) {
+                            $(`button[data-additional-service-id=${additionalService.id}]`).each(function() {
+                                $(this).removeClass('btn-primary');
+                                $(this).addClass('btn-outline-primary');
+                            });
+                        }
+                    }
+                    editingEntry = {
+                        ...defaultEditingEntry
+                    };
+                } else {
+                    editingEntry.productId = productId;
+                    editingEntry.productName = $(this).children('p').text().trim();
+
+                    $(`#product-tabs a[data-product-id=${productId}]`).each(function() {
+                        $(this).removeClass('btn-outline-primary');
+                        $(this).addClass('btn-primary');
+                    });
+                }
+                editingEntryUpdated();
+            });
+        });
+
+        function editingEntryUpdated() {
+            if (editingEntry === defaultEditingEntry || !editingEntry.productId || editingEntry.productId == '' || priceMap[editingEntry.productId] != null) return;
+            const allServiceIds = [];
+            document.querySelectorAll(`.service-container button[data-service-id]`).forEach(e => allServiceIds.push(e.dataset.serviceId));
+            document.querySelectorAll(`.additional-service-container button[data-additional-service-id]`).forEach(e => allServiceIds.push(e.dataset.additionalServiceId));
+            $.ajax({
+                url: `/products/prices`,
+                method: 'POST',
+                data: {
+                    requests: {
+                        productId: editingEntry.productId,
+                        serviceIds: allServiceIds
+                    }
+                },
+                success: map => {
+                    priceMap[editingEntry.productId] = {};
+                    for (let entry of map.servicePrices) {
+                        priceMap[`${editingEntry.productId}`][`${entry.serviceId}`] = {
+                            normalPrice: entry.normalPrice,
+                            fastPrice: entry.fastPrice
+                        };
+                    }
+                }
+            });
+        }
+
+        $('#addEntryToCartButton').click(function(e) {
+            e.preventDefault();
+            if (editingEntry.isValid()) {
+                entries.push({
+                    ...editingEntry
+                });
+                // debugger;
+                $(`#product-tabs a[data-product-id=${editingEntry.productId}]`).each(function() {
+                    $(this).removeClass('btn-primary');
+                    $(this).addClass('btn-outline-primary');
+                });
+                if (editingEntry.serviceId) {
+                    $(`button[data-service-id=${editingEntry.serviceId}]`).each(function() {
+                        $(this).removeClass('btn-primary');
+                        $(this).addClass('btn-outline-primary');
+                    })
+                }
+                if (editingEntry.additionalServices.length > 0) {
+                    for (let additionalService of editingEntry.additionalServices) {
+                        $(`button[data-additional-service-id=${additionalService.serviceId}]`).each(function() {
+                            $(this).removeClass('btn-primary');
+                            $(this).addClass('btn-outline-primary');
+                        });
+                    }
+                }
+                $('#entryQuantity').val(1);
+                $('#entryColour').val('#ffffff');
+                $('#pricingModeInput').val('normal');
+                editingEntry = {
+                    ...defaultEditingEntry
+                };
+                updateCartEntries();
+            } else {
+                let msg;
+                if (editingEntry.productId == null || editingEntry.productId <= 0)
+                    msg = 'Please select a product';
+                else if (!editingEntry.serviceId || editingEntry.serviceId <= 0)
+                    msg = 'A service has to be selected';
+                else
+                    msg = 'Unable to add entry to billing cart. Invalid data';
+
+                Swal.fire({
+                    title: 'Validation Error',
+                    text: msg,
+                    icon: 'error'
+                });
             }
         });
 
-        const productsContainer = document.querySelector('#product-tabs');
-        productsContainer.innerHTML = '';
-        $.ajax({
-            url: '/products/all',
-            method: 'GET',
-            success: p => {
-                debugger;
-                products = [...(p || [])];
-                for (let product of products) {
-                    let icon;
-                    if (product.iconUrl) {
-                        const type = product.iconUrl.split(':')[0];
-                        if (type === 'iconsminds') {
-                            icon = `<div style="font-size: 50px" class="glyph mr-1 mb-1"><i class="${product.iconUrl}"></i></div>`;
-                        } else {
-                            icon = `<div class="glyph mr-1 mb-1"><img style="width: 45px;" class="mt-3" src="/static/icons/${product.iconUrl}"></div>`;
-                        }
-                    } else {
-                        icon = `<img class="mt-1 mb-1" src="/static/icons/pants.svg" width="70%">`;
-                    }
-                    productsContainer.innerHTML += `<a class="btn btn-light default mb-1 mr-1 addPct" style="width: 18.8%!important; border-top: 4px solid #138496;height:100px" id="PR00${product.id}" onclick="productSelect('${product.id}')"><div class="card-body" text-center p-1">${icon}<p class="card-text mb-2">${product.name}</p>`;
-                }
+        $('#decrementQuantity').click(function(e) {
+            if (editingEntry.quantity <= 1) return;
+            document.getElementById('entryQuantity').stepDown();
+            editingEntry.quantity = parseInt(document.getElementById('entryQuantity').value);
+        });
+
+        $('#incrementQuantity').click(function(e) {
+            document.getElementById('entryQuantity').stepUp();
+            editingEntry.quantity = parseInt(document.getElementById('entryQuantity').value);
+        });
+
+        function updateCartEntries() {
+            const tableContent = document.querySelectorAll('#entries-table tr')
+            tableContent.forEach((row, pos) => {
+                if (pos == 0) return;
+                row.remove();
+            });
+            const formatter = new Intl.NumberFormat('en-CM', {
+                currency: 'XAF',
+                style: 'currency',
+                maximumFractionDigits: 0
+            });
+            let i = 0;
+            for (let entry of entries) {
+                // debugger;
+                const element = `
+                        <tr data-entry-id="${i++}" class="w-100">
+                            <td>${entry.productName}</td>
+                            <td><div style="font-size: 1.2rem" class="input-group"><div class="input-group-prepend"><button type="button" class="btn btn-decr btn-primary">-</button></div><input class="form-control quantity-input" type="number" value="${entry.quantity}" min="1" max="100" step="1"><div class="input-group-append"><button type="button" class="btn btn-incr btn-primary">+</button></div></div></td>
+                            <td>${entry.serviceName}</td>
+                            <td></td>
+                            <td>${formatter.format(entry.price())}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button data-product-id="${entry.productId}" title="Remove this entry" type="button" class="btn btn-delete-entry btn-outline-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>`.trim();
+                document.querySelector('#billing-table-body').innerHTML += element;
             }
+
+            computeBilling();
+            updateBillingEntryEventHandlers();
+        }
+
+        function updateBillingEntryEventHandlers() {
+            const formatter = new Intl.NumberFormat('en-CM', {
+                currency: 'XAF',
+                style: 'currency',
+                maximumFractionDigits: 0
+            });
+
+            $('#entries-table input.quantity-input').each(function() {
+                $(this).change(function(e) {
+                    const row = $(this).parents('tr');
+                    const i = row.data('entry-id');
+                    if (i === undefined || i == null) return;
+                    const entry = entries[i];
+                    const priceField = row.find('td:nth-child(5)');
+                    priceField.text(formatter.format(entry.price()));
+                    computeBilling();
+                })
+            })
+
+            $('#entries-table button.btn-decr').each(function() {
+                $(this).click(function(e) {
+                    const row = $(this).parents('tr');
+                    const i = row.data('entry-id');
+                    if (i === undefined || i == null) return;
+                    const entry = entries[i];
+                    if (entry.quantity <= 1) return;
+                    entry.quantity--;
+                    const quantityInput = row.find('input[type=number]');
+                    if (!quantityInput) return;
+                    quantityInput.val(entry.quantity);
+                    quantityInput.change();
+                });
+            });
+
+            $('#entries-table button.btn-incr').each(function() {
+                $(this).click(function(e) {
+                    const row = $(this).parents('tr');
+                    const i = row.data('entry-id');
+                    if (i === undefined || i == null) return;
+                    const quantityInput = row.find('input[type=number]');
+                    const entry = entries[i];
+                    entry.quantity++;
+                    if (!quantityInput) return;
+                    quantityInput.val(entry.quantity);
+                    quantityInput.change();
+                });
+            });
+
+            $('#entries-table button.btn-delete-entry').each(function() {
+                $(this).click(function(e) {
+                    const row = $(this).parents('tr');
+                    const i = row.data('entry-id');
+                    if (i === undefined || i == null) return;
+                    entries = entries.filter((_, index) => index != i);
+                    row.remove();
+                    updateCartEntries();
+                });
+            });
+        }
+
+        function computeBilling() {
+            const discount = parseFloat($('#discountInput').val());
+            const tax = parseFloat($('#taxInput').val());
+            const total = (tax || 0) + entries.map(entry => entry.price()).reduce((acc, curr) => acc + curr, 0);
+            const netPayable = total - (discount || 0);
+            const formatter = new Intl.NumberFormat('en-CM', {
+                currency: 'XAF',
+                style: 'currency',
+                maximumFractionDigits: 0
+            });
+            $('#net-payable').text(formatter.format(netPayable));
+            $('#total').text(formatter.format(total));
+        }
+        computeBilling();
+        document.querySelectorAll('#discountInput,#taxInput').forEach(e => {
+            e.addEventListener('input', () => {
+                computeBilling();
+            });
+        });
+
+        $('#pricingModeInput').change(function() {
+            editingEntry.priceMode = $(this).val();
         })
+
+        $('button[data-service-id]').each(function() {
+
+            $(this).click(function(e) {
+                e.preventDefault();
+                const serviceId = $(this).data('serviceId');
+                const serviceName = $(this).text().trim();
+                if (!serviceId) return;
+
+                if (editingEntry.serviceId == null) {
+                    editingEntry.serviceId = serviceId;
+                    editingEntry.serviceName = serviceName;
+                    $(this).removeClass('btn-outline-primary');
+                    $(this).addClass('btn-primary');
+                } else if (editingEntry.serviceId == serviceId) {
+                    editingEntry.serviceId = null;
+                    editingEntry.serviceName = null;
+                    $(this).removeClass('btn-primary');
+                    $(this).addClass('btn-outline-primary');
+                } else {
+                    $(`button[data-service-id=${editingEntry.serviceId}]`).removeClass('btn-primary');
+                    $(`button[data-service-id=${editingEntry.serviceId}]`).addClass('btn-outline-primary');
+                    $(this).removeClass('btn-outline-primary');
+                    $(this).addClass('btn-primary');
+                    editingEntry.serviceId = serviceId;
+                    editingEntry.serviceName = serviceName;
+                }
+                editingEntryUpdated();
+            });
+        });
+
+        $('button[data-additional-service-id]').each(function() {
+            $(this).click(function(e) {
+                e.preventDefault();
+                const serviceId = $(this).data('additional-service-id');
+                const serviceName = $(this).text().trim();
+                if (editingEntry.additionalServices.some(service => service.serviceId == serviceId)) {
+                    $(this).removeClass('btn-primary');
+                    $(this).addClass('btn-outline-primary');
+                    editingEntry.additionalServices = editingEntry.additionalServices.filter(service => service.serviceId != serviceId);
+                } else {
+                    $(this).removeClass('btn-outline-primary');
+                    $(this).addClass('btn-primary');
+                    editingEntry.additionalServices.push({
+                        serviceId,
+                        serviceName
+                    });
+                }
+            });
+        })
+
+        const updateQuantity = function(e) {
+            editingEntry.quantity = $(this).val();
+        };
+
+        document.getElementById('entryQuantity').addEventListener('change', updateQuantity);
+        document.getElementById('entryQuantity').addEventListener('input', updateQuantity);
+
+        $('#new-order-form').validate({
+            rules: {
+
+            }
+        });
     });
 </script>
