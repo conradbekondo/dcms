@@ -6,7 +6,9 @@ import {
   Inject,
   Logger,
   Param,
+  ParseIntPipe,
   Post,
+  Put,
   Query,
   Render,
   Req,
@@ -20,6 +22,7 @@ import { Request, Response } from 'express';
 import { Role } from 'src/decorators/role.decorator';
 import { NewClientDto } from 'src/dto/cleint.dto';
 import { NewOrderDto } from 'src/dto/new-order.dto';
+import { UpdateOrderInvoiceDto } from 'src/dto/update-order-invoice.dto';
 import { Roles } from 'src/entities/roles';
 import { BadQueryParamsException } from 'src/exceptions/bad-query.exception';
 import { BadQueryFilter } from 'src/filters/bad-query.filter';
@@ -75,6 +78,29 @@ export class OrdersController extends BaseController {
     }
   }
 
+  @Get('for_update/:id')
+  async getOrderForUpdate(@Param('id') id: string, @Res() res: Response) {
+    const dto = await this.orderService.getOrderForUpdate(id);
+    if (dto) {
+      return res.status(HttpStatus.OK).json({
+        invoice: dto
+      });
+    }
+    return res.status(HttpStatus.NOT_FOUND).json({
+      text: `Order not found: ${id}`
+    });
+  }
+
+  @Put(':id')
+  async updateOrderInvoice(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateOrderInvoiceDto, @Res() res: Response) {
+    const result = await this.orderService.updateOrderInvoice(dto);
+    if (result.success) {
+      return res.status(HttpStatus.ACCEPTED).send();
+    } else {
+      return res.status(HttpStatus.UNPROCESSABLE_ENTITY).send({ text: result.message });
+    }
+  }
+
   @Post('/create')
   @UsePipes(ValidationPipe)
   async createOrder(@Body() dto: NewOrderDto, @Res() res: Response) {
@@ -103,7 +129,6 @@ export class OrdersController extends BaseController {
     }
 
     this.viewBag.pageTitle = 'All Orders';
-    const principal = this.userService.getCurrentUser();
     const pageInfo = await this.orderService.getOrdersAvailableForUser(
       parseInt(startAt),
       parseInt(size),

@@ -11,7 +11,7 @@
                                 <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block">
                                     <ol class="breadcrumb pt-0">
                                         <li class="breadcrumb-item">
-                                            <a href="./create">
+                                            <a href="/create">
                                                 <button type="button" class="btn btn-primary">
                                                     <i class="glyph-icon simple-icon-plus"></i> Create an Order
                                                 </button>
@@ -25,43 +25,124 @@
                             <div class="col-12 mb-4">
                                 <div class="card">
                                     <div class="card-body">
-                                        <table class="data-table data-table-feature">
+                                        <table class="table table-bordered table-stripped table-hover">
                                             <thead>
-                                                <tr>
+                                                <tr class="w-100">
                                                     <th>ID</th>
-                                                    <th>Customer
-                                                        <%# t('test.Customer', view.lang )%>
-                                                    </th>
-                                                    <th>Service
-                                                        <%# t('test.Service', view.lang )%>
-                                                    </th>
-                                                    <th>Description
-                                                        <%# t('test.Description', view.lang )%>
-                                                    </th>
-                                                    <th>Price
-                                                        <%# t('test.Price', view.lang )%>
-                                                    </th>
-                                                    <th>Date Recorded
-                                                        <%# t('test.Date Recorded', view.lang )%>
-                                                    </th>
-                                                    <th>Pickup Date
-                                                        <%# t('test.Pickup Date', view.lang )%>
-                                                    </th>
-                                                    <th>Status
-                                                        <%# t('test.Status', view.lang )%>
-                                                    </th>
+                                                    <th>Code</th>
+                                                    <th>Customer</th>
+                                                    <th>Number of Services Used</th>
+                                                    <th>Number of Entries</th>
+                                                    <th>Tax</th>
+                                                    <th>Discount</th>
+                                                    <th>Total</th>
+                                                    <th>Net Payable</th>
+                                                    <th>Amount Paid</th>
+                                                    <th>Outstanding</th>
+                                                    <th>Invoice Stauts</th>
+                                                    <th>Order Stauts</th>
+                                                    <th>Date Recorded</th>
+                                                    <th>Due Date</th>
+                                                    <th>Recorded By</th>
+                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td>Tiger Nixon</td>
-                                                    <td>System Architect</td>
-                                                    <td>Edinburgh</td>
-                                                    <td>61</td>
-                                                    <td>2011/04/25</td>
-                                                    <td>$320,800</td>
-                                                </tr>
+                                                <%
+const numberFormatter = new Intl.NumberFormat('en-CM',{maximumFractionalDigits: 0});
+const currencyFormatter = new Intl.NumberFormat('en-CM', {style: 'currency', currency: 'XAF', maximumFractionalDigits: 0});
+                                                %>
+                                                    <% data.orders.forEach(order => {
+                                                    
+                                                    %>
+                                                        <tr>
+                                                            <td>
+                                                                <%= order.orderId %>
+                                                            </td>
+                                                            <td>
+                                                                <%= order.code %>
+                                                            </td>
+                                                            <td>
+                                                                <%= order.customer %>
+                                                            </td>
+                                                            <td>
+                                                                <%= numberFormatter.format(order.numberOfServices) %>
+                                                            </td>
+                                                            <td>
+                                                                <%= numberFormatter.format(order.numberOfEntries) %>
+                                                            </td>
+                                                            <td>
+                                                                <%= currencyFormatter.format(order.tax) %>
+                                                            </td>
+                                                            <td>
+                                                                <%= currencyFormatter.format(order.discount) %>
+                                                            </td>
+                                                            <td>
+                                                                <%= currencyFormatter.format(order.total) %>
+                                                            </td>
+                                                            <td>
+                                                                <%= currencyFormatter.format(order.netPayable) %>
+                                                            </td>
+                                                            <td>
+                                                                <%= currencyFormatter.format(order.amountPaid) %>
+                                                            </td>
+                                                            <td>
+                                                                <%= currencyFormatter.format(order.balance) %>
+                                                            </td>
+                                                            <td>
+                                                                <% if (order.invoiceStatus == 0) {%>
+                                                                    <span class="badge badge-success">PAID</span>
+                                                                    <%} else if (order.invoiceStatus == 1) {%>
+                                                                        <span class="badge badge-secondary">UNPAID</span>
+                                                                        <%} else {%>
+                                                                            <span class="badge badge-warning">PARTIALLY PAID</span>
+                                                                            <%}%>
+                                                            </td>
+                                                            <td>
+                                                                <% if (order.orderStatus == 0) {%>
+                                                                    <span class="badge badge-primary">RECORDED</span>
+                                                                    <%} else if (order.orderStatus == 1) {%>
+                                                                        <span class="badge badge-secondary">PENDING DELIVERY</span>
+                                                                        <%} else {%>
+                                                                            <span class="badge badge-success">DELIVERED</span>
+                                                                            <%}%>
+                                                            </td>
+                                                            <td>
+                                                                <%= order.dateRecorded.toLocaleString() %>
+                                                            </td>
+                                                            <td>
+                                                                <%= order.dueDate.toLocaleDateString() %>
+                                                            </td>
+                                                            <td>
+                                                                <%= order.recordedBy %>
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn btn-outline-primary dropdown-toggle mb-1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                Action
+                                                              </button>
+                                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 37px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                                    <a class="dropdown-item update" href="#" data-id="<%=order.orderId %>"><i class="fa-solid fa-sticky-note" aria-hidden="true"></i>Update Invoice</a>
+                                                                    <a class="dropdown-item print" href="#confirm-delete" id="custId" data-toggle="modal" data-id="295"><i class="fa-solid fa-print" aria-hidden="true"></i> Print Receipt</a>
+                                                                    <a class="dropdown-item" href="#confirm-delete" id="custId" data-toggle="modal" data-id="295"><i class="fa-solid fa-times" aria-hidden="true"></i> Delete </a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <%}) %>
                                             </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th class="text-right" colspan="8">
+                                                        <strong>Total: </strong>
+                                                    </th>
+                                                    <th class="<%= data.statistics.totalOutstanding >= data.statistics.totalPaid ? 'bg-danger text-white' : 'text-white bg-success' %>">
+                                                        <%= currencyFormatter.format(data.statistics.totalPaid) %>
+                                                    </th>
+                                                    <th class="<%= data.statistics.totalOutstanding >= data.statistics.totalPaid ? 'bg-danger text-white' : 'text-white bg-success' %>">
+                                                        <%= currencyFormatter.format(data.statistics.totalOutstanding) %>
+                                                    </th>
+                                                    <th colspan="6"></th>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
@@ -69,6 +150,87 @@
                         </div>
                     </div>
                 </main>
+                <form id="updateInvoiceForm">
+                    <input type="hidden" id="orderIdInput">
+                    <div class="modal fade" id="invoiceUpdateFormModal">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Invoice -
+                                    </h4>
+                                    <button type="reset" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span> </button>
+                                </div>
+                                <div class="modal-body">
+                                    <dl>
+                                        <dt>Client</dt>
+                                        <dd>
+                                            <h3>N/A</h3>
+                                        </dd>
+                                        <dt>Number of Services</dt>
+                                        <dd>0</dd>
+                                        <dt>Tax</dt>
+                                        <dd>FCFA 0</dd>
+                                        <dt>Discount</dt>
+                                        <dd>FCFA 0</dd>
+                                        <dt>Total</dt>
+                                        <dd>FCFA 0</dd>
+                                        <dt>Net Payable</dt>
+                                        <dd>FCFA 0</dd>
+                                    </dl>
+                                    <div class="form-group">
+                                        <label id="lblmarkAsDelivered" for="markDelivered"><input id="markDelivered" type="checkbox"> Mark as Delivered</label>
+                                    </div>
+                                    <div class="form-group p-0 mb-2">
+                                        <label for="dueDate">Due Date <span class="text-danger">*</span></label>
+                                        <input type="date" id="dueDate" placeholder="Due Date" required class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="invoiceFormPaymentType">Payment Type <span class="text-danger">*</span></label>
+                                        <select value="cash" required id="invoiceFormPaymentType" name="paymentType" class="form-control">
+                              <option selected="true" value="cash">Cash</option>
+                              <option value="mobile">Momo</option>
+                              <option value="bank">Bank Transfer</option>
+                            </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="invoiceFormAmountPaid">Amount Paid <span class="text-danger">*</span></label>
+                                        <div class="d-block my-2">
+                                            <div class="d-flex money-btns justify-content-around gap-3 flex-wrap">
+                                                <button type="button" class="btn-sm btn btn-outline-primary">+ 500</button>
+                                                <button type="button" class="btn-sm btn btn-outline-primary">+ 1000</button>
+                                                <button type="button" class="btn-sm btn btn-outline-primary">+ 2000</button>
+                                                <button type="button" class="btn-sm btn btn-outline-primary">+ 5000</button>
+                                                <button type="button" class="btn-sm btn btn-outline-primary">+ 10000</button>
+                                            </div>
+                                        </div>
+                                        <input required type="number" id="invoiceFormAmountPaid" class="form-control" min="0" value="0">
+                                        <div class="d-block my-2">
+                                            <div class="d-flex money-btns justify-content-around gap-3 flex-wrap">
+                                                <button type="button" class="btn-sm btn btn-outline-danger">- 500</button>
+                                                <button type="button" class="btn-sm btn btn-outline-danger">- 1000</button>
+                                                <button type="button" class="btn-sm btn btn-outline-danger">- 2000</button>
+                                                <button type="button" class="btn-sm btn btn-outline-danger">- 5000</button>
+                                                <button type="button" class="btn-sm btn btn-outline-danger">- 10000</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <dl class="font-weight-bold text-bold">
+                                            <dt style="font-size: 1.2rem">Balance: </dt>
+                                            <dd id="invoiceFormBalanceText" style="font-weight: bold;font-size: 2rem">FCFA 0</dd>
+                                            <dd id="invoiceFormBalanceDescription"></dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="modal-footer d-flex justify-content-center align-items-center">
+                                    <button class="btn btn-print btn-success" type="submit"><i class="fa-solid fa-print"></i> Print</button>
+                                    <button class="btn btn-primary" type="submit"><i class="fa-solid fa-save"></i> Save</button>
+                                    <button data-dismiss="modal" class="btn btn-outline-danger" type="reset"><i class="fa-solid fa-cancel"></i> Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
                 <%- include('../partials/main-footer.ejs') %>
                     <%- include('partials/scripts.ejs') %>
     </body>

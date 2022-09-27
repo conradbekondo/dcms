@@ -1,6 +1,195 @@
 <script src="js/vendor/jquery-3.3.1.min.js"></script>
 <script src="js/vendor/bootstrap.bundle.min.js"></script>
 <script src="js/vendor/perfect-scrollbar.min.js"></script>
-<script src="js/vendor/datatables.min.js"></script>
+<!-- <script src="js/vendor/datatables.min.js"></script> -->
 <script src="js/dore.script.js"></script>
 <script src="js/scripts.js"></script>
+<script src="/static/js/sweetalert.min.js"></script>
+<script src="/static/js/vendor/jquery.validate/jquery.validate.min.js"></script>
+<script>
+    const currencyFormatter = new Intl.NumberFormat('en-CM', {
+        currency: 'XAF',
+        style: 'currency',
+        maximumFractionDigits: 0
+    });
+    const numberFormatter = new Intl.NumberFormat('en-CM');
+    $(document).ready(function() {
+        $('#updateInvoiceForm').validate();
+        $('#updateInvoiceForm').submit(function(e) {
+            e.preventDefault();
+            const orderId = $('#orderIdInput').val();
+            if (!orderId) return;
+            const data = updatingInvoice;
+            $.ajax({
+                url: `/orders/${orderId}`,
+                method: 'PUT',
+                data,
+                success: succ => {
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Invoice updated successfully',
+                        icon: 'success'
+                    }).then(() => location.reload());
+                },
+                error: err => {
+                    Swal.fire({
+                        title: 'Error',
+                        text: err.responseJSON ? err.responseJSON.text : 'Invoice update failed',
+                        icon: 'error'
+                    })
+                }
+            })
+        });
+        $('.dropdown-item.update').each(function() {
+            $(this).click(function(e) {
+                e.preventDefault();
+                const orderId = $(this).data('id');
+                if (orderId == null || orderId == undefined || orderId <= 0) return;
+                $.ajax({
+                    url: '/orders/for_update/' + orderId,
+                    method: 'GET',
+                    success: ({
+
+                        invoice
+                    }) => {
+                        $('#orderIdInput').val(orderId);
+                        updatingInvoice = {
+                            orderCode: invoice.orderCode,
+                            orderId: parseInt(invoice.orderId),
+                            invoiceId: parseInt(invoice.invoiceId),
+                            clientNames: invoice.clientNames,
+                            serviceCount: parseInt(invoice.serviceCount),
+                            tax: parseFloat(invoice.tax),
+                            total: parseFloat(invoice.total),
+                            netPayable: parseFloat(invoice.netPayable),
+                            dueDate: invoice.dueDate,
+                            paymentType: invoice.paymentType,
+                            amountPaid: parseFloat(invoice.amountPaid),
+                            discount: parseFloat(invoice.discount),
+                            markAsDelivered: invoice.markAsDelivered === undefined || invoice.markAsDelivered === null ? false : invoice.markAsDelivered == 'true'
+                        };
+                        $('#invoiceUpdateFormModal').modal({
+                            backdrop: 'static'
+                        });
+                        updateForm();
+                    }
+                });
+            });
+        });
+
+        $('.money-btns button').each(function() {
+            $(this).click(function(e) {
+                const currentAmountPaid = parseFloat($('#invoiceFormAmountPaid').val());
+                const amountToBeAdded = parseFloat($(this).text().split(' ').join(''));
+                if (currentAmountPaid + amountToBeAdded
+
+                    <
+                    0) {
+                    $('#invoiceFormAmountPaid').val(0);
+                } else $('#invoiceFormAmountPaid').val(currentAmountPaid + amountToBeAdded);
+                $('#invoiceFormAmountPaid').change();
+            });
+        });
+
+        $('#invoiceFormPaymentType').on('change input', function() {
+            updatingInvoice.paymentType = $(this).val();
+        });
+
+        $('#markDelivered').change(function() {
+            const value = this.checked;
+            console.log(value);
+            updatingInvoice.markAsDelivered = value;
+        });
+
+        $('#invoiceFormAmountPaid').on('input change', function(e) {
+            const value = parseFloat($(this).val());
+            const _isNan = isNaN(value);
+            if (_isNan) {
+                $(this).val(0);
+                $(this).trigger('input');
+                return;
+            }
+            updatingInvoice.amountPaid = value;
+            computeBilling();
+        });
+
+        const defaultInvoice = {
+            clientNames: 'N/A',
+            serviceCount: 0,
+            tax: 0,
+            total: 0,
+            netPayable: 0,
+            dueDate: new Date(),
+            paymentType: 'cash',
+            amountPaid: 0
+        };
+
+        let updatingInvoice = {
+            ...defaultInvoice
+        };
+
+        function updateForm() {
+            $('#updateInvoiceForm .modal-title').text(`Invoice - ${updatingInvoice.orderCode}`);
+            $('.modal-body dl dd:nth-child(2) h3').text(updatingInvoice.clientNames);
+            $('.modal-body dl dd:nth-child(4)').text(numberFormatter.format(updatingInvoice.serviceCount));
+            $('.modal-body dl dd:nth-child(6)').text(currencyFormatter.format(updatingInvoice.tax));
+            $('.modal-body dl dd:nth-child(8)').text(currencyFormatter.format(updatingInvoice.discount));
+            $('.modal-body dl dd:nth-child(10)').text(currencyFormatter.format(updatingInvoice.total));
+            $('.modal-body dl dd:nth-child(12)').text(currencyFormatter.format(updatingInvoice.netPayable));
+            document.getElementById('markDelivered').checked = updatingInvoice.markAsDelivered;
+
+            const now = new Date();
+            const month = now.getMonth() + 1 < 10 ? `0${now.getMonth()+1}` : `${now.getMonth()+1}`;
+            const day = (now.getDate() + 1) < 10 ? `0${now.getDate()+1}` : `${now.getDate()+1}`;
+            const minDate = `${now.getFullYear()}-${month}-${day}`;
+            $('#dueDate').attr('min', minDate);
+            document.getElementById('dueDate').valueAsDate = new Date(updatingInvoice.dueDate);
+            $('#invoiceFormPaymentType').val(updatingInvoice.paymentType);
+            $('#invoiceFormAmountPaid').val(updatingInvoice.amountPaid);
+            computeBilling();
+        }
+
+        function computeBilling() {
+            const tax = updatingInvoice.tax;
+            const discount = updatingInvoice.discount;
+            const total = updatingInvoice.total;
+            const amountPaid = updatingInvoice.amountPaid;
+            const netPayable = updatingInvoice.netPayable;
+            const outstanding = netPayable - amountPaid;
+            const clientName = updatingInvoice.clientNames;
+            if (amountPaid <= 0) {
+                $('.money-btns .btn-outline-danger').each(function() {
+                    $(this).hide();
+                });
+            } else {
+                $('.money-btns .btn-outline-danger').each(function() {
+                    $(this).show();
+                });
+            }
+            let balanceDescriptionText;
+            if (outstanding < 0) {
+                balanceDescriptionText = `<b style="font-size: 1.1rem">${currencyFormatter.format(Math.abs(outstanding))}</b> is to be given to <b style="font-size: 1.1rem">${clientName}</b> as change`;
+                $('#invoiceFormBalanceDescription').removeClass('text-danger');
+                $('#invoiceFormBalanceText').removeClass('text-danger');
+                $('.btn-print').show();
+                $('#lblmarkAsDelivered').show();
+            } else if (outstanding > 0) {
+                balanceDescriptionText = `<b style="font-size: 1.1rem">${currencyFormatter.format(Math.abs(outstanding))}</b> is outstanding for <b style="font-size: 1.1rem">${clientName}</b> to pay`;
+                $('#invoiceFormBalanceDescription').addClass('text-danger');
+                $('#invoiceFormBalanceText').addClass('text-danger');
+                $('.btn-print').hide();
+                $('#lblmarkAsDelivered').hide();
+            } else {
+                balanceDescriptionText = '';
+                $('#invoiceFormBalanceDescription').removeClass('text-danger');
+                $('#invoiceFormBalanceText').removeClass('text-danger');
+                $('.btn-print').show();
+                $('#lblmarkAsDelivered').show();
+            }
+            document.getElementById('invoiceFormBalanceDescription').innerHTML = balanceDescriptionText;
+            $('#invoiceFormBalanceText').text(currencyFormatter.format(Math.abs(outstanding)));
+        }
+
+        computeBilling();
+    });
+</script>

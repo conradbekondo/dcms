@@ -8,6 +8,7 @@ import { User } from './user.entity';
 export enum OrderStatus {
   RECORDED,
   PENDING_PICKUP,
+  DELIVERED
 }
 
 @Entity('orders')
@@ -41,6 +42,6 @@ export class Order extends BaseEntity {
   @OneToMany(() => OrderEntry, (e) => e.order)
   entries: Promise<OrderEntry[]>;
 
-  @OneToOne(() => Invoice, { eager: false, onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
+  @OneToOne(() => Invoice, invoice => invoice.order, { eager: false, onDelete: 'RESTRICT', onUpdate: 'CASCADE' })
   invoice: Invoice;
 }

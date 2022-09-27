@@ -58,6 +58,56 @@
         ...defaultEditingEntry
     };
     $(document).ready(function() {
+        function computeBilling() {
+            const discount = parseFloat($('#discountInput').val());
+            const tax = parseFloat($('#taxInput').val());
+            const total = (tax || 0) + entries.map(entry => entry.price()).reduce((acc, curr) => acc + curr, 0);
+            const netPayable = total - (discount || 0);
+            const currencyFormatter = new Intl.NumberFormat('en-CM', {
+                currency: 'XAF',
+                style: 'currency',
+                maximumFractionDigits: 0
+            });
+            const currentAmountPaid = parseFloat($('#invoiceFormAmountPaid').val());
+            const balance = netPayable - currentAmountPaid;
+            const clientName = $('#invoiceForm .modal-body dl dd:nth-child(2) > h3').text().trim();
+            if (currentAmountPaid <= 0) {
+                $('.money-btns .btn-outline-danger').each(function() {
+                    $(this).hide();
+                });
+            } else {
+                $('.money-btns .btn-outline-danger').each(function() {
+                    $(this).show();
+                });
+            }
+            let balanceDescriptionText;
+            if (balance < 0) {
+                balanceDescriptionText = `<b style="font-size: 1.1rem">${currencyFormatter.format(Math.abs(balance))}</b> is to be given to <b style="font-size: 1.1rem">${clientName}</b> as change`;
+                $('#invoiceFormBalanceDescription').removeClass('text-danger');
+                $('#invoiceFormBalanceText').removeClass('text-danger');
+                $('.btn-print').show();
+            } else if (balance > 0) {
+                balanceDescriptionText = `<b style="font-size: 1.1rem">${currencyFormatter.format(Math.abs(balance))}</b> is outstanding for <b style="font-size: 1.1rem">${clientName}</b> to pay`;
+                $('#invoiceFormBalanceDescription').addClass('text-danger');
+                $('#invoiceFormBalanceText').addClass('text-danger');
+                $('.btn-print').hide();
+            } else {
+                $('#invoiceFormBalanceDescription').removeClass('text-danger');
+                $('#invoiceFormBalanceText').removeClass('text-danger');
+                $('.btn-print').show();
+                balanceDescriptionText = '';
+            }
+            document.getElementById('invoiceFormBalanceDescription').innerHTML = balanceDescriptionText;
+            $('#invoiceFormBalanceText').text(currencyFormatter.format(Math.abs(balance)));
+            $('#net-payable').text(currencyFormatter.format(netPayable));
+            $('#total').text(currencyFormatter.format(total));
+            $('#invoiceForm .modal-body dl dd:nth-child(4)').text(entries.map(entry => entry.additionalServices.length + 1).reduce((acc, curr) => acc + curr, 0).toLocaleString());
+            $('#invoiceForm .modal-body dl dd:nth-child(6)').text(currencyFormatter.format(tax));
+            $('#invoiceForm .modal-body dl dd:nth-child(8)').text(currencyFormatter.format(discount));
+            $('#invoiceForm .modal-body dl dd:nth-child(10)').text(currencyFormatter.format(total));
+            $('#invoiceForm .modal-body dl dd:nth-child(12)').text(currencyFormatter.format(netPayable));
+        }
+        computeBilling();
         $('#salesearch').keyup(function(e) {
             const orderId = $(this).val();
             if (!orderId || orderId == '') return;
@@ -319,45 +369,6 @@
             const selectedClientName = $(this).find(`option[value=${selectedClientId}]`).text()
             $('#invoiceForm .modal-body dl dd:nth-child(2) > h3').text(selectedClientName);
         })
-
-        function computeBilling() {
-            const discount = parseFloat($('#discountInput').val());
-            const tax = parseFloat($('#taxInput').val());
-            const total = (tax || 0) + entries.map(entry => entry.price()).reduce((acc, curr) => acc + curr, 0);
-            const netPayable = total - (discount || 0);
-            const currencyFormatter = new Intl.NumberFormat('en-CM', {
-                currency: 'XAF',
-                style: 'currency',
-                maximumFractionDigits: 0
-            });
-            const currentAmountPaid = parseFloat($('#invoiceFormAmountPaid').val());
-            const balance = netPayable - currentAmountPaid;
-            const clientName = $('#invoiceForm .modal-body dl dd:nth-child(2) > h3').text().trim();
-            let balanceDescriptionText;
-            if (balance
-
-                <=
-                0) {
-                balanceDescriptionText = `<b style="font-size: 1.1rem">${currencyFormatter.format(Math.abs(balance))}</b> is to be given to <b style="font-size: 1.1rem">${clientName}</b> as change`;
-                $('#invoiceFormBalanceDescription').removeClass('text-danger');
-                $('#invoiceFormBalanceText').removeClass('text-danger');
-                $('.btn-print').show();
-            } else {
-                balanceDescriptionText = `<b style="font-size: 1.1rem">${currencyFormatter.format(Math.abs(balance))}</b> is pending for <b style="font-size: 1.1rem">${clientName}</b> to pay`;
-                $('#invoiceFormBalanceDescription').addClass('text-danger');
-                $('#invoiceFormBalanceText').addClass('text-danger');
-                $('.btn-print').hide();
-            }
-            document.getElementById('invoiceFormBalanceDescription').innerHTML = balanceDescriptionText;
-            $('#invoiceFormBalanceText').text(currencyFormatter.format(balance));
-            $('#net-payable').text(currencyFormatter.format(netPayable));
-            $('#total').text(currencyFormatter.format(total));
-            $('#invoiceForm .modal-body dl dd:nth-child(4)').text(entries.map(entry => entry.additionalServices.length + 1).reduce((acc, curr) => acc + curr, 0).toLocaleString());
-            $('#invoiceForm .modal-body dl dd:nth-child(6)').text(currencyFormatter.format(tax));
-            $('#invoiceForm .modal-body dl dd:nth-child(8)').text(currencyFormatter.format(discount));
-            $('#invoiceForm .modal-body dl dd:nth-child(10)').text(currencyFormatter.format(total));
-            $('#invoiceForm .modal-body dl dd:nth-child(12)').text(currencyFormatter.format(netPayable));
-        }
         $('#invoiceFormAmountPaid').on('input change', function(e) {
             const value = parseFloat($(this).val());
             const _isNan = isNaN(value);
@@ -383,8 +394,14 @@
         $('.money-btns button').each(function() {
             $(this).click(function(e) {
                 const currentAmountPaid = parseFloat($('#invoiceFormAmountPaid').val());
-                const amountToBeAdded = parseFloat($(this).text());
-                $('#invoiceFormAmountPaid').val(currentAmountPaid + amountToBeAdded);
+                const amountToBeAdded = parseFloat($(this).text().split(' ').join(''));
+                if (currentAmountPaid + amountToBeAdded
+
+                    <
+                    0) {
+                    $('#invoiceFormAmountPaid').val(0);
+                } else
+                    $('#invoiceFormAmountPaid').val(currentAmountPaid + amountToBeAdded);
                 $('#invoiceFormAmountPaid').change();
             });
         });
@@ -482,7 +499,10 @@
 
             <
             10 ? `0${now.getMonth()+1}` : `${now.getMonth()+1}`;
-        const day = now.getDate() < 10 ? `0${now.getDate()}` : `${now.getDate()}`;
+        const day = (now.getDate() + 1)
+
+        <
+        10 ? `0${now.getDate()+1}` : `${now.getDate()+1}`;
         const minDate = `${now.getFullYear()}-${month}-${day}`;
         document.getElementById('dueDate').setAttribute('min', minDate);
         document.getElementById('dueDate').value = minDate;

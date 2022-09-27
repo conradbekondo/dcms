@@ -1,5 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { NewOrderDto } from 'src/dto/new-order.dto';
+import { UpdateOrderInvoiceDto } from 'src/dto/update-order-invoice.dto';
 import { Client } from 'src/entities/client.entity';
 import { InvoiceItemAdditionalService } from 'src/entities/invoice-item-additional-service.entity';
 import { InvoiceItem } from 'src/entities/invoice-item.entity';
@@ -7,11 +8,11 @@ import { Invoice, InvoiceStatus } from 'src/entities/invoice.entity';
 import { OrderEntryAttribute } from 'src/entities/order-entry-attribute.entity';
 import { OrderEntry } from 'src/entities/order-entry.entity';
 import { Order, OrderStatus } from 'src/entities/order.entity';
+import { OrdersView } from 'src/entities/orders.view.entity';
 import { ProductServicePrice } from 'src/entities/product-service-price.entity';
 import { Roles } from 'src/entities/roles';
 import { OfferedService } from 'src/entities/service.entity';
-import { IPrincipal } from 'src/models/principal.model';
-import { DataSource, FindManyOptions, Repository } from 'typeorm';
+import { DataSource, FindManyOptions, FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
 import { ProductsService } from '../products/products.service';
 import { UsersService } from '../users/users.service';
 
@@ -109,12 +110,15 @@ export class OrdersService {
       invoice.amountPaid = amountPaid;
       invoice.balance = balance;
       invoice.netPayable = netPayable;
+      invoice.tax = parseInt(createOrderDto.tax);
+      invoice.discount = parseInt(createOrderDto.discount);
       invoice.order = order;
       invoice.orderId = order.id;
       invoice.recordedBy = currentUser;
       invoice.status = balance <= 0 ? InvoiceStatus.PAID : balance == netPayable ? InvoiceStatus.UNPAID : InvoiceStatus.PARTIALLY_PAID;
       invoice.total = total;
       invoice.dueDate = new Date(createOrderDto.dueDate);
+      invoice.paymentType = createOrderDto.paymentType;
 
       invoice = await this.dataSource.getRepository<Invoice>(Invoice).save(invoice);
 
@@ -129,7 +133,7 @@ export class OrdersService {
         invoiceItem.serviceId = service.id;
         invoiceItem.serviceName = service.name;
         invoiceItem = await this.dataSource.getRepository<InvoiceItem>(InvoiceItem).save(invoiceItem);
-
+        if (!entry.additionalServices) continue;
         for (let aService of entry.additionalServices) {
           const price = await this.productServicePriceRepository.findOneBy({ serviceId: parseInt(aService.id), productId: parseInt(entry.productId) });
           service = await this.dataSource.getRepository<OfferedService>(OfferedService).findOneBy({ id: parseInt(aService.id) });
@@ -138,6 +142,7 @@ export class OrdersService {
           additionalService.price = parseInt(entry.quantity) * (price == null ? 0 : entry.priceMode == 'normal' ? price.normalPrice : price.fastPrice);
           additionalService.serviceId = service.id;
           additionalService.serviceName = service.name;
+          additionalService.invoiceId = invoice.id;
           additionalService = await this.dataSource.getRepository<InvoiceItemAdditionalService>(InvoiceItemAdditionalService).save(additionalService);
         }
       }
@@ -157,13 +162,10 @@ export class OrdersService {
     const hasElevatedPrivileges = dbUser.roles.some(
       (role) => role.roleName == Roles.ADMIN || role.roleName == Roles.SYSTEM,
     );
-    let query: FindManyOptions<Order> = {
-      order: {
-        dateCreated: 'DESC',
-        lastUpdated: 'DESC',
-      },
+    const repo = this.dataSource.getRepository<OrdersView>(OrdersView);
+    let query: FindManyOptions<OrdersView> = {
       skip: startAt * size,
-      take: size,
+      take: size
     };
 
     if (!hasElevatedPrivileges)
@@ -171,26 +173,40 @@ export class OrdersService {
         ...query,
         where: { ...(query.where || {}), recorderId: dbUser.id },
       };
-
     let totalRecords: number;
     if (query.where) {
-      totalRecords = await this.ordersRepository.count({
+      totalRecords = await repo.count({
         where: query.where || {},
       });
     } else {
-      totalRecords = await this.ordersRepository.count();
+      totalRecords = await repo.count();
     }
-    const totalPages = Math.ceil(totalRecords / size) + 1;
+    const totalPages = Math.ceil(totalRecords / size);
+    const firstPageIndex = 0;
+    const lastPageIndex = totalPages - 1;
     const isFirstPage = startAt == 0;
-    const isLastPage =
-      (await this.ordersRepository.count({
-        where: query.where,
-        skip: (startAt + 1) * size,
-      })) <= 0;
+    const isLastPage = firstPageIndex == lastPageIndex;
+    let queryBuilder = repo.createQueryBuilder()
+      .select('sum(net_payable)', 'totalPayable')
+      .addSelect('sum(amount_paid)', 'totalPaid')
+      .addSelect('sum(balance)', 'totalOutstanding');
+    if (!hasElevatedPrivileges) {
+      queryBuilder = queryBuilder.where('vo.recorder_id = :id', { id: dbUser.id });
+    }
+    let statistics = await queryBuilder.getRawOne<{
+      totalPayable: string,
+      totalPaid: string,
+      totalOutstanding: string
+    }>();
 
-    const orders = await this.ordersRepository.find(query);
+    const orders = await repo.find(query);
     return {
       orders,
+      statistics: {
+        totalPayable: parseFloat(statistics.totalPayable),
+        totalPaid: parseFloat(statistics.totalPaid),
+        totalOutstanding: parseFloat(statistics.totalOutstanding)
+      },
       pageInfo: {
         totalRecords,
         pageIndex: startAt,
@@ -201,5 +217,73 @@ export class OrdersService {
         isLastPage,
       },
     };
+  }
+
+  async getOrderForUpdate(_id: string | number) {
+    let id: number;
+    if (typeof _id == 'string')
+      id = parseInt(_id);
+
+    const dbUser = await this.userService.getCurrentUser();
+    if (!dbUser) throw new UnauthorizedException();
+
+    const hasElevatedPrivileges = dbUser.roles.some(
+      (role) => role.roleName == Roles.ADMIN || role.roleName == Roles.SYSTEM,
+    );
+    let query: FindOneOptions<Order> = {
+      relations: { invoice: { items: { additionalServices: true } }, customer: true },
+      where: { id }
+    };
+
+    if (!hasElevatedPrivileges) {
+      query = { ...query, where: { id, recorderId: dbUser.id } };
+    }
+
+    const order = await this.ordersRepository.findOne(query);
+    if (!order) return null;
+    const dto = new UpdateOrderInvoiceDto();
+    dto.amountPaid = order.invoice.amountPaid.toString();
+    dto.clientNames = `${order.customer.first_name} ${order.customer.last_name || ''}`.trim();
+    dto.dueDate = order.dueDate || order.invoice.dueDate;
+    dto.netPayable = order.invoice.netPayable.toString();
+    dto.paymentType = order.invoice.paymentType;
+    dto.orderId = order.id.toString();
+    dto.orderCode = order.code;
+    dto.invoiceId = order.invoice.id.toString();
+    dto.discount = order.invoice.discount.toString();
+    dto.tax = order.invoice.tax.toString();
+    dto.total = order.invoice.total.toString();
+    dto.markAsDelivered = String(order.status == OrderStatus.DELIVERED);
+    dto.serviceCount = `${1 + order.invoice.items?.flatMap(item => item.additionalServices.length).reduce((acc, curr) => acc + curr, 0)}`;
+    return dto;
+  }
+
+  async updateOrderInvoice(dto: UpdateOrderInvoiceDto) {
+    try {
+      const user = await this.userService.getCurrentUser();
+      if (!user) throw new UnauthorizedException();
+
+      let order = await this.ordersRepository.findOne({ relations: { invoice: true }, where: { id: parseInt(dto.orderId) } });
+      let invoice = order.invoice;
+      invoice.amountPaid = parseFloat(dto.amountPaid);
+      invoice.dueDate = new Date(dto.dueDate);
+      invoice.paymentType = dto.paymentType;
+      const netPayable = invoice.netPayable;
+      const amountPaid = invoice.amountPaid;
+      const balance = netPayable - amountPaid;
+      invoice.status = balance <= 0 ? InvoiceStatus.PAID : balance == netPayable ? InvoiceStatus.UNPAID : InvoiceStatus.PARTIALLY_PAID;
+      invoice.balance = balance;
+      order.status = balance <= 0 ? OrderStatus.PENDING_PICKUP : OrderStatus.RECORDED;
+      if (order.status == OrderStatus.PENDING_PICKUP && dto.markAsDelivered === 'true') {
+        order.status = OrderStatus.DELIVERED;
+      }
+      const repo = this.dataSource.getRepository<Invoice>(Invoice);
+      invoice = await repo.save(invoice);
+      order = await this.ordersRepository.save(order);
+
+      return { success: true };
+    } catch (e) {
+      return { success: false, message: e.message };
+    }
   }
 }

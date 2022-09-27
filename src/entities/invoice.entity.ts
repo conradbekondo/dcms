@@ -13,7 +13,8 @@ export class Invoice extends BaseEntity {
     @Column({ nullable: false })
     orderId: number;
 
-    @OneToOne(() => Order, { eager: false })
+    @OneToOne(() => Order, order => order.invoice, { eager: false })
+    @JoinColumn({ name: 'order_id' })
     order: Order;
 
     @Column()
@@ -21,6 +22,9 @@ export class Invoice extends BaseEntity {
 
     @Column()
     netPayable: number;
+
+    @Column({ nullable: true })
+    paymentType: string;
 
     @Column()
     amountPaid: number;
@@ -30,6 +34,12 @@ export class Invoice extends BaseEntity {
 
     @Column()
     recordedById: number;
+
+    @Column()
+    tax: number;
+
+    @Column()
+    discount: number;
 
     @ManyToOne(() => User, { eager: false })
     @JoinColumn({ name: 'recorded_by_id' })

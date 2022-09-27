@@ -23,6 +23,7 @@ import { Invoice } from './entities/invoice.entity';
 import { OrderEntryAttribute } from './entities/order-entry-attribute.entity';
 import { OrderEntry } from './entities/order-entry.entity';
 import { Order } from './entities/order.entity';
+import { OrdersView } from './entities/orders.view.entity';
 import { PricedCategoriesView } from './entities/priced-categories.view.entity';
 import { ProductServicePrice } from './entities/product-service-price.entity';
 import { Product } from './entities/product.entity';
@@ -67,7 +68,8 @@ const options: TypeOrmModuleOptions = {
     PricedCategoriesView,
     Invoice,
     InvoiceItem,
-    InvoiceItemAdditionalService
+    InvoiceItemAdditionalService,
+    OrdersView
   ],
   namingStrategy: new SnakeNamingStrategy(),
 

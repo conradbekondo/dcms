@@ -5,6 +5,10 @@ import { InvoiceItem } from "./invoice-item.entity";
 
 @Entity('invoice_item_additional_services')
 export class InvoiceItemAdditionalService extends BaseEntity {
+
+    @Column()
+    invoiceId: number;
+
     @Column()
     invoiceItemId: number;
 
