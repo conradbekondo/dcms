@@ -71,7 +71,7 @@ export class ClientsController extends BaseController {
     const stored = await this.clientService.createClient(createClientDto);
 
     if (stored.success)
-      return res.status(201).json({ message: 'Client created successfully.' });
+      return res.status(201).json({ message: 'Client created successfully.', client: stored.client });
     else return res.status(500).json({ message: stored.error });
   }
 

@@ -12,7 +12,7 @@ export class Client extends BaseEntity {
   @Column({ nullable: false, unique: true })
   phone: string;
 
-  @Column({ nullable: true, unique: true })
+  @Column({ nullable: true })
   email: string;
 
   @Column({ nullable: false })

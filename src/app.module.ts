@@ -15,14 +15,15 @@ import { ProductsController } from './controllers/products/products.controller';
 import { ServicesController } from './controllers/services/services.controller';
 import { AuthController } from './controllers/users/auth.controller';
 import { UsersController } from './controllers/users/users.controller';
-import { AppliedPolicy } from './entities/applied-policy.entity';
 import { Category } from './entities/category.entity';
 import { Client } from './entities/client.entity';
+import { InvoiceItemAdditionalService } from './entities/invoice-item-additional-service.entity';
+import { InvoiceItem } from './entities/invoice-item.entity';
+import { Invoice } from './entities/invoice.entity';
 import { OrderEntryAttribute } from './entities/order-entry-attribute.entity';
 import { OrderEntry } from './entities/order-entry.entity';
 import { Order } from './entities/order.entity';
 import { PricedCategoriesView } from './entities/priced-categories.view.entity';
-import { Policy } from './entities/processing-policy.entity';
 import { ProductServicePrice } from './entities/product-service-price.entity';
 import { Product } from './entities/product.entity';
 import { Profile } from './entities/profile.entity';
@@ -59,13 +60,14 @@ const options: TypeOrmModuleOptions = {
     OrderEntry,
     Product,
     OfferedService,
-    Policy,
     OrderEntryAttribute,
-    AppliedPolicy,
     Category,
     Client,
     ProductServicePrice,
     PricedCategoriesView,
+    Invoice,
+    InvoiceItem,
+    InvoiceItemAdditionalService
   ],
   namingStrategy: new SnakeNamingStrategy(),
 

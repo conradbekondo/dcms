@@ -14,20 +14,12 @@ import {
   UseFilters,
   UseGuards,
   UsePipes,
-  ValidationPipe,
+  ValidationPipe
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import {
-  distinctUntilKeyChanged,
-  lastValueFrom,
-  map,
-  of,
-  reduce,
-  switchMap,
-} from 'rxjs';
 import { Role } from 'src/decorators/role.decorator';
+import { NewClientDto } from 'src/dto/cleint.dto';
 import { NewOrderDto } from 'src/dto/new-order.dto';
-import { Category } from 'src/entities/category.entity';
 import { Roles } from 'src/entities/roles';
 import { BadQueryParamsException } from 'src/exceptions/bad-query.exception';
 import { BadQueryFilter } from 'src/filters/bad-query.filter';
@@ -41,7 +33,6 @@ import { OrdersService } from 'src/services/orders/orders.service';
 import { ProductsService } from 'src/services/products/products.service';
 import { UsersService } from 'src/services/users/users.service';
 import { BaseController } from '../base/base.controller';
-import { CategoriesController } from '../categories/categories.controller';
 
 @Controller(['', 'orders'])
 @UseGuards(AuthGuard, RoleGuard)
@@ -69,10 +60,11 @@ export class OrdersController extends BaseController {
     const services = await this.offeredServicesService.getServices(0, 999999999999);
     const products = await this.productsService.getProducts();
     const clients = await this.clientService.getClients();
-    return { data: { clients, categories, services, products, dto: new NewOrderDto() }, view: this.viewBag };
+    const nextInvoiceId = `IV000${(await this.orderService.getNextInvoiceId())}`;
+    return { data: { nextInvoiceId, clients, categories, services, products, newClientDto: new NewClientDto(), dto: new NewOrderDto() }, view: this.viewBag };
   }
 
-  @Get('/order/:code')
+  @Get('order/:code')
   async getOrderByCode(@Param('code') code: string, @Res() res: Response) {
     const orders = await this.orderService.findOrdersWithCodeLike(code);
 
@@ -85,8 +77,13 @@ export class OrdersController extends BaseController {
 
   @Post('/create')
   @UsePipes(ValidationPipe)
-  async createOrder(@Body() dto: NewOrderDto) {
-    console.log(dto);
+  async createOrder(@Body() dto: NewOrderDto, @Res() res: Response) {
+    const result = await this.orderService.createOrder(dto);
+    if (result.success) {
+      return res.status(HttpStatus.CREATED).send();
+    } else {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: result.message });
+    }
   }
 
   @Get()
@@ -106,9 +103,8 @@ export class OrdersController extends BaseController {
     }
 
     this.viewBag.pageTitle = 'All Orders';
-    const principal = this.userService.getPrincipal();
+    const principal = this.userService.getCurrentUser();
     const pageInfo = await this.orderService.getOrdersAvailableForUser(
-      principal,
       parseInt(startAt),
       parseInt(size),
     );

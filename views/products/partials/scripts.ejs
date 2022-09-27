@@ -94,7 +94,7 @@
             method: 'POST',
             data: data,
             success: (res) => {
-                debugger;
+                // debugger;
                 Swal.fire({
                     title: 'Success',
                     text: res.message || "Product created successfully.",
@@ -102,7 +102,7 @@
                 }).then(() => window.location.reload())
             },
             error: (err) => {
-                debugger;
+                // debugger;
                 console.error(err)
                 Swal.fire({
                     title: 'Error',

@@ -3,7 +3,7 @@ import { BaseEntity } from './base.entity';
 
 @Entity('order_entry_attributes')
 export class OrderEntryAttribute extends BaseEntity {
-  @Column({ nullable: false, unique: true })
+  @Column({ nullable: false })
   name: string;
 
   @Column({ nullable: true })

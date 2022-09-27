@@ -3,7 +3,115 @@
     <body id="app-container" class="menu-default show-spinner">
         <%- include('../../partials/navbar.ejs') %>
             <%- include('../../partials/menu.ejs')%>
-
+                <form id="invoiceForm" method="post">
+                    <div class="modal fade" id="invoiceModal" role="dialog">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Invoice -
+                                        <%= data.nextInvoiceId %>
+                                    </h4>
+                                    <button type="reset" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span> </button>
+                                </div>
+                                <div class="modal-body">
+                                    <dl>
+                                        <dt>Client</dt>
+                                        <dd>
+                                            <h3>N/A</h3>
+                                        </dd>
+                                        <dt>Number of Services</dt>
+                                        <dd>0</dd>
+                                        <dt>Tax</dt>
+                                        <dd>FCFA 0</dd>
+                                        <dt>Discount</dt>
+                                        <dd>FCFA 0</dd>
+                                        <dt>Total</dt>
+                                        <dd>FCFA 0</dd>
+                                        <dt>Net Payable</dt>
+                                        <dd>FCFA 0</dd>
+                                        <dt>Date</dt>
+                                        <dd></dd>
+                                    </dl>
+                                    <div class="form-group p-0 mb-2">
+                                        <label for="dueDate">Due Date <span class="text-danger">*</span></label>
+                                        <input type="date" id="dueDate" placeholder="Due Date" required class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="invoiceFormPaymentType">Payment Type <span class="text-danger">*</span></label>
+                                        <select value="cash" required id="invoiceFormPaymentType" name="paymentType" class="form-control">
+                              <option selected="true" value="cash">Cash</option>
+                              <option value="mobile">Momo</option>
+                              <option value="bank">Bank Transfer</option>
+                            </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="invoiceFormAmountPaid">Amount Paid <span class="text-danger">*</span></label>
+                                        <div class="d-block my-2">
+                                            <div class="d-flex money-btns justify-content-around gap-3 flex-wrap">
+                                                <button type="button" class="btn-sm btn btn-outline-primary">500</button>
+                                                <button type="button" class="btn-sm btn btn-outline-primary">1000</button>
+                                                <button type="button" class="btn-sm btn btn-outline-primary">2000</button>
+                                                <button type="button" class="btn-sm btn btn-outline-primary">5000</button>
+                                                <button type="button" class="btn-sm btn btn-outline-primary">10000</button>
+                                            </div>
+                                        </div>
+                                        <input required type="number" id="invoiceFormAmountPaid" class="form-control" min="0" value="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <dl class="font-weight-bold text-bold">
+                                            <dt style="font-size: 1.2rem">Balance: </dt>
+                                            <dd id="invoiceFormBalanceText" style="font-weight: bold;font-size: 2rem">FCFA 0</dd>
+                                            <dd id="invoiceFormBalanceDescription"></dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="modal-footer d-flex justify-content-center align-items-center">
+                                    <button class="btn btn-print btn-success" type="submit"><i class="fa-solid fa-print"></i> Print</button>
+                                    <button class="btn btn-primary" type="submit"><i class="fa-solid fa-save"></i> Save</button>
+                                    <button data-dismiss="modal" class="btn btn-outline-danger" type="reset"><i class="fa-solid fa-cancel"></i> Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <form id="newClientForm" method="post">
+                    <div class="modal fade" id="newClientModal" role="dialog">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Add a new Client</h4>
+                                    <button type="reset" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="newClientFirstName">First Name <span class="text-danger">*</span></label>
+                                        <input required type="text" name="first_name" class="form-control" id="newClientFirstName" value="<%=data.newClientDto.first_name%>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newClientLastName">Last Name</label>
+                                        <input type="text" class="form-control" id="newClientLastName" name="last_name" value="<%= data.newClientDto.last_name %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newClientPhone">Phone Number <span class="text-danger">*</span></label>
+                                        <input required type="text" class="form-control" id="newClientPhone" name="phone" value="<%= data.newClientDto.phone %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newClientEmail">Email</label>
+                                        <input type="email" class="form-control" id="newClientEmail" name="email" value="<%= data.newClientDto.email %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newClientAddress">Address <span class="text-danger">*</span></label>
+                                        <input required type="text" class="form-control" id="newClientAddress" name="address" value="<%= data.newClientDto.address %>">
+                                    </div>
+                                </div>
+                                <div class="modal-footer d-flex justify-content-center">
+                                    <button class="btn btn-primary mx-3" type="submit"><i class="fa-solid fa-save"></i> Save</button>
+                                    <button class="btn btn-outline-danger mx-3" type="reset" data-dismiss="modal"><i class="fa-solid fa-cancel"></i> Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
                 <form action="" method="post" id="new-order-form">
                     <main>
                         <div class="container-fluid">
@@ -16,10 +124,10 @@
                                         <div class="d-flex gap-3">
                                             <div class="btn-group mx-2">
                                                 <button class="btn btn-success" style="font-size: 20px;" type="submit"><i class="fa-solid fa-check"></i>
-                                                    Paid</button>
-                                                <button class="btn btn-info" style="font-size: 20px;" type="submit">
+                                                    Create Invoice</button>
+                                                <!-- <button class="btn btn-info" style="font-size: 20px;" type="submit">
                                                     <i class="fa-solid fa-save"></i> Save
-                                                </button>
+                                                </button> -->
                                             </div>
                                             <button class="btn btn-danger" style="font-size: 20px;" type="reset">
                                                 <i class="fa-solid fa-trash"></i> Discard
@@ -28,7 +136,7 @@
                                     </div>
                                 </div>
                                 <hr />
-                                <div class="row">
+                                <div class="row w-100 justify-content-stretch align-items-stretch">
                                     <div class="col-6">
                                         <div class="card h-100">
                                             <div class="card-body p-3">
@@ -76,9 +184,9 @@
                                                                             <% if(data.products[j].iconUrl) { const
                                                                                 icon=data.products[j].iconUrl;
                                                                                 if(icon.split(':')[0]=='svg' ) {%>
-                                                                                <img class="mt-1 mb-1" src="/static/icons/<%= icon.split(':')[1] %>" width="45%">
+                                                                                <img class="mt-1 mb-1" src="/static/icons/<%= icon.split(':')[1] %>" width="35%">
                                                                                 <%} else {%>
-                                                                                    <i class="<%= icon.split(':')[1] %>" style="font-size: 45px"></i>
+                                                                                    <i class="<%= icon.split(':')[1] %>" style="font-size: 35px"></i>
                                                                                     <%}%>
                                                                                         <%}%>
                                                                                             <p class="card-text mb-2">
@@ -142,7 +250,27 @@
                                                             <div class="col-4">
                                                                 <div class="form-group">
                                                                     <h4 class="text-muted card-title mb-1" for="entryColour">Colour</h4>
-                                                                    <input value="#ffffff" type="color" class="form-control" id="entryColour">
+                                                                    <select id="color" name="color" class="form-control mb-4" data-width="100%" data-height="20%" required>
+                                                                      <option value="Blanc" style="background-color: #ffffff;">Color
+                                                                      </option>
+
+                                                                      <option value="Extra Brite" style="background-color:#f1efef;">
+                                                                        Extra
+                                                                        Brite
+                                                                      </option>
+                                                                      <option value="background-color" style="background-color:#0937f1;">
+                                                                      </option>
+                                                                      <option value="Red" style="background-color:#fb092d;"> Red
+                                                                      </option>
+                                                                      <option value="Blue" style="background-color:#0937f1;"> Blue
+                                                                      </option>
+                                                                      <option value="Green" style="background-color:#10e044;">Green
+                                                                      </option>
+                                                                      <option value="Gray" style="background-color:#b6afaf;"> Gray
+                                                                      </option>
+                                                                      <option value="Black" style="background-color:#0a0000;"> Black
+                                                                      </option>
+                                                                    </select>
                                                                 </div>
                                                             </div>
                                                             <div class="col-4">
@@ -174,7 +302,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="col-6">
                                         <div class="card">
                                             <div class="card-body">
@@ -188,10 +315,11 @@
                                                 </div>
                                                 <div class="form-group p-0 my-1">
                                                     <div class="input-group">
-                                                        <select name="clientId" type="text" id="clientsearch" class="form-control" placeholder="Find a client" style="font-size: 15px;">
+                                                        <select required name="clientId" type="text" id="clientsearch" class="form-control" placeholder="Find a client" style="font-size: 15px;">
                                                             <option value="">Select a client</option>
                                                             <% for(let client of data.clients) {%>
-                                                                <option data-client-id="<%=client.id%>"
+                                                                <option data-client-name="<%= `${client.first_name} ${client.last_name || ''
+                                                            }`.trim() %>" data-client-id="<%=client.id%>"
                                                                     value="<%= client.id %>">
                                                                     <%= `${client.first_name} ${client.last_name || ''
                                                                         }`.trim() %>
@@ -199,13 +327,12 @@
                                                                 <%} %>
                                                         </select>
                                                         <div class="input-group-append">
-                                                            <button type="button" class="btn btn-primary  text-center default mr-2 ml-2" data-toggle="modal" data-target="#clientModal">
+                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newClientModal">
                                                                 Add a new Client <i class="simple-icon-user-follow"></i>
                                                             </button>
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 <table id="entries-table" class="table table-hover table-striped table-bordered my-2">
                                                     <thead>
                                                         <tr>

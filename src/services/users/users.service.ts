@@ -38,6 +38,10 @@ export class UsersService {
     });
   }
 
+  async getCurrentUser() {
+    return this.getUser(this.getPrincipal());
+  }
+
   private async seed() {
     hash('passwordAdmin123', 12).then(async (password) => {
       const adminRole = new Role();

@@ -80,7 +80,7 @@
                         $(this).removeClass('btn-primary');
                         $(this).addClass('btn-outline-primary');
                     });
-                    if (editingEntry.serviceId && editingEntry.serviceId.length > 0) {
+                    if (editingEntry.serviceId) {
                         $(`button[data-service-id=${editingEntry.serviceId}]`).each(function() {
                             $(this).removeClass('btn-primary');
                             $(this).addClass('btn-outline-primary');
@@ -88,19 +88,28 @@
                     }
                     if (editingEntry.additionalServices.length > 0) {
                         for (let additionalService of editingEntry.additionalServices) {
-                            $(`button[data-additional-service-id=${additionalService.id}]`).each(function() {
-                                $(this).removeClass('btn-primary');
-                                $(this).addClass('btn-outline-primary');
-                            });
+                            $(`button[data-additional-service-id=${additionalService.serviceId}]`).removeClass('btn-primary');
+                            $(`button[data-additional-service-id=${additionalService.serviceId}]`).addClass('btn-outline-primary');
                         }
                     }
                     editingEntry = {
                         ...defaultEditingEntry
                     };
-                } else {
+                } else if (editingEntry.productId == null) {
                     editingEntry.productId = productId;
                     editingEntry.productName = $(this).children('p').text().trim();
 
+                    $(`#product-tabs a[data-product-id=${productId}]`).each(function() {
+                        $(this).removeClass('btn-outline-primary');
+                        $(this).addClass('btn-primary');
+                    });
+                } else {
+                    $(`#product-tabs a[data-product-id=${editingEntry.productId}]`).each(function() {
+                        $(this).removeClass('btn-primary');
+                        $(this).addClass('btn-outline-primary');
+                    });
+                    editingEntry.productId = productId;
+                    editingEntry.productName = $(this).children('p').text().trim();
                     $(`#product-tabs a[data-product-id=${productId}]`).each(function() {
                         $(this).removeClass('btn-outline-primary');
                         $(this).addClass('btn-primary');
@@ -139,6 +148,7 @@
         $('#addEntryToCartButton').click(function(e) {
             e.preventDefault();
             if (editingEntry.isValid()) {
+                editingEntry.color = $('input[type=color]').val();
                 entries.push({
                     ...editingEntry
                 });
@@ -209,13 +219,21 @@
             });
             let i = 0;
             for (let entry of entries) {
-                // debugger;
+                let additionalServicesEntry = ``;
+                if (entry.additionalServices && entry.additionalServices.length > 0) {
+                    for (let additionalService of entry.additionalServices) {
+                        additionalServicesEntry += `<span style="cursor: pointer;font-size: .7rem" title="Remove this service" class="a-service badge mr-1 badge-pill badge-info">${additionalService.serviceName}</span>`;
+                    }
+                }
+                if (additionalServicesEntry.length > 0) {
+                    additionalServicesEntry = `<div class="d-flex w-100 flex-wrap justify-content-around">${additionalServicesEntry}</div>`;
+                }
                 const element = `
                         <tr data-entry-id="${i++}" class="w-100">
                             <td>${entry.productName}</td>
                             <td><div style="font-size: 1.2rem" class="input-group"><div class="input-group-prepend"><button type="button" class="btn btn-decr btn-primary">-</button></div><input class="form-control quantity-input" type="number" value="${entry.quantity}" min="1" max="100" step="1"><div class="input-group-append"><button type="button" class="btn btn-incr btn-primary">+</button></div></div></td>
                             <td>${entry.serviceName}</td>
-                            <td></td>
+                            <td>${additionalServicesEntry}</td>
                             <td>${formatter.format(entry.price())}</td>
                             <td>
                                 <div class="btn-group">
@@ -236,6 +254,12 @@
                 style: 'currency',
                 maximumFractionDigits: 0
             });
+
+            $('#entries-table span.a-service').each(function() {
+                $(this).change(function(e) {
+                    $(this)[0].remove();
+                });
+            })
 
             $('#entries-table input.quantity-input').each(function() {
                 $(this).change(function(e) {
@@ -290,19 +314,61 @@
             });
         }
 
+        $('#clientsearch').change(function(e) {
+            const selectedClientId = $(this).val();
+            const selectedClientName = $(this).find(`option[value=${selectedClientId}]`).text()
+            $('#invoiceForm .modal-body dl dd:nth-child(2) > h3').text(selectedClientName);
+        })
+
         function computeBilling() {
             const discount = parseFloat($('#discountInput').val());
             const tax = parseFloat($('#taxInput').val());
             const total = (tax || 0) + entries.map(entry => entry.price()).reduce((acc, curr) => acc + curr, 0);
             const netPayable = total - (discount || 0);
-            const formatter = new Intl.NumberFormat('en-CM', {
+            const currencyFormatter = new Intl.NumberFormat('en-CM', {
                 currency: 'XAF',
                 style: 'currency',
                 maximumFractionDigits: 0
             });
-            $('#net-payable').text(formatter.format(netPayable));
-            $('#total').text(formatter.format(total));
+            const currentAmountPaid = parseFloat($('#invoiceFormAmountPaid').val());
+            const balance = netPayable - currentAmountPaid;
+            const clientName = $('#invoiceForm .modal-body dl dd:nth-child(2) > h3').text().trim();
+            let balanceDescriptionText;
+            if (balance
+
+                <=
+                0) {
+                balanceDescriptionText = `<b style="font-size: 1.1rem">${currencyFormatter.format(Math.abs(balance))}</b> is to be given to <b style="font-size: 1.1rem">${clientName}</b> as change`;
+                $('#invoiceFormBalanceDescription').removeClass('text-danger');
+                $('#invoiceFormBalanceText').removeClass('text-danger');
+                $('.btn-print').show();
+            } else {
+                balanceDescriptionText = `<b style="font-size: 1.1rem">${currencyFormatter.format(Math.abs(balance))}</b> is pending for <b style="font-size: 1.1rem">${clientName}</b> to pay`;
+                $('#invoiceFormBalanceDescription').addClass('text-danger');
+                $('#invoiceFormBalanceText').addClass('text-danger');
+                $('.btn-print').hide();
+            }
+            document.getElementById('invoiceFormBalanceDescription').innerHTML = balanceDescriptionText;
+            $('#invoiceFormBalanceText').text(currencyFormatter.format(balance));
+            $('#net-payable').text(currencyFormatter.format(netPayable));
+            $('#total').text(currencyFormatter.format(total));
+            $('#invoiceForm .modal-body dl dd:nth-child(4)').text(entries.map(entry => entry.additionalServices.length + 1).reduce((acc, curr) => acc + curr, 0).toLocaleString());
+            $('#invoiceForm .modal-body dl dd:nth-child(6)').text(currencyFormatter.format(tax));
+            $('#invoiceForm .modal-body dl dd:nth-child(8)').text(currencyFormatter.format(discount));
+            $('#invoiceForm .modal-body dl dd:nth-child(10)').text(currencyFormatter.format(total));
+            $('#invoiceForm .modal-body dl dd:nth-child(12)').text(currencyFormatter.format(netPayable));
         }
+        $('#invoiceFormAmountPaid').on('input change', function(e) {
+            const value = parseFloat($(this).val());
+            const _isNan = isNaN(value);
+            if (_isNan) {
+                $(this).val(0);
+                $(this).trigger('input');
+                return;
+            }
+            computeBilling();
+        });
+
         computeBilling();
         document.querySelectorAll('#discountInput,#taxInput').forEach(e => {
             e.addEventListener('input', () => {
@@ -312,7 +378,16 @@
 
         $('#pricingModeInput').change(function() {
             editingEntry.priceMode = $(this).val();
-        })
+        });
+
+        $('.money-btns button').each(function() {
+            $(this).click(function(e) {
+                const currentAmountPaid = parseFloat($('#invoiceFormAmountPaid').val());
+                const amountToBeAdded = parseFloat($(this).text());
+                $('#invoiceFormAmountPaid').val(currentAmountPaid + amountToBeAdded);
+                $('#invoiceFormAmountPaid').change();
+            });
+        });
 
         $('button[data-service-id]').each(function() {
 
@@ -372,9 +447,150 @@
         document.getElementById('entryQuantity').addEventListener('input', updateQuantity);
 
         $('#new-order-form').validate({
+            errorClass: 'text-danger d-block',
             rules: {
 
             }
         });
+        $('#new-order-form').submit(function(e) {
+            e.preventDefault();
+
+            let msg = '';
+
+            if (entries.length == 0) {
+                msg = 'You must have at least one product added to billing'
+            } else if (!$('#clientsearch').val() || $('#clientsearch').val() == '') {
+                msg = 'A client must be selected or added';
+            }
+
+            if (msg && msg.length > 0) {
+                Swal.fire({
+                    title: 'Error',
+                    text: msg,
+                    icon: 'error'
+                });
+                return;
+            }
+            computeBilling();
+            $('#invoiceModal').modal({
+                backdrop: 'static'
+            });
+        });
+
+        const now = new Date();
+        const month = now.getMonth() + 1
+
+            <
+            10 ? `0${now.getMonth()+1}` : `${now.getMonth()+1}`;
+        const day = now.getDate() < 10 ? `0${now.getDate()}` : `${now.getDate()}`;
+        const minDate = `${now.getFullYear()}-${month}-${day}`;
+        document.getElementById('dueDate').setAttribute('min', minDate);
+        document.getElementById('dueDate').value = minDate;
+        $('#newClientForm').validate({
+            errorClass: 'text-danger d-block is-invalid'
+        });
+        $('#invoiceForm').validate({
+            errorClass: 'text-danger d-block is-invalid'
+        });
+        $('#newClientForm').submit(function(e) {
+            e.preventDefault();
+            const data = {
+                first_name: $(this).find('[name=first_name]').val(),
+                last_name: $(this).find('[name=last_name]').val(),
+                phone: $(this).find('[name=phone]').val(),
+                email: $(this).find('[name=email]').val(),
+                address: $(this).find('[name=address]').val(),
+            };
+            $.ajax({
+                url: '/clients',
+                data,
+                method: 'POST',
+                success: ({
+                    client,
+                    message
+                }) => {
+                    Swal.fire({
+                        title: 'Success',
+                        icon: 'success',
+                        message
+                    }).then(() => {
+                        $('#newClientModal').modal('hide');
+                        $('#newClientForm').trigger('reset');
+                        $('#clientsearch option:last-child').after(`<option data-client-id="${client.id}" value="${client.id}">${client.first_name} ${client.last_name || ''}</option>`);
+                        $('#clientsearch').val(client.id);
+                    });
+                }
+            });
+        });
+
+        $('#invoiceForm').submit(function(e) {
+            e.preventDefault();
+            const isSaving = e.originalEvent.submitter.textContent.trim().toLowerCase() == 'save';
+            if (!isSaving) {
+                printInvoiceReceipt();
+            }
+            saveInvoiceToDatabase();
+        });
+
+        function printInvoiceReceipt() {
+
+        }
+
+        function saveInvoiceToDatabase() {
+            const strippedEntries = [];
+            for (let {
+                    productId,
+                    serviceId,
+                    quantity,
+                    priceMode,
+                    additionalServices
+                }
+                of entries) {
+                strippedEntries.push({
+                    productId,
+                    serviceId,
+                    quantity,
+                    priceMode,
+                    additionalServices: additionalServices.map(({
+                        serviceId
+                    }) => ({
+                        id: serviceId
+                    }))
+                });
+            }
+            const data = {
+                orderEntries: strippedEntries,
+                clientId: parseInt($('#clientsearch').val()),
+                paymentType: $('#invoiceFormPaymentType').val(),
+                amountPaid: parseFloat($('#invoiceFormAmountPaid').val()),
+                discount: parseFloat($('#discountInput').val()),
+                tax: parseFloat($('#taxInput').val()),
+                dueDate: $('#dueDate').val()
+            };
+
+            $.ajax({
+                url: '/orders/create',
+                method: 'POST',
+                data,
+                success: succ => {
+                    Swal.fire({
+                        title: 'Success',
+                        text: succ.message,
+                        icon: 'success'
+                    }).then(() => location.reload());
+                },
+                error: err => {
+                    let text;
+                    if (err.responseJSON && err.responseJSON.message)
+                        text = err.responseJSON.message;
+                    else text = 'Unable to save order';
+                    Swal.fire({
+                        title: 'Error',
+                        text,
+                        icon: 'error'
+                    });
+                }
+            });
+        }
     });
 </script>

@@ -63,12 +63,12 @@ export class ProductsService {
    * @returns
    */
   async createProduct(dto: IProductDto) {
-    const exists = await this.productRepository.findOneBy({ name: dto.name });
+    const exists = await this.productRepository.findOneBy({ name: dto.name, categoryId: dto.category });
     if (exists) {
       this.logger.warn(
         `Failed product creation attempt - Product with same name already exists.`,
       );
-      return { success: false, error: 'Product already exists' };
+      return { success: false, error: 'Product already exists in this category' };
     }
 
     let product = new Product();

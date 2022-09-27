@@ -4,10 +4,8 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
-  ManyToOne,
-  OneToMany,
+  ManyToOne
 } from 'typeorm';
-import { AppliedPolicy } from './applied-policy.entity';
 import { BaseEntity } from './base.entity';
 import { OrderEntryAttribute } from './order-entry-attribute.entity';
 import { Order } from './order.entity';
@@ -23,13 +21,13 @@ export class OrderEntry extends BaseEntity {
   @JoinColumn({ name: 'order_id' })
   order: Promise<Order>;
 
-  @ManyToMany(() => OrderEntryAttribute)
+  @ManyToMany(() => OrderEntryAttribute, { eager: false })
   @JoinTable({
     name: 'attached_order_entry_attributes',
     joinColumn: { name: 'order_entry_id' },
     inverseJoinColumn: { name: 'attribute_id' },
   })
-  attributes?: Promise<OrderEntryAttribute[]>;
+  attributes?: OrderEntryAttribute[];
 
   @Column({ nullable: false })
   quantity: number;
@@ -47,7 +45,4 @@ export class OrderEntry extends BaseEntity {
   @ManyToOne(() => OfferedService)
   @JoinColumn({ name: 'service_id' })
   service?: Promise<OfferedService>;
-
-  @OneToMany(() => AppliedPolicy, (a) => a.orderEntry)
-  appliedPolicies?: Promise<AppliedPolicy[]>;
 }
