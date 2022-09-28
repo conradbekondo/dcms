@@ -32,12 +32,34 @@ export class OrdersService {
       dataSource.getRepository(ProductServicePrice);
   }
 
-  async getNextInvoiceId() {
+  private async getNextInvoiceId() {
     const maxIdOrder = await this.ordersRepository.createQueryBuilder('o')
       .select('coalesce((max(o.id)+1), 1)', 'nextInvoiceId')
       .getRawOne()
 
     return parseInt(maxIdOrder?.nextInvoiceId || '0');
+  }
+
+  async getOrderForReceipt(id: number) {
+    const currentUser = await this.userService.getCurrentUser();
+    if (!currentUser) throw new UnauthorizedException();
+
+    // const hasElevatedPrivileges = await this.userService.isUserInRoles(['system', 'admin'], currentUser.username);
+    let query: FindOneOptions<Order> = {
+      relations: {
+        invoice: { items: { additionalServices: true } },
+        customer: true,
+        entries: true
+      },
+      where: { id }
+    };
+
+    /* if (!hasElevatedPrivileges) {
+      query = { ...query, where: { recorderId: currentUser.id } };
+    } */
+
+    const order = await this.ordersRepository.findOne(query);
+    return order;
   }
 
   async getAllProductsAndServicesWithPrices() {
@@ -60,9 +82,9 @@ export class OrdersService {
     return order;
   }
 
-  private async generateOrderCode() {
+  async generateOrderCode() {
     const nextId = await this.getNextInvoiceId();
-    return `#${new Intl.NumberFormat('en-CM', { minimumIntegerDigits: 3 }).format(nextId)}`;
+    return `#${new Intl.NumberFormat('en-CM', { useGrouping: false, minimumFractionDigits: 0, minimumIntegerDigits: 3 }).format(nextId)}`;
   }
 
   async createOrder(createOrderDto: NewOrderDto) {
@@ -132,6 +154,7 @@ export class OrdersService {
         invoiceItem.productName = product.name;
         invoiceItem.serviceId = service.id;
         invoiceItem.serviceName = service.name;
+        invoiceItem.quantity = parseInt(entry.quantity);
         invoiceItem = await this.dataSource.getRepository<InvoiceItem>(InvoiceItem).save(invoiceItem);
         if (!entry.additionalServices) continue;
         for (let aService of entry.additionalServices) {
@@ -187,9 +210,9 @@ export class OrdersService {
     const isFirstPage = startAt == 0;
     const isLastPage = firstPageIndex == lastPageIndex;
     let queryBuilder = repo.createQueryBuilder()
-      .select('sum(net_payable)', 'totalPayable')
-      .addSelect('sum(amount_paid)', 'totalPaid')
-      .addSelect('sum(balance)', 'totalOutstanding');
+      .select('coalesce(sum(net_payable), 0)', 'totalPayable')
+      .addSelect('coalesce(sum(amount_paid), 0)', 'totalPaid')
+      .addSelect('coalesce(sum(balance), 0)', 'totalOutstanding');
     if (!hasElevatedPrivileges) {
       queryBuilder = queryBuilder.where('vo.recorder_id = :id', { id: dbUser.id });
     }

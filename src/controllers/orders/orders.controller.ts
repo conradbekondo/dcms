@@ -63,7 +63,7 @@ export class OrdersController extends BaseController {
     const services = await this.offeredServicesService.getServices(0, 999999999999);
     const products = await this.productsService.getProducts();
     const clients = await this.clientService.getClients();
-    const nextInvoiceId = `IV000${(await this.orderService.getNextInvoiceId())}`;
+    const nextInvoiceId = await this.orderService.generateOrderCode();
     return { data: { nextInvoiceId, clients, categories, services, products, newClientDto: new NewClientDto(), dto: new NewOrderDto() }, view: this.viewBag };
   }
 
@@ -75,6 +75,16 @@ export class OrdersController extends BaseController {
       return res.status(HttpStatus.NOT_FOUND).send();
     } else {
       return res.status(HttpStatus.OK).json(orders);
+    }
+  }
+
+  @Get('for_receipt/:id')
+  async getOrderForReceipt(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
+    const order = await this.orderService.getOrderForReceipt(id);
+    if (!order) {
+      return res.status(HttpStatus.NOT_FOUND).send();
+    } else {
+      return res.status(HttpStatus.OK).json({ order });
     }
   }
 

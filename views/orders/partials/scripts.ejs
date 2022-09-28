@@ -6,13 +6,61 @@
 <script src="js/scripts.js"></script>
 <script src="/static/js/sweetalert.min.js"></script>
 <script src="/static/js/vendor/jquery.validate/jquery.validate.min.js"></script>
+<!-- <script src="/static/js/jspdf.min.js"></script> -->
 <script>
-    const currencyFormatter = new Intl.NumberFormat('en-CM', {
+    const currencyFormatter = new Intl.NumberFormat(['en-CM', 'fr-CM'], {
         currency: 'XAF',
         style: 'currency',
         maximumFractionDigits: 0
     });
-    const numberFormatter = new Intl.NumberFormat('en-CM');
+    const numberFormatter = new Intl.NumberFormat(['en-CM', 'fr-CM']);
+
+    function updateReceipt(order) {
+        $('#receiptModal .modal-title').text(`Invoice Receipt - ${order.code}`);
+        $('#receiptInvoiceId').text(`#${new Intl.NumberFormat(['en-CM', 'fr-CM'], {minimumIntegerDigits: 3, maximumFractionDigits: 0, useGrouping: false}).format(order.invoice.id)}`)
+        $('#receiptOrderId').text(`#${new Intl.NumberFormat(['en-CM', 'fr-CM'], {minimumIntegerDigits: 3,maximumFractionDigits: 0, useGrouping: false}).format(order.id)}`);
+        let invoiceStatus;
+        let orderStatus;
+        if (order.status == 0) orderStatus = 'RECORDED';
+        else if (order.status == 1) orderStatus = 'PENDING DELIVERY';
+        else orderStatus = 'DELIVERED';
+
+        if (order.invoice.status == 0) invoiceStatus = 'PAID';
+        else if (order.invoice.status == 1) invoiceStatus = 'UNPAID';
+        else invoiceStatus = 'PARTIALLY PAID';
+        $('#receiptInvoiceStatus').text(invoiceStatus);
+        $('#receiptOrderStatus').text(orderStatus);
+        $('#receiptDatePrinted').text(new Date().toLocaleDateString(['en-CM', 'fr-CM'], {
+            dateStyle: 'short'
+        }));
+        $('#receiptDateRecorded').text(new Date().toLocaleDateString(['en-CM', 'fr-CM'], {
+            dateStyle: 'short'
+        }));
+        let rowString;
+        document.getElementById('receiptInvoiceItems').innerHTML = '';
+        for (let item of order.invoice.items) {
+
+            rowString = `
+    <td>${item.productName}</td>
+    <td>${numberFormatter.format(item.quantity)}</td>
+    <td>${item.serviceName}</td>
+    `.trim();
+            if (item.additionalServices && item.additionalServices.length > 0) {
+
+            }
+
+            document.getElementById('receiptInvoiceItems').innerHTML += rowString;
+        }
+
+        $('#receiptFormClientNames').text(`${order.customer.first_name} ${order.customer.last_name || ''}`.trim());
+        $('#receiptFormTaxAmount').text(currencyFormatter.format(order.invoice.tax));
+        $('#receiptFormDiscount').text(currencyFormatter.format(order.invoice.discount));
+        $('#receiptFormAmountPaid').text(currencyFormatter.format(order.invoice.amountPaid));
+        $('#receiptOutstanding').text(currencyFormatter.format(Math.abs(order.invoice.balance)));
+        $('#receiptNetPayable').text(currencyFormatter.format(Math.abs(order.invoice.netPayable)));
+
+    }
+
     $(document).ready(function() {
         $('#updateInvoiceForm').validate();
         $('#updateInvoiceForm').submit(function(e) {
@@ -40,6 +88,40 @@
                 }
             })
         });
+        $('.dropdown-item.print').each(function() {
+            $(this).click(function(e) {
+                e.preventDefault();
+
+                const orderId = $(this).data('id');
+                if (orderId === null || orderId === undefined || orderId <= 0) return;
+                $.ajax({
+                    url: '/orders/for_receipt/' + orderId,
+                    method: 'GET',
+                    success: function({
+                        order
+                    }) {
+                        updateReceipt(order);
+                        $('#receiptModal').modal('show');
+                    },
+                    error: function(err) {
+                        let msg;
+                        if (err.status == 0) {
+                            msg = 'Could not reach server';
+                        } else if (err.status == 404) {
+                            msg = 'Order not found';
+                        } else {
+                            msg = 'An error occurred';
+                        }
+                        Swal.fire({
+                            title: 'Error',
+                            text: msg,
+                            icon: 'error'
+                        });
+                    }
+                })
+            })
+        });
+
         $('.dropdown-item.update').each(function() {
             $(this).click(function(e) {
                 e.preventDefault();

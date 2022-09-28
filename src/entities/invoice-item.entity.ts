@@ -30,4 +30,7 @@ export class InvoiceItem extends BaseEntity {
     @OneToMany(() => InvoiceItemAdditionalService, s => s.invoiceItem, { eager: true, onDelete: 'CASCADE', onUpdate: 'CASCADE' })
     @JoinTable({ name: 'invoice_additional_services', inverseJoinColumn: { name: 'id' }, joinColumn: { name: 'invoice_item_id' } })
     additionalServices: InvoiceItemAdditionalService[];
+
+    @Column({ default: 1 })
+    quantity: number
 }

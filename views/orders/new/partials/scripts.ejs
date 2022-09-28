@@ -18,6 +18,7 @@
 <script src="/static/js/scripts.js"></script>
 <script src="/static/js/sweetalert.min.js"></script>
 <script src="/static/js/vendor/jquery.validate/jquery.validate.min.js"></script>
+<!-- <script src="/static/js/jspdf.min.js"></script> -->
 
 <script>
     let entries = [];
@@ -96,6 +97,13 @@
                 $('#invoiceFormBalanceText').removeClass('text-danger');
                 $('.btn-print').show();
                 balanceDescriptionText = '';
+            }
+            if (netPayable == 0) {
+                $('.money-btns').hide();
+                $('#invoiceFormAmountPaid').hide();
+            } else {
+                $('.money-btns').show();
+                $('#invoiceFormAmountPaid').show();
             }
             document.getElementById('invoiceFormBalanceDescription').innerHTML = balanceDescriptionText;
             $('#invoiceFormBalanceText').text(currencyFormatter.format(Math.abs(balance)));
