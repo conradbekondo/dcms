@@ -72,8 +72,7 @@ const options: TypeOrmModuleOptions = {
     OrdersView
   ],
   namingStrategy: new SnakeNamingStrategy(),
-
-  synchronize: true,
+  synchronize: false,
   dropSchema: false,
 };
 

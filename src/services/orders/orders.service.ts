@@ -205,7 +205,7 @@ export class OrdersService {
       totalRecords = await repo.count();
     }
     const totalPages = Math.ceil(totalRecords / size);
-    const firstPageIndex = 0;
+    const firstPageIndex = 0; 
     const lastPageIndex = totalPages - 1;
     const isFirstPage = startAt == 0;
     const isLastPage = firstPageIndex == lastPageIndex;
@@ -214,7 +214,7 @@ export class OrdersService {
       .addSelect('coalesce(sum(amount_paid), 0)', 'totalPaid')
       .addSelect('coalesce(sum(balance), 0)', 'totalOutstanding');
     if (!hasElevatedPrivileges) {
-      queryBuilder = queryBuilder.where('vo.recorder_id = :id', { id: dbUser.id });
+      queryBuilder = queryBuilder.where('recorder_id = :id', { id: dbUser.id });
     }
     let statistics = await queryBuilder.getRawOne<{
       totalPayable: string,

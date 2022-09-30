@@ -55,5 +55,5 @@ export class OrdersView {
     @ViewColumn() dateRecorded: Date;
     @ViewColumn() dueDate: Date;
     @ViewColumn() recordedBy: string;
-    @ViewColumn() recorderId: number;
+    @ViewColumn({ name: 'recorder_id' }) recorderId: number;
 }
