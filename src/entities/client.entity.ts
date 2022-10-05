@@ -3,9 +3,9 @@ import { BaseEntity } from './base.entity';
 
 @Entity('clients')
 export class Client extends BaseEntity {
-  @Column({ nullable: false, })
+  @Column({ nullable: false })
   @Index({ fulltext: true })
-  first_name: string; 
+  first_name: string;
 
   @Column({ nullable: true })
   @Index({ fulltext: true })

@@ -152,40 +152,49 @@ export class ProductsService {
 
   async getProductWithServicePrices(id: number) {
     const product = await this.productRepository.findOne({
-      where: { id }
+      where: { id },
     });
 
     if (!product) return null;
     const ans: {
-      id: number,
-      productName: string,
-      categoryId: number,
+      id: number;
+      productName: string;
+      categoryId: number;
       services: {
-        id: number,
-        name: string,
-        fastPrice: number,
-        normalPrice: number,
-        isAdditional: boolean
-      }[],
-      icon: string
-    } = { id: product.id, categoryId: product.categoryId, icon: product.iconUrl, productName: product.name, services: [] };
+        id: number;
+        name: string;
+        fastPrice: number;
+        normalPrice: number;
+        isAdditional: boolean;
+      }[];
+      icon: string;
+    } = {
+      id: product.id,
+      categoryId: product.categoryId,
+      icon: product.iconUrl,
+      productName: product.name,
+      services: [],
+    };
 
-    const allServices = (await this.datasource.getRepository<OfferedService>(OfferedService)
-      .find()) || [];
+    const allServices =
+      (await this.datasource
+        .getRepository<OfferedService>(OfferedService)
+        .find()) || [];
 
     for (let { id, isAdditional, name, description } of allServices) {
-      const productServicePrice = await this.datasource.getRepository<ProductServicePrice>(ProductServicePrice)
+      const productServicePrice = await this.datasource
+        .getRepository<ProductServicePrice>(ProductServicePrice)
         .findOne({
           where: {
-            serviceId: id
-          }
+            serviceId: id,
+          },
         });
       ans.services.push({
         id,
         name,
         fastPrice: productServicePrice?.fastPrice || 0,
         isAdditional,
-        normalPrice: productServicePrice?.normalPrice || 0
+        normalPrice: productServicePrice?.normalPrice || 0,
       });
     }
 
@@ -194,21 +203,32 @@ export class ProductsService {
 
   async updateProduct2(productId: number, dto: UpdateProductDto) {
     const product = await this.productRepository.findOneBy({ id: productId });
-    if (!product) return { product: null, success: false, message: 'Product not found' };
-    else if ((await this.productRepository.countBy({ categoryId: parseInt(dto.categoryId), name: dto.productName })) > 0) {
-      return { product: null, success: false, message: 'A product with this name already exists in the specified category' };
+    if (!product)
+      return { product: null, success: false, message: 'Product not found' };
+    else if (
+      (await this.productRepository.countBy({
+        categoryId: parseInt(dto.categoryId),
+        name: dto.productName,
+      })) > 0
+    ) {
+      return {
+        product: null,
+        success: false,
+        message:
+          'A product with this name already exists in the specified category',
+      };
     }
     product.categoryId = parseInt(dto.categoryId);
     product.name = dto.productName;
     this.productRepository.save(product);
 
-    const repo = this.datasource.getRepository<ProductServicePrice>(ProductServicePrice);
+    const repo =
+      this.datasource.getRepository<ProductServicePrice>(ProductServicePrice);
     for (let _service of dto.services) {
-      let price = await repo
-        .findOneBy({
-          productId,
-          serviceId: parseInt(_service.id)
-        });
+      let price = await repo.findOneBy({
+        productId,
+        serviceId: parseInt(_service.id),
+      });
       if (!price) {
         price = new ProductServicePrice();
         price.productId = productId;

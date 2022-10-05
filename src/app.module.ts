@@ -80,14 +80,20 @@ const options: TypeOrmModuleOptions = {
   imports: [
     TypeOrmModule.forRoot(options),
     ServeStaticModule.forRoot({
-      rootPath: process.env.NODE_ENV === 'development' ? join(process.cwd(), 'public') : join(process.cwd(), 'resources', 'public'),
+      rootPath:
+        process.env.NODE_ENV === 'development'
+          ? join(process.cwd(), 'public')
+          : join(process.cwd(), 'resources', 'public'),
       serveRoot: '/static',
     }),
     JwtModule.register({ secret: process.env.E_KEY }),
     I18nModule.forRoot({
       fallbackLanguage: process.env.SYSTEM_LANG || 'en',
       loaderOptions: {
-        path: process.env.NODE_ENV === 'development' ? join(__dirname, 'i18n') : join(process.cwd(), 'resources', 'dist', 'i18n'),
+        path:
+          process.env.NODE_ENV === 'development'
+            ? join(__dirname, 'i18n')
+            : join(process.cwd(), 'resources', 'dist', 'i18n'),
         watch: true,
       },
     }),

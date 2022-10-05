@@ -60,9 +60,14 @@ export class OrdersController extends BaseController {
   async lookupOrder(
     @Query('q') q: string,
     @Query('size') size: string,
-    @Res() res: Response) {
-    const orders = await this.orderService.searchOrders(q, parseInt(size || '50'));
-    if (!orders || orders.length == 0) return res.status(HttpStatus.NOT_FOUND).json([]);
+    @Res() res: Response,
+  ) {
+    const orders = await this.orderService.searchOrders(
+      q,
+      parseInt(size || '50'),
+    );
+    if (!orders || orders.length == 0)
+      return res.status(HttpStatus.NOT_FOUND).json([]);
     return res.status(HttpStatus.OK).json(orders);
   }
 
@@ -88,17 +93,22 @@ export class OrdersController extends BaseController {
         products,
         newClientDto: new NewClientDto(),
         dto: new NewOrderDto(),
-        recentOrders
+        recentOrders,
       },
       view: this.viewBag,
     };
   }
 
   @Delete(':id')
-  async deleteOrder(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
+  async deleteOrder(
+    @Param('id', ParseIntPipe) id: number,
+    @Res() res: Response,
+  ) {
     const order = await this.orderService.getOrderById(id);
     if (!order) {
-      res.status(HttpStatus.NOT_FOUND).json({ message: `Order not found: ${id}` });
+      res
+        .status(HttpStatus.NOT_FOUND)
+        .json({ message: `Order not found: ${id}` });
     } else {
       try {
         await this.orderService.deleteOrderById(id);

@@ -16,9 +16,7 @@ import { User } from './user.entity';
         `trim(concat(c.first_name, ' ', coalesce(c.last_name, '')))`,
         'customer',
       )
-      .addSelect(
-        `coalesce(c.phone, 'N/A')`, 'phone'
-      )
+      .addSelect(`coalesce(c.phone, 'N/A')`, 'phone')
       .addSelect(
         '(select (select count(*) from invoice_item_additional_services iias where iias.invoice_id = i.id)+1)',
         'number_of_services',

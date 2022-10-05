@@ -176,8 +176,8 @@ export class OrdersService {
         balance <= 0
           ? InvoiceStatus.PAID
           : balance == netPayable
-            ? InvoiceStatus.UNPAID
-            : InvoiceStatus.PARTIALLY_PAID;
+          ? InvoiceStatus.UNPAID
+          : InvoiceStatus.PARTIALLY_PAID;
       invoice.total = total;
       invoice.dueDate = new Date(createOrderDto.dueDate);
       invoice.paymentType = createOrderDto.paymentType;
@@ -193,10 +193,11 @@ export class OrdersService {
         let service = await this.dataSource
           .getRepository<OfferedService>(OfferedService)
           .findOneBy({ id: parseInt(entry.serviceId) });
-        let productServicePrice = await this.productServicePriceRepository.findOneBy({
-          serviceId: service.id,
-          productId: product.id
-        });
+        let productServicePrice =
+          await this.productServicePriceRepository.findOneBy({
+            serviceId: service.id,
+            productId: product.id,
+          });
 
         let invoiceItem: InvoiceItem = new InvoiceItem();
         invoiceItem.priceMode = entry.priceMode;
@@ -205,9 +206,11 @@ export class OrdersService {
         invoiceItem.productName = product.name;
         invoiceItem.serviceId = service.id;
         invoiceItem.serviceName = service.name;
-        invoiceItem.servicePriceSnapshot = parseInt(entry.quantity) * (productServicePrice == null
-          ? 0
-          : entry.priceMode == 'normal'
+        invoiceItem.servicePriceSnapshot =
+          parseInt(entry.quantity) *
+          (productServicePrice == null
+            ? 0
+            : entry.priceMode == 'normal'
             ? productServicePrice.normalPrice
             : productServicePrice.fastPrice);
 
@@ -216,13 +219,15 @@ export class OrdersService {
           .getRepository<InvoiceItem>(InvoiceItem)
           .save(invoiceItem);
 
-        if (!entry.additionalServices || entry.additionalServices.length == 0) continue;
+        if (!entry.additionalServices || entry.additionalServices.length == 0)
+          continue;
 
         for (let aService of entry.additionalServices) {
-          const productServicePrice = await this.productServicePriceRepository.findOneBy({
-            serviceId: parseInt(aService.id),
-            productId: parseInt(entry.productId),
-          });
+          const productServicePrice =
+            await this.productServicePriceRepository.findOneBy({
+              serviceId: parseInt(aService.id),
+              productId: parseInt(entry.productId),
+            });
           service = await this.dataSource
             .getRepository<OfferedService>(OfferedService)
             .findOneBy({ id: parseInt(aService.id) });
@@ -233,8 +238,8 @@ export class OrdersService {
             (productServicePrice == null
               ? 0
               : entry.priceMode == 'normal'
-                ? productServicePrice.normalPrice
-                : productServicePrice.fastPrice);
+              ? productServicePrice.normalPrice
+              : productServicePrice.fastPrice);
           additionalService.serviceId = service.id;
           additionalService.serviceName = service.name;
           additionalService.invoiceId = invoice.id;
@@ -291,7 +296,10 @@ export class OrdersService {
       .createQueryBuilder()
       .select('coalesce(sum(net_payable), 0)', 'totalPayable')
       .addSelect('coalesce(sum(amount_paid), 0)', 'totalPaid')
-      .addSelect('coalesce((select sum(balance) from vw_orders where balance >= 0), 0)', 'totalOutstanding');
+      .addSelect(
+        'coalesce((select sum(balance) from vw_orders where balance >= 0), 0)',
+        'totalOutstanding',
+      );
     if (!hasElevatedPrivileges) {
       queryBuilder = queryBuilder.where('recorder_id = :id', { id: dbUser.id });
     }
@@ -347,8 +355,9 @@ export class OrdersService {
     if (!order) return null;
     const dto = new UpdateOrderInvoiceDto();
     dto.amountPaid = order.invoice.amountPaid.toString();
-    dto.clientNames = `${order.customer.first_name} ${order.customer.last_name || ''
-      }`.trim();
+    dto.clientNames = `${order.customer.first_name} ${
+      order.customer.last_name || ''
+    }`.trim();
     dto.dueDate = order.dueDate || order.invoice.dueDate;
     dto.netPayable = order.invoice.netPayable.toString();
     dto.paymentType = order.invoice.paymentType;
@@ -359,11 +368,12 @@ export class OrdersService {
     dto.tax = order.invoice.tax.toString();
     dto.total = order.invoice.total.toString();
     dto.markAsDelivered = String(order.status == OrderStatus.DELIVERED);
-    dto.serviceCount = `${1 +
+    dto.serviceCount = `${
+      1 +
       order.invoice.items
         ?.flatMap((item) => item.additionalServices.length)
         .reduce((acc, curr) => acc + curr, 0)
-      }`;
+    }`;
     return dto;
   }
 
@@ -387,8 +397,8 @@ export class OrdersService {
         balance <= 0
           ? InvoiceStatus.PAID
           : balance == netPayable
-            ? InvoiceStatus.UNPAID
-            : InvoiceStatus.PARTIALLY_PAID;
+          ? InvoiceStatus.UNPAID
+          : InvoiceStatus.PARTIALLY_PAID;
       invoice.balance = balance;
       order.status =
         balance <= 0 ? OrderStatus.PENDING_PICKUP : OrderStatus.RECORDED;
@@ -416,30 +426,40 @@ export class OrdersService {
     const order = await this.ordersRepository.findOne({
       relations: {
         invoice: { items: { additionalServices: true } },
-        entries: { attributes: true }
+        entries: { attributes: true },
       },
-      where: { id }
+      where: { id },
     });
 
     if (!order) throw new Error('Order not found: ' + id);
 
     for (let invoiceItem of order.invoice.items) {
-      if (invoiceItem.additionalServices && invoiceItem.additionalServices.length > 0) {
-        await this.dataSource.getRepository<InvoiceItemAdditionalService>(InvoiceItemAdditionalService)
+      if (
+        invoiceItem.additionalServices &&
+        invoiceItem.additionalServices.length > 0
+      ) {
+        await this.dataSource
+          .getRepository<InvoiceItemAdditionalService>(
+            InvoiceItemAdditionalService,
+          )
           .remove(invoiceItem.additionalServices, { transaction: true });
       }
     }
-    await this.dataSource.getRepository<InvoiceItem>(InvoiceItem)
+    await this.dataSource
+      .getRepository<InvoiceItem>(InvoiceItem)
       .remove(order.invoice.items, { transaction: true });
-    await this.dataSource.getRepository<Invoice>(Invoice)
+    await this.dataSource
+      .getRepository<Invoice>(Invoice)
       .remove(order.invoice, { transaction: true });
 
     for (let orderEntry of order.entries) {
       if (orderEntry.attributes && orderEntry.attributes.length > 0)
-        await this.dataSource.getRepository<OrderEntryAttribute>(OrderEntryAttribute)
+        await this.dataSource
+          .getRepository<OrderEntryAttribute>(OrderEntryAttribute)
           .remove(orderEntry.attributes, { transaction: true });
     }
-    await this.dataSource.getRepository<OrderEntry>(OrderEntry)
+    await this.dataSource
+      .getRepository<OrderEntry>(OrderEntry)
       .remove(order.entries, { transaction: true });
     await this.ordersRepository.remove(order);
   }
@@ -450,24 +470,47 @@ export class OrdersService {
     const orders = await this.ordersRepository.find({
       order: {
         dateCreated: 'DESC',
-        lastUpdated: 'DESC'
+        lastUpdated: 'DESC',
       },
       take: n,
-      relations: { customer: true, invoice: true }
+      relations: { customer: true, invoice: true },
     });
 
     if (orders && orders.length > 0)
-      return orders.map(
-        (order) => {
-          const { id, code, status: orderStatus, invoice: { status: invoiceStatus }, customer: { phone, first_name, last_name } } = order;
-          return { id, text: `${code} ${`${first_name} ${last_name || ''}`.trim()} (${phone || 'N/A'}) (${orderStatus == OrderStatus.DELIVERED ? 'DELIVERED' : orderStatus == OrderStatus.PENDING_PICKUP ? 'PENDING PICKUP' : 'RECORDED'}, ${invoiceStatus == InvoiceStatus.PAID ? 'PAID' : invoiceStatus == InvoiceStatus.PARTIALLY_PAID ? 'PARTIALLY PAID' : 'UNPAID'})` };
-        }
-      );
+      return orders.map((order) => {
+        const {
+          id,
+          code,
+          status: orderStatus,
+          invoice: { status: invoiceStatus },
+          customer: { phone, first_name, last_name },
+        } = order;
+        return {
+          id,
+          text: `${code} ${`${first_name} ${last_name || ''}`.trim()} (${
+            phone || 'N/A'
+          }) (${
+            orderStatus == OrderStatus.DELIVERED
+              ? 'DELIVERED'
+              : orderStatus == OrderStatus.PENDING_PICKUP
+              ? 'PENDING PICKUP'
+              : 'RECORDED'
+          }, ${
+            invoiceStatus == InvoiceStatus.PAID
+              ? 'PAID'
+              : invoiceStatus == InvoiceStatus.PARTIALLY_PAID
+              ? 'PARTIALLY PAID'
+              : 'UNPAID'
+          })`,
+        };
+      });
     return [];
   }
 
   async searchOrders(query: string, size: number) {
-    const orders = await this.dataSource.getRepository<OrdersView>(OrdersView).createQueryBuilder()
+    const orders = await this.dataSource
+      .getRepository<OrdersView>(OrdersView)
+      .createQueryBuilder()
       .where('code like :code', { code: `%${query}%` })
       .orWhere('customer like :customer', { customer: `%${query}%` })
       .orWhere('phone like :phone', { phone: `%${query}%` })
@@ -475,9 +518,31 @@ export class OrdersService {
       .limit(size)
       .getMany();
     if (!orders || orders.length == 0) return [];
-    return orders.map(order => {
-      const { orderId: id, code, customer, phone, orderStatus, invoiceStatus } = order;
-      return { id, text: `${code} ${customer} (${phone}) (${orderStatus == OrderStatus.DELIVERED ? 'DELIVERED' : orderStatus == OrderStatus.PENDING_PICKUP ? 'PENDING PICKUP' : 'RECORDED'}, ${invoiceStatus == InvoiceStatus.PAID ? 'PAID' : invoiceStatus == InvoiceStatus.PARTIALLY_PAID ? 'PARTIALLY PAID' : 'UNPAID'})` };
+    return orders.map((order) => {
+      const {
+        orderId: id,
+        code,
+        customer,
+        phone,
+        orderStatus,
+        invoiceStatus,
+      } = order;
+      return {
+        id,
+        text: `${code} ${customer} (${phone}) (${
+          orderStatus == OrderStatus.DELIVERED
+            ? 'DELIVERED'
+            : orderStatus == OrderStatus.PENDING_PICKUP
+            ? 'PENDING PICKUP'
+            : 'RECORDED'
+        }, ${
+          invoiceStatus == InvoiceStatus.PAID
+            ? 'PAID'
+            : invoiceStatus == InvoiceStatus.PARTIALLY_PAID
+            ? 'PARTIALLY PAID'
+            : 'UNPAID'
+        })`,
+      };
     });
   }
 }

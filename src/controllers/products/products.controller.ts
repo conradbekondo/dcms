@@ -15,7 +15,7 @@ import {
   Req,
   Res,
   UseFilters,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Role } from 'src/decorators/role.decorator';
@@ -130,7 +130,8 @@ export class ProductsController extends BaseController {
     @Res() res: Response,
   ) {
     if (withServicePrices == 'true') {
-      const productWithPrices = await this.productService.getProductWithServicePrices(id);
+      const productWithPrices =
+        await this.productService.getProductWithServicePrices(id);
       return res.status(HttpStatus.OK).json(productWithPrices);
     }
     const product = await this.productService.getProduct(id);
@@ -154,13 +155,15 @@ export class ProductsController extends BaseController {
   async updateProduct(
     @Param('id', ParseIntPipe) id: number,
     @Res() res: Response,
-    @Body() data: UpdateProductDto
+    @Body() data: UpdateProductDto,
   ) {
     const result = await this.productService.updateProduct2(id, data);
     if (result.success) {
       return res.status(HttpStatus.ACCEPTED).send();
     } else {
-      return res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({ message: result.message });
+      return res
+        .status(HttpStatus.UNPROCESSABLE_ENTITY)
+        .json({ message: result.message });
     }
   }
 }
