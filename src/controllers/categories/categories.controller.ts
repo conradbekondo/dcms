@@ -6,12 +6,14 @@ import {
   HttpStatus,
   Inject,
   Logger,
-  Param, Post,
-  Put, Render,
+  Param,
+  Post,
+  Put,
+  Render,
   Req,
   Res,
   UseFilters,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Role } from 'src/decorators/role.decorator';
@@ -40,9 +42,7 @@ export class CategoriesController extends BaseController {
   }
 
   @Get('all')
-  async getAllCategories(
-    @Res() res: Response
-  ) {
+  async getAllCategories(@Res() res: Response) {
     const categories = await this.categoryService.getCategories();
     return res.status(HttpStatus.OK).json(categories);
   }

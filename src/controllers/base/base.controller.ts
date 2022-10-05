@@ -1,4 +1,3 @@
-import { IPrincipal } from 'src/models/principal.model';
 import { UsersService } from 'src/services/users/users.service';
 
 export abstract class BaseController {
@@ -10,9 +9,9 @@ export abstract class BaseController {
     this.viewBag = {};
     this.viewBag['appName'] = appName;
     this.viewBag.releaseDate =
-      process.env.NODE_ENV == 'development'
+      process.env.NODE_ENV == 'production'
         ? new Date()
-        : Date.parse(process.env.RELEASE_DATE);
+        : new Date(Date.parse(process.env.RELEASE_DATE));
     userService.principal$.subscribe((principal) => {
       this.viewBag.principal = principal;
     });

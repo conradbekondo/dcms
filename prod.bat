@@ -1,5 +1,5 @@
 echo off
 cls
 set NODE_ENV=development
-yarn run electron:dev
+node dist/main
 echo on

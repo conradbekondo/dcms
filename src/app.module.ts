@@ -69,10 +69,10 @@ const options: TypeOrmModuleOptions = {
     Invoice,
     InvoiceItem,
     InvoiceItemAdditionalService,
-    OrdersView
+    OrdersView,
   ],
   namingStrategy: new SnakeNamingStrategy(),
-  synchronize: false,
+  synchronize: process.env.NODE_ENV === 'development',
   dropSchema: false,
 };
 
@@ -80,14 +80,14 @@ const options: TypeOrmModuleOptions = {
   imports: [
     TypeOrmModule.forRoot(options),
     ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'public'),
+      rootPath: process.env.NODE_ENV === 'development' ? join(process.cwd(), 'public') : join(process.cwd(), 'resources', 'public'),
       serveRoot: '/static',
     }),
     JwtModule.register({ secret: process.env.E_KEY }),
     I18nModule.forRoot({
       fallbackLanguage: process.env.SYSTEM_LANG || 'en',
       loaderOptions: {
-        path: join(__dirname, '/i18n/'),
+        path: process.env.NODE_ENV === 'development' ? join(__dirname, 'i18n') : join(process.cwd(), 'resources', 'dist', 'i18n'),
         watch: true,
       },
     }),
@@ -131,7 +131,7 @@ const options: TypeOrmModuleOptions = {
     },
     {
       provide: injectionTokenKeys.identityMaxAge,
-      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '50000000'),
+      useValue: parseInt(process.env.IDENTITY_MAX_AGE || '3600') * 1000,
     },
     CategoriesService,
     ClientsService,
