@@ -6,14 +6,16 @@
 <script src="js/scripts.js"></script>
 <script src="/static/js/sweetalert.min.js"></script>
 <script src="/static/js/vendor/jquery.validate/jquery.validate.min.js"></script>
+<script src="/static/js/rxjs.js"></script>
+<script src="/static/js/print.min.js"></script>
 <!-- <script src="/static/js/jspdf.min.js"></script> -->
 <script>
-    const currencyFormatter = new Intl.NumberFormat(['en-CM', 'fr-CM'], {
+    const currencyFormatter = new Intl.NumberFormat(['fr-CM', 'fr-CM'], {
         currency: 'XAF',
         style: 'currency',
         maximumFractionDigits: 0
     });
-    const numberFormatter = new Intl.NumberFormat(['en-CM', 'fr-CM']);
+    const numberFormatter = new Intl.NumberFormat(['fr-CM', 'fr-CM']);
 
     function updateReceipt(order) {
         $('#receiptModal .modal-title').text(`Invoice Receipt - ${order.code}`);
@@ -38,17 +40,28 @@
         }));
         let rowString;
         document.getElementById('receiptInvoiceItems').innerHTML = '';
+        let totalPrice = 0;
         for (let item of order.invoice.items) {
 
             rowString = `
     <td>${item.productName}</td>
     <td>${numberFormatter.format(item.quantity)}</td>
-    <td>${item.serviceName}</td>
+    <td>${item.serviceName} ${currencyFormatter.format(item.servicePriceSnapshot / item.quantity)}</td>
+    <td>
     `.trim();
             if (item.additionalServices && item.additionalServices.length > 0) {
-
+                rowString += `<div class="d-flex flex-wrap">`;
+                rowString += item.additionalServices.map(service => [service.serviceName, service.price])
+                    .map(([name, price]) => `<span class="mx-1">${name} ${currencyFormatter.format(price / item.quantity)}</span>`);
+                rowString += '</div>';
+            } else {
+                rowString += '<span>N/A</span>';
             }
-
+            rowString += '</td>';
+            rowString += `<td>${item.priceMode.toUpperCase()}</td>`;
+            const totalAdditionalServicesPrice = !item.additionalServices || item.additionalServices.length <= 0 ? 0 : item.additionalServices.map(service => service.price).reduce((acc, curr) => acc + curr, 0);
+            rowString += `<td>${currencyFormatter.format(item.servicePriceSnapshot + totalAdditionalServicesPrice)}</td>`;
+            totalPrice += item.servicePriceSnapshot + totalAdditionalServicesPrice;
             document.getElementById('receiptInvoiceItems').innerHTML += rowString;
         }
 
@@ -57,17 +70,35 @@
         $('#receiptFormDiscount').text(currencyFormatter.format(order.invoice.discount));
         $('#receiptFormAmountPaid').text(currencyFormatter.format(order.invoice.amountPaid));
         $('#receiptOutstanding').text(currencyFormatter.format(Math.abs(order.invoice.balance)));
+        if (order.invoice.balance <= 0) {
+            $('#receiptChangeLabel').text('Change:');
+        } else {
+            $('#receiptChangeLabel').text('Outstanding:');
+        }
         $('#receiptNetPayable').text(currencyFormatter.format(Math.abs(order.invoice.netPayable)));
+        $('#receiptFormComputedTotal').text(currencyFormatter.format(Math.abs(totalPrice)));
 
     }
 
     $(document).ready(function() {
+        $('#print-receipt').click(function() {
+            printJS({
+                printable: 'printable-content',
+                type: 'html',
+                header: 'Generated Receipt',
+                css: ['/static/css/print.min.css',
+                    '/static/css/main.css',
+                    '/static/css/vendor/bootstrap.min.css'
+                ]
+            });
+        });
         $('#updateInvoiceForm').validate();
         $('#updateInvoiceForm').submit(function(e) {
             e.preventDefault();
             const orderId = $('#orderIdInput').val();
             if (!orderId) return;
-            const data = updatingInvoice;
+            const data = {...updatingInvoice
+            };
             $.ajax({
                 url: `/orders/${orderId}`,
                 method: 'PUT',
@@ -122,6 +153,43 @@
             })
         });
 
+        $('.dropdown-item.delete').each(function() {
+            $(this).click(function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/orders/' + $(this).data('id'),
+                            method: 'DELETE',
+                            success: () => {
+                                Swal.fire(
+                                    'Success!',
+                                    'Delete successful',
+                                    'success'
+                                ).then(() => location.reload());
+                            },
+                            error: err => {
+                                console.error(err);
+                                Swal.fire(
+                                    'Error!',
+                                    'Could not delete the order',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
+            })
+        });
+
         $('.dropdown-item.update').each(function() {
             $(this).click(function(e) {
                 e.preventDefault();
@@ -150,6 +218,7 @@
                             discount: parseFloat(invoice.discount),
                             markAsDelivered: invoice.markAsDelivered === undefined || invoice.markAsDelivered === null ? false : invoice.markAsDelivered == 'true'
                         };
+                        pristineUpdatingInvoiceAmountPaid = updatingInvoice.amountPaid;
                         $('#invoiceUpdateFormModal').modal({
                             backdrop: 'static'
                         });
@@ -166,8 +235,8 @@
                 if (currentAmountPaid + amountToBeAdded
 
                     <
-                    0) {
-                    $('#invoiceFormAmountPaid').val(0);
+                    pristineUpdatingInvoiceAmountPaid) {
+                    $('#invoiceFormAmountPaid').val(pristineUpdatingInvoiceAmountPaid);
                 } else $('#invoiceFormAmountPaid').val(currentAmountPaid + amountToBeAdded);
                 $('#invoiceFormAmountPaid').change();
             });
@@ -206,6 +275,7 @@
             amountPaid: 0
         };
 
+        let pristineUpdatingInvoiceAmountPaid;
         let updatingInvoice = {
             ...defaultInvoice
         };
@@ -239,14 +309,30 @@
             const netPayable = updatingInvoice.netPayable;
             const outstanding = netPayable - amountPaid;
             const clientName = updatingInvoice.clientNames;
-            if (amountPaid <= 0) {
+            if (netPayable == 0) {
+                $('.money-btns .btn-outline-primary').each(function() {
+                    $(this).hide();
+                });
                 $('.money-btns .btn-outline-danger').each(function() {
                     $(this).hide();
                 });
+                $('#invoiceFormAmountPaid').parents('.form-group').hide();
+                $('#invoiceFormPaymentType').parents('.form-group').hide();
+                $('#dueDate').parents('.form-group').hide();
+            } else if (amountPaid <= 0) {
+                $('.money-btns .btn-outline-danger').each(function() {
+                    $(this).hide();
+                });
+                $('#invoiceFormAmountPaid').parents('.form-group').show();
+                $('#invoiceFormPaymentType').parents('.form-group').show();
+                $('#dueDate').parents('.form-group').show();
             } else {
                 $('.money-btns .btn-outline-danger').each(function() {
                     $(this).show();
                 });
+                $('#invoiceFormAmountPaid').parents('.form-group').show();
+                $('#invoiceFormPaymentType').parents('.form-group').show();
+                $('#dueDate').parents('.form-group').show();
             }
             let balanceDescriptionText;
             if (outstanding < 0) {
@@ -255,12 +341,18 @@
                 $('#invoiceFormBalanceText').removeClass('text-danger');
                 $('.btn-print').show();
                 $('#lblmarkAsDelivered').show();
+                $('.money-btns .btn-outline-primary').each(function() {
+                    $(this).hide();
+                });
             } else if (outstanding > 0) {
                 balanceDescriptionText = `<b style="font-size: 1.1rem">${currencyFormatter.format(Math.abs(outstanding))}</b> is outstanding for <b style="font-size: 1.1rem">${clientName}</b> to pay`;
                 $('#invoiceFormBalanceDescription').addClass('text-danger');
                 $('#invoiceFormBalanceText').addClass('text-danger');
                 $('.btn-print').hide();
                 $('#lblmarkAsDelivered').hide();
+                $('.money-btns .btn-outline-primary').each(function() {
+                    $(this).show();
+                });
             } else {
                 balanceDescriptionText = '';
                 $('#invoiceFormBalanceDescription').removeClass('text-danger');
@@ -269,9 +361,19 @@
                 $('#lblmarkAsDelivered').show();
             }
             document.getElementById('invoiceFormBalanceDescription').innerHTML = balanceDescriptionText;
-            $('#invoiceFormBalanceText').text(currencyFormatter.format(Math.abs(outstanding)));
+            $('#invoiceFormBalanceText').text(currencyFormatter.format(Math.abs(normalize(outstanding, 0, Number.MAX_VALUE))));
         }
 
         computeBilling();
     });
+
+    function normalize(n, min, max) {
+        if (n
+
+            <
+            min) return min;
+        else if (n > max) return max;
+        else
+            return n;
+    }
 </script>

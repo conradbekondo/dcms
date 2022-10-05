@@ -4,7 +4,7 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
-  ManyToOne
+  ManyToOne,
 } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { OrderEntryAttribute } from './order-entry-attribute.entity';

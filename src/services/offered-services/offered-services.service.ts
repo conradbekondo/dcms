@@ -73,13 +73,13 @@ export class OfferedServicesService {
         dateCreated: 'DESC',
         lastUpdated: 'DESC',
       },
-
     };
     if (additionaOnly === true || additionaOnly === false) {
       query = {
-        ...query, where: {
-          isAdditional: additionaOnly
-        }
+        ...query,
+        where: {
+          isAdditional: additionaOnly,
+        },
       };
     }
     const services: OfferedService[] =

@@ -12,19 +12,19 @@
                         </div>
                     </div>
 
-                    <div class="modal fade modal-right" id="exampleModalRight" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
-                            <div class="modal-content">
-                                <div class="modal-header p-3" style="flex:0 0 3px">
-                                    <h5 class="modal-title">Add product</h5>
+                    <form class="needs-validation" id="create_form">
+                        <div class="modal fade " id="exampleModalRight" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
+                                <div class="modal-content">
+                                    <div class="modal-header p-3" style="flex:0 0 3px">
+                                        <h5 class="modal-title">Add product</h5>
 
-                                    <div id="savebtm_result" class="form-group text-success w-50"></div>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <div id="savebtm_result" class="form-group text-success w-50"></div>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
 
-                                </div>
-                                <form class="needs-validation" id="create_form">
+                                    </div>
                                     <div class="modal-body">
                                         <!-- <div class="form-group position-relative error-l-50 col-2">
                                                 <label>Num </label>
@@ -100,53 +100,103 @@
                                                             </div>
                                                             <div class="error_validateclt text-danger"></div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-                                        <button type="submit" id="savebtn" class="btn btn-primary">Save</button>
+                                    <div class="modal-footer d-flex justify-content-center align-items-center">
+                                        <button type="button" class="btn mx-2 btn-outline-primary" data-dismiss="modal">Close</button>
+                                        <button type="submit" id="savebtn" class="btn mx-2 btn-primary">Save</button>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal fade modal-right" id="updateclt" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
-                        <div class="modal-dialog" role="document" style="max-width: 600px;">
-                            <div class="modal-content">
-                                <div class="modal-header p-3" style="flex:0 0 3px">
-                                    <h5 class="modal-title">Update </h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    </form>
+                    <form class="needs-validation" id="update_form">
+                        <div class="modal fade " id="productUpdateForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
+                                <div class="modal-content">
+                                    <div class="modal-header p-3" style="flex:0 0 3px">
+                                        <h5 class="modal-title">Update </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
-                                    <span id="updatebtm_result" class="form-group text-success"></span>
-
-                                </div>
-                                <form class="needs-validation">
+                                        <span id="updatebtm_result" class="form-group text-success"></span>
+                                    </div>
+                                    <input type="hidden" id="updateProductId">
                                     <div class="modal-body">
-                                        <input id="id" name="id" type="hidden">
+                                        <!-- <div class="form-group position-relative error-l-50 col-2">
+                                                <label>Num </label>
+                                                <input type="text" class="form-control" placeholder="" name="num" id="num" autocomplete="off" value="" readonly="readonly">
+                                            </div> -->
                                         <div class="form-group">
-                                            <label for="updateName">Name <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" name="name" id="updateName">
+                                            <label> Name <span class="text-danger ">*</span></label>
+                                            <input type="text" class="form-control required" placeholder="" name="name" id="update_name" autocomplete="off">
                                         </div>
                                         <div class="form-group">
-                                            <label for="updateCategories">Categories <span
-                                                    class="text-danger"></span></label>
-                                            <select name="category" id="updateCategories" class="form-control">
-                                                <option value="">Select a category</option>
-                                                <% data.categories.forEach(category=> {%>
-                                                    <option value="<%= category.id%>">
-                                                        <%= category.name %>
-                                                    </option>
-                                                    <%})%>
-                                            </select>
+                                            <label> Categories <span class="text-danger ">*</span></label>
+                                            <select name="category" class="form-control required" id="update_category">
+                                              <option value="">Select category</option>
+                                              <% data.categories.forEach(category=> { %>
+                                              <option value="<%= category.id %>">
+                                                <%= category.name %>
+                                              </option>
+                                        <% }) %>
+                                        </select>
                                         </div>
+                                        <% if(data.services && data.services.length> 0) { %>
+                                            <% data.services.forEach(service=> { %>
+                                                <div class="row">
+                                                    <div class="form-group col-6">
+                                                        <label>
+                                              <%= service.name %> Normal (XAF) <span class="text-danger ">*</span>
+                                            </label>
+                                                        <input type="number" min="0" class="form-control service_price" name="<%= service.id %>_normal" id="<%= service.id %>_normal" data-service="<%= service.id %>" data-type="normal">
+                                                    </div>
+                                                    <div class="form-group col-6">
+                                                        <label>
+                                              <%= service.name %> Fast (XAF)<span class="text-danger ">*</span>
+                                            </label>
+                                                        <input type="number" min="0" class="form-control service_price" name="<%= service.id %>_fast" id="<%= service.id %>_fast" data-service="<%= service.id %>" data-type="fast">
+                                                    </div>
+                                                </div>
+                                                <% }) %>
+                                                    <%} else {%>
+                                                        <div class="form-group">
+                                                            <label class="text-muted">Services</label>
+                                                            <p class="alert alert-info text-center">
+                                                                No services could be found. Create <a href="/services">here</a>
+                                                            </p>
+                                                        </div>
+                                                        <% } %>
+                                                            <div class="row">
+                                                                <input type="hidden" id="update-product-selected-icon-input" name="icon">
+                                                                <div class="form-group col-12 d-flex align-items-center justify-content-center">
+                                                                    <div id="update-selected-icon">
+                                                                    </div>
+                                                                    <button type="button" class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block" data-toggle="modal" data-backdrop="static" data-target="#iconshow2"> Select icon <i class="glyph-icon simple-icon-plus"></i>
+                                                                    </button>
+                                                                    <span id="icon_select" style="font-size: 40px;"></span>
+                                                                    <input type="hidden" id="icons">
+                                                                </div>
+                                                            </div>
+                                                            <hr>
+                                                            <div class="row">
+                                                                <% data.additional.forEach(service=> { %>
+                                                                    <div class="form-group col-4">
+                                                                        <label>
+                                                                  <%= service.name %> (XAF) <span class="text-danger "></span>
+                                                                </label>
+                                                                        <input type="number" min="0" class="form-control service_price" name="<%= service.id %>_additional" id="<%= service.id %>_update_additional" data-service="<%= service.id %>" data-type="additional" value="0">
+                                                                    </div>
+                                                                    <% }) %>
+                                                            </div>
+                                                            <div class="error_validateclt text-danger"></div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-                                        <button type="button" id="savebtn" class="btn btn-primary">Save</button>
+                                    <div class="modal-footer d-flex justify-content-center align-items-center">
+                                        <button type="submit" class="mx-2 btn btn-primary">Save</button>
+                                        <button type="button" class="btn mx-2 btn-outline-danger" data-dismiss="modal">Close</button>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                     <div class="modal fade" id="iconshow" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
                         <div class="modal-dialog" role="document" style="max-width: 600px;">
                             <div class="modal-content" style="border: solid 1px #ed7117;">
@@ -314,6 +364,173 @@
                             </div>
                         </div>
                     </div>
+                    <div class="modal fade" id="iconshow2" tabindex="-1" role="dialog" aria-labelledby="exampleModalRight" aria-hidden="true">
+                        <div class="modal-dialog" role="document" style="max-width: 600px;">
+                            <div class="modal-content" style="border: solid 1px #ed7117;">
+
+                                <div class="modal-body">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                                    <br>
+                                    <hr>
+                                    <div class="simple-line-icons">
+                                        <a onclick="add_icon2('glyph-icon iconsminds-t-shirt','iconsminds')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <i class="glyph-icon iconsminds-t-shirt" style="font-size: 60px;"></i>
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('glyph-icon iconsminds-jeans','iconsminds')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <i class="glyph-icon iconsminds-jeans" style="font-size: 60px;"></i>
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('glyph-icon iconsminds-blouse','iconsminds')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <i class="glyph-icon iconsminds-blouse" style="font-size: 60px;"></i>
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('glyph-icon iconsminds-jacket','iconsminds')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <i class="glyph-icon iconsminds-jacket" style="font-size: 60px;"></i>
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('glyph-icon iconsminds-tie','iconsminds')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <i class="glyph-icon iconsminds-tie" style="font-size: 60px;"></i>
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('glyph-icon iconsminds-baby-clothes','iconsminds')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <i class="glyph-icon iconsminds-baby-clothes" style="font-size: 60px;"></i>
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('glyph-icon iconsminds-bikini','iconsminds')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <i class="glyph-icon iconsminds-bikini" style="font-size: 60px;"></i>
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('glyph-icon iconsminds-dress','iconsminds')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <i class="glyph-icon iconsminds-dress" style="font-size: 60px;"></i>
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('glyph-icon iconsminds-walkie-talkie','iconsminds')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <i class="glyph-icon iconsminds-walkie-talkie" style="font-size: 60px;"></i>
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('glyph-icon iconsminds-cap','iconsminds')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <i class="glyph-icon iconsminds-cap" style="font-size: 60px;"></i>
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('glyph-icon iconsminds-gloves','iconsminds')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <i class="glyph-icon iconsminds-gloves" style="font-size: 60px;"></i>
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('glyph-icon iconsminds-boot','iconsminds')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <i class="glyph-icon iconsminds-boot" style="font-size: 60px;"></i>
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('baby-pants-svgrepo-com.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/baby-pants-svgrepo-com.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('static/icons/coat-svgrepo-com.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/coat-svgrepo-com.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('dress-garment-svgrepo-com.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/dress-garment-svgrepo-com.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('baby-pants-svgrepo-com.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/baby-pants-svgrepo-com.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('hat-svgrepo-com.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/hat-svgrepo-com.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('jacket-fur-svgrepo-com.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/jacket-fur-svgrepo-com.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('jacket-svgrepo-com.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/jacket-svgrepo-com.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('oxford-wave-blazer-svgrepo-com.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/oxford-wave-blazer-svgrepo-com.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('pillow-svgrepo-com.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/pillow-svgrepo-com.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('t-shirt.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/t-shirt.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('skirt-svgrepo-com.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/skirt-svgrepo-com.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('blazer.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/blazer.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('sleeveless-t-shirt-svgrepo-com.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/sleeveless-t-shirt-svgrepo-com.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('sneakers-svgrepo-com.svg','vest')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/sneakers-svgrepo-com.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('sweatshirt-svgrepo-com.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/sweatshirt-svgrepo-com.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('vest-svgrepo-com.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/vest-svgrepo-com.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('leather-jacket.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/leather-jacket.svg">
+                                            </div>
+                                        </a>
+                                        <a onclick="add_icon2('hats.svg','svg')">
+                                            <div class="glyph border border-success mr-1 mb-1">
+                                                <img style="width: 65px;" class="mt-3" src="/static/icons/hats.svg">
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="row">
                         <div class="col-12">
@@ -380,9 +597,9 @@
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a href="#" class="btn btn-primary more-btn" data-id="<%= product.id %>">
+                                                            <!-- <a href="#" class="btn btn-primary more-btn" data-id="<%= product.id %>">
                                                                 <i class="glyph-icon simple-icon-eye"></i>
-                                                            </a>
+                                                            </a> -->
                                                             <a href="#" class="btn btn-warning edit-btn" data-id="<%= product.id %>">
                                                                 <i class="glyph-icon simple-icon-pencil"></i>
                                                             </a>

@@ -42,7 +42,7 @@ export class BackupController extends BaseController {
   }
 
   @Post('')
-  performBackup() { }
+  performBackup() {}
 
   @Get()
   @Render('settings/backup')

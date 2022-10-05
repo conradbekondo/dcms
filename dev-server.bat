@@ -1,5 +1,6 @@
 echo off
 cls
 set NODE_ENV=development
-yarn run electron:dev
+set SERVER_ONLY=true
+yarn run start:debug
 echo on

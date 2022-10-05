@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { lastValueFrom, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ROLE_KEY } from 'src/decorators/role.decorator';
 import { Roles } from 'src/entities/roles';
 import { UsersService } from 'src/services/users/users.service';

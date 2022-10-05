@@ -7,17 +7,40 @@
 <script src="/static/js/scripts.js"></script>
 <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
 <script src="/static/js/sweetalert.min.js"></script>
+<script src="/static/js/vendor/jquery.validate/jquery.validate.min.js"></script>
 <script>
     const services = [];
 
-    $(document).ready(function() {
-        $('#iconshow > a').each(e => {
-            $(this).click(function(event) {
-                event.preventDefault();
+    function add_icon2(v, k) {
+        $('#iconshow2').modal('hide');
+        const value = `${k}:${v}`;
+        $('#update-product-selected-icon-input').val(value);
+        const x = document.getElementById('update-selected-icon');
+        while (x.firstChild) {
+            x.firstChild.remove();
+        }
 
-                const children = $(this).children();
-                console.log(children);
-            })
+        if (k == 'svg') {
+            x.innerHTML = '<div class="glyph mr-1 mb-1"><img style="width: 65px;" class="mt-3" src="/static/icons/' + v + '"></div>';
+        } else {
+            x.innerHTML = '<div style="font-size: 80px" class="glyph mr-1 mb-1"><i class="' + v + '"></i></div>';
+        }
+        // $('#selected-icon').after('<figcaption class="d-flex justify-content-around text-center align-items-center">Selected Icon <button type="button" onclick="removeSelectedIcon()" class="text-danger btn btn-outline-danger">&times;</button></figcaption>');
+    }
+    $(document).ready(function() {
+        $('#productUpdateForm').on('hidden.bs.modal', function() {
+            const x = document.getElementById('update-selected-icon');
+            while (x.firstChild) {
+                x.firstChild.remove();
+            }
+        });
+
+        $('#create_form').validate({
+            errorClass: 'text-danger d-block'
+        });
+
+        $('#update_form').validate({
+            errorClass: 'text-danger d-block'
         });
 
         $('#table .edit-btn').each(function() {
@@ -30,17 +53,67 @@
                     method: 'GET',
                     url: `/products/${productId}?withServicePrices=true`,
                     success: (response) => {
-                        debugger;
-
+                        updatingProduct = response;
+                        updateProductForm();
                     },
                     error: e => {
-                        debugger;
+                        console.error(e);
                     }
                 })
             });
-        })
-
+        });
     });
+
+    let updatingProduct;
+    let flag = false;
+
+    $('#update_category').on('change input', function() {
+        updatingProduct.categoryId = parseInt($(this).val());
+    });
+
+    $('#update_name').on('change input', function() {
+        updatingProduct.productName = $(this).val();
+    });
+
+    function updateProductForm() {
+        $('#productUpdateForm .modal-title').text(`Update "${updatingProduct.productName}"`);
+        $('#update_category').val(updatingProduct.categoryId);
+        $('#updateProductId').val(updatingProduct.id);
+        updatingProduct.services.filter(service => !service.isAdditional)
+            .forEach(service => {
+                $(`#${service.id}_normal`).val(service.normalPrice);
+                $(`#${service.id}_fast`).val(service.fastPrice);
+            });
+
+        updatingProduct.services.filter(service => {
+            $(`#${service.id}_update_additional`).val(service.normalPrice);
+        });
+
+        if (!flag) {
+            for (let service of updatingProduct.services) {
+                if (service.isAdditional) {
+                    $(`#${service.id}_update_additional`).on('change input', function() {
+                        updatingProduct.services.find(_service => _service.id == service.id && _service.isAdditional == true).normalPrice = parseFloat($(this).val());
+                    });
+                } else {
+                    $(`#${service.id}_normal`).on('change input', function() {
+                        updatingProduct.services.find(_service => _service.id == service.id && _service.isAdditional == false).normalPrice = parseFloat($(this).val());
+                    });
+
+                    $(`#${service.id}_fast`).on('change input', function() {
+                        updatingProduct.services.find(_service => _service.id == service.id && _service.isAdditional == false).fastPrice = parseFloat($(this).val());
+                    });
+                }
+            }
+            flag = true;
+        }
+
+        $('#update_name').val(updatingProduct.productName);
+        if (updatingProduct.icon) {
+            add_icon2(updatingProduct.icon.split(':')[1], updatingProduct.icon.split(':')[0]);
+        }
+        $('#productUpdateForm').modal('show');
+    }
 
     function add_icon(v, k) {
         $('#iconshow').modal('hide');
@@ -77,7 +150,48 @@
             type: type,
             price: price
         })
-    })
+    });
+
+    $('#update_form').submit(function(e) {
+        e.preventDefault();
+        let errMsg;
+        if (!updatingProduct.productName || updatingProduct.productName == '') {
+            errMsg = 'Product name is required';
+        } else if (updatingProduct.categoryId === undefined || updatingProduct.categoryId === null)
+            errMsg = 'Category is required';
+
+        if (errMsg) {
+            Swal.fire(
+                'Error',
+                errMsg,
+                'error'
+            );
+            return;
+        }
+
+        updatingProduct.icon = $('#update-product-selected-icon-input').val();
+
+        $.ajax({
+            method: 'PUT',
+            url: '/products/' + updatingProduct.id,
+            data: updatingProduct,
+            success: () => {
+                Swal.fire(
+                    'Success',
+                    'Product updated successfully!',
+                    'success'
+                ).then(() => location.reload());
+            },
+            error: (err) => {
+                console.error(err);
+                Swal.fire(
+                    'Error',
+                    err.responseJSON.message || err.statusText,
+                    'error'
+                );
+            }
+        })
+    });
 
     $('#create_form').submit(function(e) {
         e.preventDefault();

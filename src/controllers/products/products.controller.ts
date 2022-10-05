@@ -5,8 +5,11 @@ import {
   Get,
   HttpStatus,
   Inject,
-  Logger, Param,
+  Logger,
+  Param,
+  ParseIntPipe,
   Post,
+  Put,
   Query,
   Render,
   Req,
@@ -17,6 +20,7 @@ import {
 import { Request, Response } from 'express';
 import { Role } from 'src/decorators/role.decorator';
 import { IProductDto } from 'src/dto/product.dto';
+import { UpdateProductDto } from 'src/dto/update-product.dto';
 import { Roles } from 'src/entities/roles';
 import { AuthFailedFilter } from 'src/filters/auth-failed.filter';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
@@ -27,7 +31,10 @@ import { ProductsService } from 'src/services/products/products.service';
 import { UsersService } from 'src/services/users/users.service';
 import { BaseController } from '../base/base.controller';
 
-class ProductServicePriceRequest { productId: string; serviceIds: string[]; }
+class ProductServicePriceRequest {
+  productId: string;
+  serviceIds: string[];
+}
 
 @Controller(['products'])
 @UseGuards(AuthGuard)
@@ -47,8 +54,14 @@ export class ProductsController extends BaseController {
   }
 
   @Post('prices')
-  async getProductServicePrices(@Body() { requests }: { requests: ProductServicePriceRequest }, @Res() res: Response) {
-    const prices = await this.productService.getProductPrices({ productId: parseInt(requests.productId), serviceIds: requests.serviceIds.map(id => parseInt(id)) });
+  async getProductServicePrices(
+    @Body() { requests }: { requests: ProductServicePriceRequest },
+    @Res() res: Response,
+  ) {
+    const prices = await this.productService.getProductPrices({
+      productId: parseInt(requests.productId),
+      serviceIds: requests.serviceIds.map((id) => parseInt(id)),
+    });
     return res.status(HttpStatus.OK).json(prices);
   }
 
@@ -57,8 +70,16 @@ export class ProductsController extends BaseController {
   async viewProducts() {
     const products = await this.productService.getProducts();
     const categories = await this.categoryService.getCategories();
-    const services = await this.serviceService.getServices(undefined, undefined, false);
-    const additional = await this.serviceService.getServices(undefined, undefined, true);
+    const services = await this.serviceService.getServices(
+      undefined,
+      undefined,
+      false,
+    );
+    const additional = await this.serviceService.getServices(
+      undefined,
+      undefined,
+      true,
+    );
     this.viewBag.pageTitle = 'Products';
 
     return {
@@ -68,9 +89,7 @@ export class ProductsController extends BaseController {
   }
 
   @Get('all')
-  async getAllProducts(
-    @Res() res: Response
-  ) {
+  async getAllProducts(@Res() res: Response) {
     const products = await this.productService.getProducts();
     res.status(HttpStatus.OK).json(products);
   }
@@ -111,7 +130,8 @@ export class ProductsController extends BaseController {
     @Res() res: Response,
   ) {
     if (withServicePrices == 'true') {
-      await this.productService.getProductWithServicePrices(id);
+      const productWithPrices = await this.productService.getProductWithServicePrices(id);
+      return res.status(HttpStatus.OK).json(productWithPrices);
     }
     const product = await this.productService.getProduct(id);
     return res.json(product);
@@ -128,5 +148,19 @@ export class ProductsController extends BaseController {
     if (deleted.success)
       return res.json({ message: 'Product deleted successfully.' });
     else return res.status(500).json({ message: 'Unable to delete product.' });
+  }
+
+  @Put(':id')
+  async updateProduct(
+    @Param('id', ParseIntPipe) id: number,
+    @Res() res: Response,
+    @Body() data: UpdateProductDto
+  ) {
+    const result = await this.productService.updateProduct2(id, data);
+    if (result.success) {
+      return res.status(HttpStatus.ACCEPTED).send();
+    } else {
+      return res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({ message: result.message });
+    }
   }
 }

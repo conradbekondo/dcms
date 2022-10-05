@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Inject,
@@ -16,7 +17,7 @@ import {
   UseFilters,
   UseGuards,
   UsePipes,
-  ValidationPipe
+  ValidationPipe,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Role } from 'src/decorators/role.decorator';
@@ -50,9 +51,19 @@ export class OrdersController extends BaseController {
     private readonly productsService: ProductsService,
     private readonly offeredServicesService: OfferedServicesService,
     private readonly orderService: OrdersService,
-    private readonly clientService: ClientsService
+    private readonly clientService: ClientsService,
   ) {
     super(appName, userService);
+  }
+
+  @Get('lookup')
+  async lookupOrder(
+    @Query('q') q: string,
+    @Query('size') size: string,
+    @Res() res: Response) {
+    const orders = await this.orderService.searchOrders(q, parseInt(size || '50'));
+    if (!orders || orders.length == 0) return res.status(HttpStatus.NOT_FOUND).json([]);
+    return res.status(HttpStatus.OK).json(orders);
   }
 
   @Get('/create')
@@ -60,11 +71,42 @@ export class OrdersController extends BaseController {
   async createOrderView() {
     this.viewBag.pageTitle = 'Create an Order';
     const categories = await this.categoriesService.getCategories();
-    const services = await this.offeredServicesService.getServices(0, 999999999999);
+    const services = await this.offeredServicesService.getServices(
+      0,
+      999999999999,
+    );
     const products = await this.productsService.getProducts();
     const clients = await this.clientService.getClients();
     const nextInvoiceId = await this.orderService.generateOrderCode();
-    return { data: { nextInvoiceId, clients, categories, services, products, newClientDto: new NewClientDto(), dto: new NewOrderDto() }, view: this.viewBag };
+    const recentOrders = await this.orderService.getRecentNLookupOrders(50);
+    return {
+      data: {
+        nextInvoiceId,
+        clients,
+        categories,
+        services,
+        products,
+        newClientDto: new NewClientDto(),
+        dto: new NewOrderDto(),
+        recentOrders
+      },
+      view: this.viewBag,
+    };
+  }
+
+  @Delete(':id')
+  async deleteOrder(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
+    const order = await this.orderService.getOrderById(id);
+    if (!order) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: `Order not found: ${id}` });
+    } else {
+      try {
+        await this.orderService.deleteOrderById(id);
+        res.status(HttpStatus.OK).send();
+      } catch ({ message }) {
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message });
+      }
+    }
   }
 
   @Get('order/:code')
@@ -79,7 +121,10 @@ export class OrdersController extends BaseController {
   }
 
   @Get('for_receipt/:id')
-  async getOrderForReceipt(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
+  async getOrderForReceipt(
+    @Param('id', ParseIntPipe) id: number,
+    @Res() res: Response,
+  ) {
     const order = await this.orderService.getOrderForReceipt(id);
     if (!order) {
       return res.status(HttpStatus.NOT_FOUND).send();
@@ -93,22 +138,33 @@ export class OrdersController extends BaseController {
     const dto = await this.orderService.getOrderForUpdate(id);
     if (dto) {
       return res.status(HttpStatus.OK).json({
-        invoice: dto
+        invoice: dto,
       });
     }
     return res.status(HttpStatus.NOT_FOUND).json({
-      text: `Order not found: ${id}`
+      text: `Order not found: ${id}`,
     });
   }
 
   @Put(':id')
-  async updateOrderInvoice(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateOrderInvoiceDto, @Res() res: Response) {
+  async updateOrderInvoice(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateOrderInvoiceDto,
+    @Res() res: Response,
+  ) {
     const result = await this.orderService.updateOrderInvoice(dto);
     if (result.success) {
       return res.status(HttpStatus.ACCEPTED).send();
     } else {
-      return res.status(HttpStatus.UNPROCESSABLE_ENTITY).send({ text: result.message });
+      return res
+        .status(HttpStatus.UNPROCESSABLE_ENTITY)
+        .send({ text: result.message });
     }
+  }
+
+  @Get('ping')
+  ping() {
+    return { ok: true };
   }
 
   @Post('/create')
@@ -118,7 +174,9 @@ export class OrdersController extends BaseController {
     if (result.success) {
       return res.status(HttpStatus.CREATED).send();
     } else {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: result.message });
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: result.message });
     }
   }
 
@@ -126,8 +184,6 @@ export class OrdersController extends BaseController {
   @Render('orders/orders')
   @UseFilters(BadQueryFilter)
   async viewOrders(
-    @Res() res: Response,
-    @Req() req: Request,
     @Query('startAt') startAt?: string,
     @Query('size') size?: string,
   ) {
