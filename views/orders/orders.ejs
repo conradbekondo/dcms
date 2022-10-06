@@ -24,28 +24,25 @@
                         <div class="row mb-4">
                             <div class="col-12 mb-4">
                                 <div class="card">
-                                    <div class="card-body">
+                                    <div class="card-body p-3">
                                         <div class="d-flex justify-content-around align-items-center">
                                             <!-- TODO: Add Query Filters -->
                                         </div>
-                                        <table class="table table-bordered table-stripped table-hover">
+                                        <table id="table" class="table-condensed table-striped table-bordered">
                                             <thead>
                                                 <tr class="w-100">
-                                                    <th>ID</th>
                                                     <th>Code</th>
                                                     <th>Customer</th>
-                                                    <th>Number of Services Used</th>
-                                                    <th>Number of Entries</th>
-                                                    <th>Tax</th>
+                                                    <th>Phone</th>
                                                     <th>Discount</th>
                                                     <th>Total</th>
-                                                    <th>Net Payable</th>
-                                                    <th>Amount Paid</th>
+                                                    <th title="Net Payable">Net.</th>
+                                                    <th>Paid</th>
                                                     <th>Outstanding</th>
-                                                    <th>Invoice Stauts</th>
-                                                    <th>Order Stauts</th>
-                                                    <th>Date Recorded</th>
-                                                    <th>Due Date</th>
+                                                    <th title="Invoice Status">Stauts (Inv.)</th>
+                                                    <th title="Order Status">Stauts (Ord.)</th>
+                                                    <th>Recorded on</th>
+                                                    <th>Due on</th>
                                                     <th>Recorded By</th>
                                                     <th></th>
                                                 </tr>
@@ -60,22 +57,13 @@ const currencyFormatter = new Intl.NumberFormat(['en-CM', 'fr-CM'], {style: 'cur
                                                     %>
                                                         <tr>
                                                             <td>
-                                                                <%= order.orderId %>
-                                                            </td>
-                                                            <td>
                                                                 <%= order.code %>
                                                             </td>
                                                             <td>
                                                                 <%= order.customer %>
                                                             </td>
                                                             <td>
-                                                                <%= numberFormatter.format(order.numberOfServices) %>
-                                                            </td>
-                                                            <td>
-                                                                <%= numberFormatter.format(order.numberOfEntries) %>
-                                                            </td>
-                                                            <td>
-                                                                <%= currencyFormatter.format(order.tax) %>
+                                                                <%= order.phone %>
                                                             </td>
                                                             <td>
                                                                 <%= currencyFormatter.format(order.discount) %>
@@ -132,52 +120,33 @@ const currencyFormatter = new Intl.NumberFormat(['en-CM', 'fr-CM'], {style: 'cur
                                                         </tr>
                                                         <%}) %>
                                             </tbody>
-                                            <tfoot>
-                                                <tr>
-                                                    <th class="text-right" colspan="9">
-                                                        <strong>Total: </strong>
-                                                    </th>
-                                                    <th class="<%= data.statistics.totalOutstanding > data.statistics.totalPaid ? 'bg-danger text-white' : 'text-white bg-success' %>">
-                                                        <%= currencyFormatter.format(data.statistics.totalPaid) %>
-                                                    </th>
-                                                    <th class="<%= data.statistics.totalOutstanding > data.statistics.totalPaid ? 'bg-danger text-white' : 'text-white bg-success' %>">
-                                                        <%= currencyFormatter.format(data.statistics.totalOutstanding) %>
-                                                    </th>
-                                                    <th colspan="7"></th>
-                                                </tr>
-                                                <tr>
-                                                    <th colspan="17">
-                                                        <div class="d-flex justify-content-center align-items-center">
-                                                            <nav>
-                                                                <ul class="pagination m-0 p-0 pagination-sm">
-                                                                    <% 
-                                                                    const sequence = Array.from({length: data.pageInfo.totalPages}, (_, i) => i);
-                                                                    const radius = 3;
-                                                                    %>
-                                                                        <% for(let i = 0; i < sequence.length;i++) {%>
-                                                                            <li class="page-item <%= data.pageInfo.pageIndex == i ? 'active' : '' %>">
-                                                                                <a href="/orders?startAt=<%= i %>&size=<%= data.pageInfo.requestedSize %>" class="page-link">
-                                                                                    <%= i+1 %>
-                                                                                </a>
-                                                                            </li>
-                                                                            <%}%>
-                                                                </ul>
-                                                            </nav>
-
-                                                        </div>
-                                                    </th>
-                                                </tr>
-                                                <tr>
-                                                    <th colspan="17">
-                                                        <div class="d-flex justify-content-center align-items-center text-center my-2">
-                                                            Showing <b class="mx-2">
-                                                          <%= ` ${numberFormatter.format(data.pageInfo.pageSize)} `%>
-                                                              </b> of <b class="mx-2"><%= ` ${numberFormatter.format(data.pageInfo.totalRecords)} ` %></b> records
-                                                        </div>
-                                                    </th>
-                                                </tr>
-                                            </tfoot>
                                         </table>
+                                        <!-- <div class="d-flex justify-content-center align-items-stretch my-3">
+                                            <div style="border-radius:10px;" class="border-primary text-primary border p-2  d-flex flex-column justify-content-stretch align-items-center">
+                                                <h3 class="mx-3 font-weight-bold">Today</h3>
+                                                <hr />
+                                                <div class="d-flex">
+                                                    <div class="mx-3">
+                                                        <span class="d-block">Sales</span>
+                                                        <p class="text-center font-weight-bold">
+                                                            <%= numberFormatter.format(parseInt(data.dayStats.todaySales)) %>
+                                                        </p>
+                                                    </div>
+                                                    <div class="mx-3">
+                                                        <span class="d-block">Total Paid</span>
+                                                        <p class="text-center font-weight-bold">
+                                                            <%= currencyFormatter.format(parseFloat(data.dayStats.totalPaid)) %>
+                                                        </p>
+                                                    </div>
+                                                    <div class="mx-3">
+                                                        <span class="d-block">Total Outstanding</span>
+                                                        <p class="text-center font-weight-bold">
+                                                            <%= currencyFormatter.format(parseFloat(data.dayStats.totalOutstanding)) %>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> -->
                                     </div>
                                 </div>
                             </div>

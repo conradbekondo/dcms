@@ -1,188 +1,181 @@
 <%- include('partials/head.ejs') %>
 
-  <body id="app-container" class="menu-default show-spinner">
-    <%- include('../partials/navbar.ejs') %>
-      <%- include('../partials/menu.ejs') %>
-        <main>
-          <div class="modal fade modal-right" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModal"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Add a new client</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <body id="app-container" class="menu-default show-spinner">
+        <%- include('../partials/navbar.ejs') %>
+            <%- include('../partials/menu.ejs') %>
+                <main>
+                    <div class="modal fade modal-right" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModal" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Add a new client</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
-                </div>
-                <form id="create_form" class="needs-validation">
-                  <div class="modal-body">
-                    <div id="savebtm_result" class="form-group text-success"></div>
-                    
-                    <div class="form-group">
-                      <label>First name <span class="text-danger error_lastname">*</span></label>
-                      <input type="text" class="form-control" placeholder="Client first name" name="first_name" id="first_name"
-                        required>
-                    </div>
-                    <div class="form-group">
-                      <label>Last name <span class="text-danger error_lastname">*</span></label>
-                      <input type="text" class="form-control" placeholder="Client last name" name="last_name" id="last_name"
-                        required>
-                    </div>
-                    <div class="form-group">
-                      <label>Phone number <span class="text-danger error_lastname">*</span></label>
-                      <input type="text" class="form-control" placeholder="Client phone number" name="phone" id="phone"
-                        required>
-                    </div>
-                    <div class="form-group">
-                      <label>Email address</label>
-                      <input type="email" name="email" id="email" class="form-control" placeholder="Client email address (optional)">
-                    </div>
-                    <div class="form-group">
-                      <label>Address (City, Street) <span class="text-danger error_lastname">*</span></label>
-                      <input type="text" class="form-control" placeholder="Address (City, Client)" name="address" id="address" required>
-                    </div>
+                                </div>
+                                <form id="create_form" class="needs-validation">
+                                    <div class="modal-body">
+                                        <div id="savebtm_result" class="form-group text-success"></div>
 
-                    <div class="error_validateclt text-danger"></div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-                    <button type="submit" id="savebtn" class="btn btn-primary">Save</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-          <div class="modal fade modal-right" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Update client</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <div class="form-group">
+                                            <label>First name <span class="text-danger error_lastname">*</span></label>
+                                            <input type="text" class="form-control" placeholder="Client first name" name="first_name" id="first_name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Last name <span class="text-danger error_lastname">*</span></label>
+                                            <input type="text" class="form-control" placeholder="Client last name" name="last_name" id="last_name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Phone number <span class="text-danger error_lastname">*</span></label>
+                                            <input type="text" class="form-control" placeholder="Client phone number" name="phone" id="phone" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Email address</label>
+                                            <input type="email" name="email" id="email" class="form-control" placeholder="Client email address (optional)">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Address (City, Street) <span class="text-danger error_lastname">*</span></label>
+                                            <input type="text" class="form-control" placeholder="Address (City, Client)" name="address" id="address" required>
+                                        </div>
+
+                                        <div class="error_validateclt text-danger"></div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                        <button type="submit" id="savebtn" class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade modal-right" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Update client</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
-                </div>
-                <form id="edit_form" class="needs-validation">
-                  <div class="modal-body">
-                    <div id="savebtm_result" class="form-group text-success"></div>
-                    <input type="hidden" name="id" id="id" value="">
+                                </div>
+                                <form id="edit_form" class="needs-validation">
+                                    <div class="modal-body">
+                                        <div id="savebtm_result" class="form-group text-success"></div>
+                                        <input type="hidden" name="id" id="id" value="">
 
-                    <div class="form-group">
-                      <label>First name <span class="text-danger error_lastname">*</span></label>
-                      <input type="text" class="form-control" placeholder="Client first name" name="first_name" id="first_name"
-                        required>
-                    </div>
-                    <div class="form-group">
-                      <label>Last name <span class="text-danger error_lastname">*</span></label>
-                      <input type="text" class="form-control" placeholder="Client last name" name="last_name" id="last_name"
-                        required>
-                    </div>
-                    <div class="form-group">
-                      <label>Phone number <span class="text-danger error_lastname">*</span></label>
-                      <input type="text" class="form-control" placeholder="Client phone number" name="phone" id="phone"
-                        required>
-                    </div>
-                    <div class="form-group">
-                      <label>Email address</label>
-                      <input type="email" name="email" id="email" class="form-control" placeholder="Client email address (optional)">
-                    </div>
-                    <div class="form-group">
-                      <label>Address (City, Street) <span class="text-danger error_lastname">*</span></label>
-                      <input type="text" class="form-control" placeholder="Address (City, Client)" name="address" id="address" required>
+                                        <div class="form-group">
+                                            <label>First name <span class="text-danger error_lastname">*</span></label>
+                                            <input type="text" class="form-control" placeholder="Client first name" name="first_name" id="first_name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Last name <span class="text-danger error_lastname">*</span></label>
+                                            <input type="text" class="form-control" placeholder="Client last name" name="last_name" id="last_name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Phone number <span class="text-danger error_lastname">*</span></label>
+                                            <input type="text" class="form-control" placeholder="Client phone number" name="phone" id="phone" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Email address</label>
+                                            <input type="email" name="email" id="email" class="form-control" placeholder="Client email address (optional)">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Address (City, Street) <span class="text-danger error_lastname">*</span></label>
+                                            <input type="text" class="form-control" placeholder="Address (City, Client)" name="address" id="address" required>
+                                        </div>
+
+                                        <div class="error_validateclt text-danger"></div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                                        <button type="submit" id="updatebtn" class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="error_validateclt text-danger"></div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-                    <button type="submit" id="updatebtn" class="btn btn-primary">Save</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-12">
-              <h1> Clients </h1>
-              <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
-                <ol class="breadcrumb pt-0">
-                  <li class="breadcrumb-item">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="static"
-                      data-target="#createModal">Add a new client
+                    <div class="row">
+                        <div class="col-12">
+                            <h1> Clients </h1>
+                            <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                                <ol class="breadcrumb pt-0">
+                                    <li class="breadcrumb-item">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-target="#createModal">Add a new client
                       <i class="glyph-icon simple-icon-plus"></i> </button>
-                  </li>
-                  <li class="breadcrumb-item">
-                    
-                  </li>
-                </ol>
-              </nav>
-              <div class="separator mb-1"></div>
-            </div>
-          </div>
+                                    </li>
+                                    <li class="breadcrumb-item">
 
-          <div class="row mb-4">
-            <div class="col-12 mb-4">
-              <div class="card">
-                <div class="card-body">
-                  <table id="table" class="table">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>First name</th>
-                        <th>Last name</th>
-                        <th>Phone</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th>N° Transactions</th>
-                        <th>Action(s)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <% data.clients.forEach(client=> { %>
-                        <tr data-id="<%= client.id %>">
-                          <td>
-                            <%= client.id %>
-                          </td>
-                          <td>
-                            <%= client.first_name %>
-                          </td>
-                          <td>
-                            <%= client.last_name %>
-                          </td>
-                          <td>
-                            <%= client.phone %>
-                          </td>
-                          <td>
-                            <%= client.email || 'N/A' %>
-                          </td>
-                          <td>
-                            <%= client.address %>
-                          </td>
-                          <td>
-                            <%= client.transactions || '0' %>
-                          </td>
-                          <td>
-                            <a href="#" class="btn btn-primary edit-btn" data-id="<%= client.id %>">
-                              <i class="glyph-icon simple-icon-pencil"></i>
-                            </a>
-                            <a href="#" class="btn btn-danger delete-btn" data-id="<%= client.id %>">
-                              <i class="glyph-icon simple-icon-trash"></i>
-                            </a>
-                          </td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-          </div>
+                                    </li>
+                                </ol>
+                            </nav>
+                            <div class="separator mb-1"></div>
+                        </div>
+                    </div>
 
-        </main>
-        <%- include('../partials/main-footer.ejs') %>
-          <%- include('partials/scripts.ejs') %>
-  </body>
+                    <div class="row mb-4">
+                        <div class="col-12 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <table id="table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>First name</th>
+                                                <th>Last name</th>
+                                                <th>Phone</th>
+                                                <th>Email</th>
+                                                <th>Address</th>
+                                                <th>N° Transactions</th>
+                                                <th>Action(s)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% data.clients.forEach(client=> { %>
+                                                <tr data-id="<%= client.id %>">
+                                                    <td>
+                                                        <%= client.id %>
+                                                    </td>
+                                                    <td>
+                                                        <%= client.first_name %>
+                                                    </td>
+                                                    <td>
+                                                        <%= client.last_name %>
+                                                    </td>
+                                                    <td>
+                                                        <%= client.phone %>
+                                                    </td>
+                                                    <td>
+                                                        <%= client.email || 'N/A' %>
+                                                    </td>
+                                                    <td>
+                                                        <%= client.address %>
+                                                    </td>
+                                                    <td>
+                                                        <%= client.transactions || '0' %>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <a href="#" class="btn btn-primary edit-btn" data-id="<%= client.id %>">
+                                                                <i class="glyph-icon simple-icon-pencil"></i>
+                                                            </a>
+                                                            <a href="#" class="btn btn-danger delete-btn" data-id="<%= client.id %>">
+                                                                <i class="glyph-icon simple-icon-trash"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
 
-  </html>
+                </main>
+                <%- include('../partials/main-footer.ejs') %>
+                    <%- include('partials/scripts.ejs') %>
+    </body>
+
+    </html>

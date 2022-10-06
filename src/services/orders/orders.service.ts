@@ -263,70 +263,21 @@ export class OrdersService {
     }
   }
 
-  async getOrdersAvailableForUser(startAt: number = 0, size: number = 50) {
+  async getOrdersAvailableForUser() {
     const dbUser = await this.userService.getCurrentUser();
     const hasElevatedPrivileges = dbUser.roles.some(
       (role) => role.roleName == Roles.ADMIN || role.roleName == Roles.SYSTEM,
     );
     const repo = this.dataSource.getRepository<OrdersView>(OrdersView);
-    let query: FindManyOptions<OrdersView> = {
-      skip: startAt * size,
-      take: size,
-    };
+    let query: FindManyOptions<OrdersView> = {};
 
     if (!hasElevatedPrivileges)
       query = {
         ...query,
         where: { ...(query.where || {}), recorderId: dbUser.id },
       };
-    let totalRecords: number;
-    if (query.where) {
-      totalRecords = await repo.count({
-        where: query.where || {},
-      });
-    } else {
-      totalRecords = await repo.count();
-    }
-    const totalPages = Math.ceil(totalRecords / size);
-    const firstPageIndex = 0;
-    const lastPageIndex = totalPages - 1;
-    const isFirstPage = startAt == 0;
-    const isLastPage = firstPageIndex == lastPageIndex;
-    let queryBuilder = repo
-      .createQueryBuilder()
-      .select('coalesce(sum(net_payable), 0)', 'totalPayable')
-      .addSelect('coalesce(sum(amount_paid), 0)', 'totalPaid')
-      .addSelect(
-        'coalesce((select sum(balance) from vw_orders where balance >= 0), 0)',
-        'totalOutstanding',
-      );
-    if (!hasElevatedPrivileges) {
-      queryBuilder = queryBuilder.where('recorder_id = :id', { id: dbUser.id });
-    }
-    let statistics = await queryBuilder.getRawOne<{
-      totalPayable: string;
-      totalPaid: string;
-      totalOutstanding: string;
-    }>();
-
     const orders = await repo.find(query);
-    return {
-      orders,
-      statistics: {
-        totalPayable: parseFloat(statistics.totalPayable),
-        totalPaid: parseFloat(statistics.totalPaid),
-        totalOutstanding: parseFloat(statistics.totalOutstanding),
-      },
-      pageInfo: {
-        totalRecords,
-        pageIndex: startAt,
-        pageSize: orders.length,
-        requestedSize: size,
-        totalPages,
-        isFirstPage,
-        isLastPage,
-      },
-    };
+    return orders;
   }
 
   async getOrderForUpdate(_id: string | number) {
@@ -544,5 +495,24 @@ export class OrdersService {
         })`,
       };
     });
+  }
+
+  async getGeneralDayStats() {
+    const stats = await this.dataSource.query(`select (select coalesce(sum(balance), 0) from invoices where balance > 0 and  last_updated > curdate() and last_updated < date_add(now(), interval 1 day)) as totalOutstanding,
+      (select coalesce(sum(amount_paid), 0) from invoices where last_updated > curdate() and last_updated < date_add(now(), interval 1 day)) as totalPaid,
+      (select coalesce(count(*), 0) from orders where last_updated > curdate() and last_updated < date_add(now(), interval 1 day)) as todaySales`);
+    return stats[0];
+  }
+
+  async getDayStats() {
+    const currentUser = await this.userService.getCurrentUser();
+    if (await this.userService.isUserInRoles([Roles.ADMIN, Roles.SYSTEM], currentUser.username)) {
+      return await this.getGeneralDayStats();
+    }
+    const stats = await this.dataSource.query(`select (select sum(balance) from invoices where balance > 0 and last_updated > curdate() and last_updated < date_add(now(), interval 1 day) and recorded_by_id = ${currentUser.id}) as totalOutstanding,
+    (select sum(amount_paid) from invoices where last_updated > curdate() and last_updated , date_add(now(), interval 1 day) and recorded_by_id = ${currentUser.id}) as totalPaid,
+    (select count(*) from orders where last_updated > curdate() and last_updated , date_add(now(), interval 1 day) and recorder_id = ${currentUser.id})`);
+
+    return stats[0];
   }
 }

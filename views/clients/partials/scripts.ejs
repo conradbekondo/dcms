@@ -7,9 +7,13 @@
 <script src="/static/js/scripts.js"></script>
 <script src="/static/js/vendor/bootstrap-notify.min.js" style="opacity: 1;"></script>
 <script src="/static/js/sweetalert.min.js"></script>
+<script src="/static/js/vendor/datatables.min.js"></script>
 <script>
+    $(document).ready(function() {
+        $('#table').DataTable();
+    });
     $('#create_form').submit(function(e) {
-        e.preventDefault()
+        e.preventDefault();
 
         const data = {
             first_name: $('#create_form #first_name').val(),

@@ -1,5 +1,6 @@
-import { Column, Entity, Index } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from './base.entity';
+import { User } from './user.entity';
 
 @Entity('clients')
 export class Client extends BaseEntity {
@@ -21,5 +22,12 @@ export class Client extends BaseEntity {
 
   @Column({ nullable: false })
   @Index({ fulltext: true })
-  address: string;
+  address: string;/* 
+
+  @Column({ nullable: true })
+  addedById: number;
+
+  @ManyToOne(() => User, { eager: false })
+  @JoinColumn({ name: 'added_by_id' })
+  addedBy: User; */
 }

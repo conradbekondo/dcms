@@ -8,6 +8,7 @@
 <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
 <script src="/static/js/sweetalert.min.js"></script>
 <script src="/static/js/vendor/jquery.validate/jquery.validate.min.js"></script>
+<script src="/static/js/vendor/datatables.min.js"></script>
 <script>
     const services = [];
 
@@ -42,7 +43,7 @@
         $('#update_form').validate({
             errorClass: 'text-danger d-block'
         });
-
+        $('#table').DataTable();
         $('#table .edit-btn').each(function() {
             const button = $(this);
             button.click(function(e) {

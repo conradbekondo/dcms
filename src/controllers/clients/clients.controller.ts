@@ -38,7 +38,7 @@ export class ClientsController extends BaseController {
     usersService: UsersService,
   ) {
     super(appName, usersService);
-  }
+  } 
 
   @Get()
   @Render('clients/clients')

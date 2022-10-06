@@ -84,8 +84,10 @@ export class OrdersController extends BaseController {
     const clients = await this.clientService.getClients();
     const nextInvoiceId = await this.orderService.generateOrderCode();
     const recentOrders = await this.orderService.getRecentNLookupOrders(50);
+    const stats = await this.orderService.getDayStats();
     return {
       data: {
+        dayStats: stats,
         nextInvoiceId,
         clients,
         categories,
@@ -193,22 +195,10 @@ export class OrdersController extends BaseController {
   @Get()
   @Render('orders/orders')
   @UseFilters(BadQueryFilter)
-  async viewOrders(
-    @Query('startAt') startAt?: string,
-    @Query('size') size?: string,
-  ) {
-    if (!startAt || !size) {
-      throw new BadQueryParamsException({
-        startAt: startAt || 0,
-        size: size || 50,
-      });
-    }
-
+  async viewOrders() {
     this.viewBag.pageTitle = 'All Orders';
-    const pageInfo = await this.orderService.getOrdersAvailableForUser(
-      parseInt(startAt),
-      parseInt(size),
-    );
-    return { data: pageInfo, view: this.viewBag };
+    const orders = await this.orderService.getOrdersAvailableForUser();
+    const stats = await this.orderService.getDayStats();
+    return { data: { dayStats: stats, orders }, view: this.viewBag };
   }
 }
