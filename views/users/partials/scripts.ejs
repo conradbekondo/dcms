@@ -229,6 +229,7 @@
                 method: 'POST',
                 data,
                 success: (res) => {
+                    const url = new URL(location.href);
                     url.searchParams.delete('new-user-form-open');
                     const newUrl = url.toString();
                     history.replaceState({

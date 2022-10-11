@@ -6,7 +6,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { I18nModule } from 'nestjs-i18n';
 import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { BackupController } from './backup/backup.controller';
+import { SettingsController } from './backup/settings.controller';
 import { CategoriesController } from './controllers/categories/categories.controller';
 import { ClientsController } from './controllers/clients/clients.controller';
 import { LangController } from './controllers/lang/lang.controller';
@@ -44,6 +44,7 @@ import { OfferedServicesService } from './services/offered-services/offered-serv
 import { OrdersService } from './services/orders/orders.service';
 import { ProductsService } from './services/products/products.service';
 import { UsersService } from './services/users/users.service';
+import { ConfigService } from './services/config/config.service';
 
 const options: TypeOrmModuleOptions = {
   type: 'mysql',
@@ -80,20 +81,14 @@ const options: TypeOrmModuleOptions = {
   imports: [
     TypeOrmModule.forRoot(options),
     ServeStaticModule.forRoot({
-      rootPath:
-        process.env.NODE_ENV === 'development'
-          ? join(process.cwd(), 'public')
-          : join(process.cwd(), 'resources', 'public'),
+      rootPath: join(process.env.RESOURCE_PATH, 'public'),
       serveRoot: '/static',
     }),
     JwtModule.register({ secret: process.env.E_KEY }),
     I18nModule.forRoot({
       fallbackLanguage: process.env.SYSTEM_LANG || 'en',
       loaderOptions: {
-        path:
-          process.env.NODE_ENV === 'development'
-            ? join(__dirname, 'i18n')
-            : join(process.cwd(), 'resources', 'dist', 'i18n'),
+        path: join(process.env.RESOURCE_PATH, 'dist', 'i18n'),
         watch: true,
       },
     }),
@@ -109,7 +104,7 @@ const options: TypeOrmModuleOptions = {
     ServicesController,
     UsersController,
     LangController,
-    BackupController,
+    SettingsController,
   ],
   providers: [
     UsersService,
@@ -142,6 +137,7 @@ const options: TypeOrmModuleOptions = {
     CategoriesService,
     ClientsService,
     ProductsService,
+    ConfigService,
   ],
 })
 export class AppModule {

@@ -1,0 +1,71 @@
+<%- include('partials/head.ejs') %>
+
+    <body id="app-container" class="menu-default show-spinner">
+        <%- include('../partials/navbar.ejs') %>
+            <%- include('../partials/menu.ejs') %>
+                <main>
+                    <div class="container-fluid disable-text-selection">
+                        <div class="row">
+                            <div class="col-12">
+                                <h1>
+                                    <%= view.pageTitle %>
+                                </h1>
+                            </div>
+                            <div class="separator mb-5"></div>
+                        </div>
+                        <form method="post" id="configForm">
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <h3 class="mb-3">Company Information</h3>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="companyName">Company Name</label>
+                                                <input required value="<%= data.companyName %>" type="text" class="form-control" id="companyName" name="companyName">
+                                            </div>
+                                            <div class="form-group form-inline">
+                                                <div class="col-6 p-0">
+                                                    <label class="d-block text-left" for="contactPhone">Phone</label>
+                                                    <input value="<%= data.contact.phone %>" type="phone" id="contactPhone" class="form-control" name="phone">
+                                                </div>
+                                                <div class="col-6 pl-2">
+                                                    <label class="text-left d-block" for="contactEmail">Email</label>
+                                                    <input value="<%= data.contact.email %>" type="email" id="contactEmail" class="form-control" name="email">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="address">Address</label>
+                                                <input value="<%= data.address %>" type="text" id="address" name="address" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-6 d-flex justify-content-center">
+                                            <div class="form-group">
+                                                <input hidden id="fileSelect" type="file" accept="image/*">
+                                                <input value="<%= data.logoUrl ? data.logoUrl : '/static/img/placeholder-image.png'%>" hidden id="logo" name="logoUrl" type="text">
+                                                <figure class="figure d-flex justify-content-center">
+                                                    <img style="border-radius: 5px" width="128" height="128" class="rounded" id="displayLogo" src="<%= data.logoUrl ? data.logoUrl : '/static/img/placeholder-image.png' %>">
+                                                </figure>
+                                                <div class="btn-group d-flex justify-content-center">
+                                                    <button type="button" id="iconSelect" class="btn btn-outline-primary btn-sm" title="Select Icon"><i class="fa-solid fa-folder-open"></i></button>
+                                                    <button type="button" id="iconDelete" class="btn btn-outline-danger btn-sm" title="Remove Icon"><i class="fa-solid fa-trash"></i> </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 d-flex justify-content-end align-items-center">
+                                            <button class="btn btn-success"><i class="fa-solid fa-save"></i> Save Changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6"></div>
+                            </div>
+                        </form>
+                    </div>
+
+                </main>
+                <%- include('../partials/main-footer.ejs') %>
+                    <%- include('partials/scripts.ejs') %>
+    </body>
+
+    </html>

@@ -22,7 +22,7 @@ export class Client extends BaseEntity {
 
   @Column({ nullable: false })
   @Index({ fulltext: true })
-  address: string;/* 
+  address: string; /* 
 
   @Column({ nullable: true })
   addedById: number;

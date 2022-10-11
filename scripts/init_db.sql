@@ -10,7 +10,6 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema dcms
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `dcms` ;
 
 -- -----------------------------------------------------
 -- Schema dcms
@@ -21,8 +20,6 @@ USE `dcms` ;
 -- -----------------------------------------------------
 -- Table `dcms`.`profiles`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`profiles` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`profiles` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -34,9 +31,15 @@ CREATE TABLE IF NOT EXISTS `dcms`.`profiles` (
   `gender` INT NOT NULL DEFAULT '0',
   `notes` VARCHAR(500) NULL DEFAULT NULL,
   `address` VARCHAR(255) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`))
+  PRIMARY KEY (`id`),
+  FULLTEXT INDEX `IDX_a310e66b244a9b755a73fb35e0` (`first_name`) VISIBLE,
+  FULLTEXT INDEX `IDX_9d3c5e5c4a1b53a630ac666070` (`last_name`) VISIBLE,
+  FULLTEXT INDEX `IDX_b4914d605fd119c1046868effc` (`phone_number`) VISIBLE,
+  FULLTEXT INDEX `IDX_ecbe090acc27b0076222e272ad` (`nat_id`) VISIBLE,
+  FULLTEXT INDEX `IDX_6bb783ed1de0c389eeedb6c219` (`notes`) VISIBLE,
+  FULLTEXT INDEX `IDX_2b72980cc3493eaf692293c288` (`address`) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 3
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -44,8 +47,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`users`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`users` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -67,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `dcms`.`users` (
     FOREIGN KEY (`creator_id`)
     REFERENCES `dcms`.`users` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 3
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -75,8 +76,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`services`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`services` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`services` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -91,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `dcms`.`services` (
     FOREIGN KEY (`created_by`)
     REFERENCES `dcms`.`users` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 5
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -99,8 +98,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`clients`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`clients` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`clients` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -111,9 +108,13 @@ CREATE TABLE IF NOT EXISTS `dcms`.`clients` (
   `email` VARCHAR(255) NULL DEFAULT NULL,
   `address` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `IDX_aa22377d7d3e794ae4cd39cd9e` (`phone` ASC) VISIBLE)
+  UNIQUE INDEX `IDX_aa22377d7d3e794ae4cd39cd9e` (`phone` ASC) VISIBLE,
+  FULLTEXT INDEX `IDX_cfa8dd4f736cb38afb469fc09d` (`first_name`) VISIBLE,
+  FULLTEXT INDEX `IDX_3567e933b1eef4720d92e9af2e` (`last_name`) VISIBLE,
+  FULLTEXT INDEX `IDX_b48860677afe62cd96e1265948` (`email`) VISIBLE,
+  FULLTEXT INDEX `IDX_663ef24cff96c52e43d3148f29` (`address`) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 4
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -121,8 +122,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`orders`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`orders` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`orders` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -137,6 +136,7 @@ CREATE TABLE IF NOT EXISTS `dcms`.`orders` (
   UNIQUE INDEX `IDX_3e413c10c595c04c6c70e58a4d` (`code` ASC) VISIBLE,
   INDEX `FK_772d0ce0473ac2ccfa26060dbe9` (`customer_id` ASC) VISIBLE,
   INDEX `FK_8205d9bff228912ad5ac7d6b658` (`recorder_id` ASC) VISIBLE,
+  FULLTEXT INDEX `IDX_6d111140745b1d64f2cdb7bbcc` (`description`) VISIBLE,
   CONSTRAINT `FK_772d0ce0473ac2ccfa26060dbe9`
     FOREIGN KEY (`customer_id`)
     REFERENCES `dcms`.`clients` (`id`),
@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS `dcms`.`orders` (
     FOREIGN KEY (`recorder_id`)
     REFERENCES `dcms`.`users` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 29
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -152,8 +152,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`categories`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`categories` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`categories` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -163,7 +161,7 @@ CREATE TABLE IF NOT EXISTS `dcms`.`categories` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `IDX_8b0be371d28245da6e4f4b6187` (`name` ASC) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 3
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -171,8 +169,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`products`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`products` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`products` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -187,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `dcms`.`products` (
     FOREIGN KEY (`category_id`)
     REFERENCES `dcms`.`categories` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 5
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -195,8 +191,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`order_entries`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`order_entries` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`order_entries` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -219,7 +213,7 @@ CREATE TABLE IF NOT EXISTS `dcms`.`order_entries` (
     FOREIGN KEY (`product_id`)
     REFERENCES `dcms`.`products` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 38
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -227,8 +221,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`order_entry_attributes`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`order_entry_attributes` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`order_entry_attributes` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -237,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `dcms`.`order_entry_attributes` (
   `value` VARCHAR(255) NULL DEFAULT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 38
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -245,8 +237,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`attached_order_entry_attributes`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`attached_order_entry_attributes` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`attached_order_entry_attributes` (
   `order_entry_id` INT NOT NULL,
   `attribute_id` INT NOT NULL,
@@ -271,8 +261,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`invoices`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`invoices` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`invoices` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -291,6 +279,7 @@ CREATE TABLE IF NOT EXISTS `dcms`.`invoices` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `REL_ea83c3b911906a3578de2340fd` (`order_id` ASC) VISIBLE,
   INDEX `FK_50e8efae79fdbdcf045b33258b7` (`recorded_by_id` ASC) VISIBLE,
+  FULLTEXT INDEX `IDX_18792501f742727ef576298f7f` (`payment_type`) VISIBLE,
   CONSTRAINT `FK_50e8efae79fdbdcf045b33258b7`
     FOREIGN KEY (`recorded_by_id`)
     REFERENCES `dcms`.`users` (`id`),
@@ -298,7 +287,7 @@ CREATE TABLE IF NOT EXISTS `dcms`.`invoices` (
     FOREIGN KEY (`order_id`)
     REFERENCES `dcms`.`orders` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 29
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -306,8 +295,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`invoice_items`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`invoice_items` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`invoice_items` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -319,13 +306,14 @@ CREATE TABLE IF NOT EXISTS `dcms`.`invoice_items` (
   `product_name` VARCHAR(255) NOT NULL,
   `service_name` VARCHAR(255) NOT NULL,
   `quantity` INT NOT NULL DEFAULT '1',
+  `service_price_snapshot` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `FK_dc991d555664682cfe892eea2c1` (`invoice_id` ASC) VISIBLE,
   CONSTRAINT `FK_dc991d555664682cfe892eea2c1`
     FOREIGN KEY (`invoice_id`)
     REFERENCES `dcms`.`invoices` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 37
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -333,8 +321,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`invoice_item_additional_services`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`invoice_item_additional_services` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`invoice_item_additional_services` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -350,7 +336,7 @@ CREATE TABLE IF NOT EXISTS `dcms`.`invoice_item_additional_services` (
     FOREIGN KEY (`invoice_item_id`)
     REFERENCES `dcms`.`invoice_items` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 55
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -358,8 +344,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`product_prices`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`product_prices` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`product_prices` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -378,7 +362,7 @@ CREATE TABLE IF NOT EXISTS `dcms`.`product_prices` (
     FOREIGN KEY (`product_id`)
     REFERENCES `dcms`.`products` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 20
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -386,8 +370,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`roles`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`roles` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`roles` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -396,7 +378,7 @@ CREATE TABLE IF NOT EXISTS `dcms`.`roles` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `IDX_ac35f51a0f17e3e1fe12112603` (`role_name` ASC) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 4
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -404,8 +386,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`typeorm_metadata`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`typeorm_metadata` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`typeorm_metadata` (
   `type` VARCHAR(255) NOT NULL,
   `database` VARCHAR(255) NULL DEFAULT NULL,
@@ -421,8 +401,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`user_logins`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`user_logins` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`user_logins` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date_created` TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -434,7 +412,7 @@ CREATE TABLE IF NOT EXISTS `dcms`.`user_logins` (
     FOREIGN KEY (`user_id`)
     REFERENCES `dcms`.`users` (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 10
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -442,8 +420,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `dcms`.`user_roles`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `dcms`.`user_roles` ;
-
 CREATE TABLE IF NOT EXISTS `dcms`.`user_roles` (
   `user_id` INT NOT NULL,
   `role_id` INT NOT NULL,
@@ -474,13 +450,12 @@ CREATE TABLE IF NOT EXISTS `dcms`.`priced_categories_view` (`product_id` INT, `c
 -- -----------------------------------------------------
 -- Placeholder table for view `dcms`.`vw_orders`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `dcms`.`vw_orders` (`total` INT, `balance` INT, `tax` INT, `discount` INT, `invoice_status` INT, `order_id` INT, `code` INT, `order_status` INT, `recorder_id` INT, `customer` INT, `number_of_services` INT, `number_of_entries` INT, `description` INT, `net_payable` INT, `amount_paid` INT, `date_recorded` INT, `due_date` INT, `recorded_by` INT);
+CREATE TABLE IF NOT EXISTS `dcms`.`vw_orders` (`total` INT, `balance` INT, `tax` INT, `discount` INT, `invoice_status` INT, `order_id` INT, `code` INT, `order_status` INT, `recorder_id` INT, `customer` INT, `phone` INT, `number_of_services` INT, `number_of_entries` INT, `description` INT, `net_payable` INT, `amount_paid` INT, `date_recorded` INT, `due_date` INT, `recorded_by` INT);
 
 -- -----------------------------------------------------
 -- View `dcms`.`priced_categories_view`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `dcms`.`priced_categories_view`;
-DROP VIEW IF EXISTS `dcms`.`priced_categories_view` ;
 USE `dcms`;
 CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `dcms`.`priced_categories_view` AS select `p`.`id` AS `product_id`,`c`.`id` AS `category_id`,`c`.`name` AS `category_name`,`p`.`icon_url` AS `icon_url`,`pp`.`fast_price` AS `fast_price`,`pp`.`normal_price` AS `normal_price`,`pp`.`date_created` AS `pricing_date` from (((`dcms`.`product_prices` `pp` join `dcms`.`products` `p` on((`p`.`id` = `pp`.`product_id`))) join `dcms`.`services` `s` on((`s`.`id` = `pp`.`service_id`))) left join `dcms`.`categories` `c` on((`c`.`id` = `p`.`category_id`))) group by `c`.`id`,`p`.`id`,`s`.`id`;
 
@@ -488,13 +463,13 @@ CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY D
 -- View `dcms`.`vw_orders`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `dcms`.`vw_orders`;
-DROP VIEW IF EXISTS `dcms`.`vw_orders` ;
 USE `dcms`;
-CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `dcms`.`vw_orders` AS select `i`.`total` AS `total`,`i`.`balance` AS `balance`,`i`.`tax` AS `tax`,`i`.`discount` AS `discount`,`i`.`status` AS `invoice_status`,`o`.`id` AS `order_id`,`o`.`code` AS `code`,`o`.`status` AS `order_status`,`u`.`id` AS `recorder_id`,trim(concat(`c`.`first_name`,' ',coalesce(`c`.`last_name`,''))) AS `customer`,(select ((select count(0) from `dcms`.`invoice_item_additional_services` `iias` where (`iias`.`invoice_id` = `i`.`id`)) + 1)) AS `number_of_services`,(select (select count(`oe`.`quantity`) from `dcms`.`order_entries` `oe` where (`oe`.`order_id` = `o`.`id`))) AS `number_of_entries`,coalesce(`o`.`description`,'N / A') AS `description`,`i`.`net_payable` AS `net_payable`,`i`.`amount_paid` AS `amount_paid`,`i`.`date_created` AS `date_recorded`,`i`.`due_date` AS `due_date`,trim(concat(`p`.`first_name`,' ',coalesce(`p`.`last_name`,''))) AS `recorded_by` from ((((`dcms`.`invoices` `i` join `dcms`.`orders` `o` on((`i`.`order_id` = `o`.`id`))) join `dcms`.`clients` `c` on((`c`.`id` = `o`.`customer_id`))) left join `dcms`.`users` `u` on((`u`.`id` = `i`.`recorded_by_id`))) left join `dcms`.`profiles` `p` on((`p`.`id` = `u`.`profile_id`))) order by `i`.`date_created` desc;
+CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `dcms`.`vw_orders` AS select `i`.`total` AS `total`,`i`.`balance` AS `balance`,`i`.`tax` AS `tax`,`i`.`discount` AS `discount`,`i`.`status` AS `invoice_status`,`o`.`id` AS `order_id`,`o`.`code` AS `code`,`o`.`status` AS `order_status`,`u`.`id` AS `recorder_id`,trim(concat(`c`.`first_name`,' ',coalesce(`c`.`last_name`,''))) AS `customer`,coalesce(`c`.`phone`,'N/A') AS `phone`,(select ((select count(0) from `dcms`.`invoice_item_additional_services` `iias` where (`iias`.`invoice_id` = `i`.`id`)) + 1)) AS `number_of_services`,(select (select count(`oe`.`quantity`) from `dcms`.`order_entries` `oe` where (`oe`.`order_id` = `o`.`id`))) AS `number_of_entries`,coalesce(`o`.`description`,'N / A') AS `description`,`i`.`net_payable` AS `net_payable`,`i`.`amount_paid` AS `amount_paid`,`i`.`date_created` AS `date_recorded`,`i`.`due_date` AS `due_date`,trim(concat(`p`.`first_name`,' ',coalesce(`p`.`last_name`,''))) AS `recorded_by` from ((((`dcms`.`invoices` `i` join `dcms`.`orders` `o` on((`i`.`order_id` = `o`.`id`))) join `dcms`.`clients` `c` on((`c`.`id` = `o`.`customer_id`))) left join `dcms`.`users` `u` on((`u`.`id` = `i`.`recorded_by_id`))) left join `dcms`.`profiles` `p` on((`p`.`id` = `u`.`profile_id`))) order by `i`.`date_created` desc;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
 
 -- -----------------------------------------------------
 -- Data for table `dcms`.`roles`

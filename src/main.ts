@@ -1,10 +1,16 @@
 import { config } from 'dotenv';
 import { join } from 'path';
+if (!process.env.RESOURCE_PATH) {
+  process.env.RESOURCE_PATH =
+    process.env.NODE_ENV === 'development'
+      ? process.cwd()
+      : join(process.cwd(), 'resources');
+}
 config({
   path:
     process.env.NODE_ENV === 'development'
-      ? join(process.cwd(), `.${process.env.NODE_ENV}.env`)
-      : join(process.cwd(), 'resources', `.production.env`),
+      ? join(process.env.RESOURCE_PATH, `.${process.env.NODE_ENV}.env`)
+      : join(process.env.RESOURCE_PATH, `.production.env`),
 });
 
 import { NestFactory } from '@nestjs/core';
@@ -21,16 +27,8 @@ export function bootstrap() {
     tap((app) => {
       app.enableCors();
       // app.use('/static', express.static(join(process.cwd(), 'public')))
-      app.useStaticAssets(
-        process.env.NODE_ENV === 'development'
-          ? join(process.cwd(), 'public')
-          : join(process.cwd(), 'resources', 'public'),
-      );
-      app.setBaseViewsDir(
-        process.env.NODE_ENV === 'development'
-          ? join(process.cwd(), 'views')
-          : join(process.cwd(), 'resources', 'views'),
-      );
+      app.useStaticAssets(join(process.env.RESOURCE_PATH, 'public'));
+      app.setBaseViewsDir(join(process.env.RESOURCE_PATH, 'views'));
       app.useGlobalFilters(
         new ServerErrorFilter(),
         new AuthFailedFilter(),

@@ -11,27 +11,25 @@ import {
   Post,
   Put,
   Query,
-  Render,
-  Req,
-  Res,
+  Render, Res,
   UseFilters,
   UseGuards,
   UsePipes,
-  ValidationPipe,
+  ValidationPipe
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { Role } from 'src/decorators/role.decorator';
 import { NewClientDto } from 'src/dto/cleint.dto';
 import { NewOrderDto } from 'src/dto/new-order.dto';
 import { UpdateOrderInvoiceDto } from 'src/dto/update-order-invoice.dto';
 import { Roles } from 'src/entities/roles';
-import { BadQueryParamsException } from 'src/exceptions/bad-query.exception';
 import { BadQueryFilter } from 'src/filters/bad-query.filter';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { RoleGuard } from 'src/guards/auth/role.guard';
 import injectionTokenKeys from 'src/injection-tokens';
 import { CategoriesService } from 'src/services/categories/categories.service';
 import { ClientsService } from 'src/services/clients/clients.service';
+import { ConfigService } from 'src/services/config/config.service';
 import { OfferedServicesService } from 'src/services/offered-services/offered-services.service';
 import { OrdersService } from 'src/services/orders/orders.service';
 import { ProductsService } from 'src/services/products/products.service';
@@ -52,6 +50,7 @@ export class OrdersController extends BaseController {
     private readonly offeredServicesService: OfferedServicesService,
     private readonly orderService: OrdersService,
     private readonly clientService: ClientsService,
+    private readonly configService: ConfigService,
   ) {
     super(appName, userService);
   }
@@ -93,6 +92,7 @@ export class OrdersController extends BaseController {
         categories,
         services,
         products,
+        config: this.configService.config,
         newClientDto: new NewClientDto(),
         dto: new NewOrderDto(),
         recentOrders,
@@ -199,6 +199,6 @@ export class OrdersController extends BaseController {
     this.viewBag.pageTitle = 'All Orders';
     const orders = await this.orderService.getOrdersAvailableForUser();
     const stats = await this.orderService.getDayStats();
-    return { data: { dayStats: stats, orders }, view: this.viewBag };
+    return { data: { config: this.configService.config, dayStats: stats, orders }, view: this.viewBag };
   }
 }

@@ -498,20 +498,27 @@ export class OrdersService {
   }
 
   async getGeneralDayStats() {
-    const stats = await this.dataSource.query(`select (select coalesce(sum(balance), 0) from invoices where balance > 0 and  last_updated > curdate() and last_updated < date_add(now(), interval 1 day)) as totalOutstanding,
-      (select coalesce(sum(amount_paid), 0) from invoices where last_updated > curdate() and last_updated < date_add(now(), interval 1 day)) as totalPaid,
-      (select coalesce(count(*), 0) from orders where last_updated > curdate() and last_updated < date_add(now(), interval 1 day)) as todaySales`);
+    const stats = await this.dataSource
+      .query(`select (select coalesce(sum(balance), 0) from invoices where balance > 0 and  last_updated > curdate() and last_updated <= date_add(now(), interval 1 day)) as totalOutstanding,
+      (select coalesce(sum(amount_paid), 0) from invoices where last_updated > curdate() and last_updated <= date_add(now(), interval 1 day)) as totalPaid,
+      (select coalesce(count(*), 0) from orders where last_updated > curdate() and last_updated <= date_add(now(), interval 1 day)) as todaySales`);
     return stats[0];
   }
 
   async getDayStats() {
     const currentUser = await this.userService.getCurrentUser();
-    if (await this.userService.isUserInRoles([Roles.ADMIN, Roles.SYSTEM], currentUser.username)) {
+    if (
+      await this.userService.isUserInRoles(
+        [Roles.ADMIN, Roles.SYSTEM],
+        currentUser.username,
+      )
+    ) {
       return await this.getGeneralDayStats();
     }
-    const stats = await this.dataSource.query(`select (select sum(balance) from invoices where balance > 0 and last_updated > curdate() and last_updated < date_add(now(), interval 1 day) and recorded_by_id = ${currentUser.id}) as totalOutstanding,
-    (select sum(amount_paid) from invoices where last_updated > curdate() and last_updated , date_add(now(), interval 1 day) and recorded_by_id = ${currentUser.id}) as totalPaid,
-    (select count(*) from orders where last_updated > curdate() and last_updated , date_add(now(), interval 1 day) and recorder_id = ${currentUser.id})`);
+    const stats = await this.dataSource
+      .query(`select (select coalesce(sum(balance), 0) from invoices where balance > 0 and last_updated > curdate() and last_updated <= date_add(now(), interval 1 day) and recorded_by_id = ${currentUser.id}) as totalOutstanding,
+    (select coalesce(sum(amount_paid), 0) from invoices where last_updated > curdate() and last_updated <= date_add(now(), interval 1 day) and recorded_by_id = ${currentUser.id}) as totalPaid,
+    (select coalesce(count(*), 0) from orders where last_updated > curdate() and last_updated <= date_add(now(), interval 1 day) and recorder_id = ${currentUser.id}) as todaySales`);
 
     return stats[0];
   }

@@ -1,0 +1,79 @@
+<script src="/static/js/vendor/jquery-3.3.1.min.js"></script>
+<script src="/static/js/vendor/bootstrap.bundle.min.js"></script>
+<script src="/static/js/vendor/perfect-scrollbar.min.js"></script>
+<script src="/static/js/vendor/mousetrap.min.js"></script>
+<script src="/static/js/vendor/jquery.contextMenu.min.js"></script>
+<script src="/static/js/dore.script.js"></script>
+<script src="/static/js/scripts.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+<script src="/static/js/sweetalert.min.js"></script>
+<script src="/static/js/vendor/jquery.validate/jquery.validate.min.js"></script>
+<script src="/static/js/vendor/datatables.min.js"></script>
+<script>
+    const placeholderUrl = '/static/img/placeholder-image.png';
+    $(document).ready(function() {
+        $('#configForm').validate({
+            errorClass: 'text-danger d-block'
+        });
+
+        $('#configForm').submit(function(e) {
+            e.preventDefault();
+            const logo = $('#logo').val();
+            const data = {
+                companyName: $('#companyName').val(),
+                logoUrl: logo === placeholderUrl ? null : logo,
+                contact: {
+                    phone: $('#contactPhone').val(),
+                    email: $('#contactEmail').val(),
+                },
+                address: $('#address').val()
+            };
+
+            $.ajax({
+                method: 'POST',
+                url: '/settings',
+                data,
+                success: () => {
+                    Swal.fire(
+                        'Success',
+                        'Settings updated successfully',
+                        'success'
+                    ).then(() => location.reload());
+                },
+                error: err => {
+                    Swal.fire(
+                        'Error',
+                        ((err.responseJSON || {}).message) || err.statusText,
+                        'error'
+                    );
+                }
+            })
+        });
+
+        $('#iconSelect').click(function(e) {
+            $('#fileSelect').click();
+        });
+
+        $('#iconDelete').click(function(e) {
+            $('#displayLogo').attr('src', '/static/img/placeholder-image.png');
+            $('#logo').val(null);
+        });
+
+        $('#fileSelect').on('change', async function(e) {
+            const iconFile = this.files[0];
+            const dataUrl = await toBase64Image(iconFile);
+            $('#logo').val(dataUrl);
+            $('#displayLogo').attr('src', dataUrl);
+            this.files = null;
+        });
+    });
+
+    function toBase64Image(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+</script>

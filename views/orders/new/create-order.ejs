@@ -16,7 +16,29 @@
                                 <div class="row align-items-center">
                                     <div class="col-6">
                                         <div class="d-flex justify-content-start align-items-center">
-                                            <h2 class="small font-weight-bold">[Company_name_or_Logo]</h2>
+                                            <div>
+                                                <h3 class="font-weight-bold mb-2"><img class="d-inline" src="<%= data.config.logoUrl || ''%>">
+                                                    <%= data.config.companyName %>
+                                                </h3>
+                                                <% if (data.config.contact) { %>
+                                                    <% if (data.config.contact.phone && data.config.contact.phone != '') {%>
+                                                        <p class="small p-0 m-0">Tel:
+                                                            <%= data.config.contact.phone %>
+                                                        </p>
+                                                        <%}%>
+
+                                                            <% if (data.config.contact.email && data.config.contact.email != '') {%>
+                                                                <p class="small py-1 m-0">Tel:
+                                                                    <%= data.config.contact.email %>
+                                                                </p>
+                                                                <%}%>
+                                                                    <%}%>
+                                                                        <% if (data.config.address && data.config.address != '') {%>
+                                                                            <p class="small p-0 m-0">Address:
+                                                                                <%= data.config.address %>
+                                                                            </p>
+                                                                            <%}%>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-6">

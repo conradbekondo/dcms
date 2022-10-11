@@ -2,12 +2,14 @@ import { config } from 'dotenv';
 import { BrowserWindow, Menu, screen } from 'electron';
 import { join } from 'path';
 import { bootstrap } from './main';
+process.env.RESOURCE_PATH =
+  process.env.NODE_ENV === 'development'
+    ? process.cwd()
+    : join(process.cwd(), 'resources');
+const envPath = join(process.env.RESOURCE_PATH, `.${process.env.NODE_ENV || 'production'}.env`);
 config({
-  path:
-    process.env.NODE_ENV === 'development'
-      ? join(process.cwd(), `.${process.env.NODE_ENV}.env`)
-      : join(process.cwd(), 'resources', `.production.env`),
-});
+  path: envPath,
+}); 
 
 bootstrap().subscribe(([_, server]) => {
   const url = `http://localhost:${process.env.APP_PORT}`;
