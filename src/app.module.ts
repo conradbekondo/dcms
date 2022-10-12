@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, Scope } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -128,7 +128,11 @@ const options: TypeOrmModuleOptions = {
     },
     {
       provide: injectionTokenKeys.appName,
-      useValue: process.env.APP_NAME || 'DCMS',
+      inject: [ConfigService],
+      scope: Scope.TRANSIENT,
+      useFactory: (configService: ConfigService) => {
+        return configService.config.companyName;
+      }
     },
     {
       provide: injectionTokenKeys.identityMaxAge,

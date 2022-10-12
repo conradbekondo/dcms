@@ -21,6 +21,7 @@ import { AppModule } from 'src/app.module';
 import { AuthFailedFilter } from './filters/auth-failed.filter';
 import { RoleCheckFailedFilter } from './filters/role-check-failed.filter';
 import { ServerErrorFilter } from './filters/server-error.filter';
+import { json, urlencoded } from 'express';
 
 export function bootstrap() {
   return from(NestFactory.create<NestExpressApplication>(AppModule)).pipe(
@@ -35,6 +36,8 @@ export function bootstrap() {
         new RoleCheckFailedFilter(),
       );
       app.enableCors({ origin: '*' });
+      app.use(json({ limit: '10mb' }));
+      app.use(urlencoded({ extended: true, limit: '10mb' }));
       app.use(cookieParser());
       app.setViewEngine('ejs');
     }),

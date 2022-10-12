@@ -338,7 +338,8 @@ export class OrdersService {
         where: { id: parseInt(dto.orderId) },
       });
       let invoice = order.invoice;
-      invoice.amountPaid = parseFloat(dto.amountPaid);
+      const newAmount = parseFloat(dto.amountPaid);
+      invoice.amountPaid += newAmount;
       invoice.dueDate = new Date(dto.dueDate);
       invoice.paymentType = dto.paymentType;
       const netPayable = invoice.netPayable;

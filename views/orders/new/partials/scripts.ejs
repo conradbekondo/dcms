@@ -178,6 +178,7 @@
             $('#updateInvoiceForm .modal-body dl dd:nth-child(8)').text(currencyFormatter.format(updatingInvoice.discount));
             $('#updateInvoiceForm .modal-body dl dd:nth-child(10)').text(currencyFormatter.format(updatingInvoice.total));
             $('#updateInvoiceForm .modal-body dl dd:nth-child(12)').text(currencyFormatter.format(updatingInvoice.netPayable));
+            $('#updateInvoiceForm .modal-body dl dd:nth-child(14)').text(currencyFormatter.format(updatingInvoice.netPayable - remainder));
             document.getElementById('markDelivered').checked = updatingInvoice.markAsDelivered;
 
             const now = new Date();
@@ -190,15 +191,16 @@
             $('#updateInvoiceDueDate').attr('min', minDate);
             document.querySelector('#updateInvoiceDueDate').valueAsDate = new Date(updatingInvoice.dueDate);
             $('#updateInvoiceFormPaymentType').val(updatingInvoice.paymentType);
-            $('#updateInvoiceFormAmountPaid').val(updatingInvoice.amountPaid);
-            $('#updateInvoiceFormAmountPaid').attr('min', updatingInvoice.amountPaid);
+            $('#updateInvoiceFormAmountPaid').val(remainder);
+            $('#updateInvoiceFormAmountPaid').attr('min', minPrice);
+            $('#updateInvoiceFormAmountPaid').attr('min', remainder);
             computeUpdateBilling();
         }
         $('#invoiceUpdateFormModal').on('shown.bs.modal', function() {
             updateUpdateInvoiceForm();
         });
         let updatingInvoice;
-        let pristineUpdatingInvoiceAmountPaid
+        let minPrice, remainder;
 
         function updateInvoice(orderId) {
             if (orderId === undefined || orderId === null) return;
@@ -224,7 +226,9 @@
                         discount: parseFloat(invoice.discount),
                         markAsDelivered: invoice.markAsDelivered === undefined || invoice.markAsDelivered === null ? false : invoice.markAsDelivered == 'true'
                     };
-                    pristineUpdatingInvoiceAmountPaid = updatingInvoice.amountPaid;
+                    remainder = updatingInvoice.netPayable - updatingInvoice.amountPaid;
+                    updatingInvoice.amountPaid = 0;
+                    minPrice = updatingInvoice.amountPaid;
                     $('#invoiceUpdateFormModal').modal({
                         backdrop: 'static'
                     });
@@ -245,7 +249,7 @@
             const total = updatingInvoice.total;
             const amountPaid = updatingInvoice.amountPaid;
             const netPayable = updatingInvoice.netPayable;
-            const outstanding = netPayable - amountPaid;
+            const outstanding = remainder - amountPaid;
             const clientName = updatingInvoice.clientNames;
             if (netPayable == 0) {
                 $('#updateInvoiceForm .money-btns .btn-outline-primary').each(function() {
@@ -308,8 +312,8 @@
         $('#updateInvoiceFormAmountPaid').on('change input', function() {
             const value = parseFloat($(this).val());
             const _isNan = isNaN(value);
-            if (_isNan) {
-                $(this).val(0);
+            if (_isNan || value < minPrice || value > remainder) {
+                $(this).val(normalize(value, minPrice, remainder));
                 $(this).trigger('input');
                 return;
             }
@@ -321,20 +325,20 @@
             $(this).click(function(e) {
                 const currentAmountPaid = parseFloat($('#updateInvoiceFormAmountPaid').val());
                 const amountToBeAdded = parseFloat($(this).text().split(' ').join(''));
-                if (currentAmountPaid + amountToBeAdded
-
-                    <
-                    pristineUpdatingInvoiceAmountPaid) {
-                    $('#updateInvoiceFormAmountPaid').val(pristineUpdatingInvoiceAmountPaid);
-                } else $('#updateInvoiceFormAmountPaid').val(currentAmountPaid + amountToBeAdded);
+                const sum = currentAmountPaid + amountToBeAdded;
+                if (sum < minPrice || sum > remainder) {
+                    $('#updateInvoiceFormAmountPaid').val(normalize(sum, minPrice, remainder));
+                } else $('#updateInvoiceFormAmountPaid').val(sum);
                 $('#updateInvoiceFormAmountPaid').change();
-            })
-        })
+            });
+        });
+
         function normalize(n, min, max) {
             if (n < min) return min;
             if (n > max) return max;
             return n;
         }
+
         $('#product-tabs a').each(function() {
             $(this).click(function(e) {
                 e.preventDefault();

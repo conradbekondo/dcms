@@ -6,6 +6,7 @@ export interface Configuration {
     email?: string;
   };
   address?: string;
+  description?: string;
 }
 
 export const defaultConfiguration: Configuration = {
@@ -15,5 +16,6 @@ export const defaultConfiguration: Configuration = {
     phone: null,
     email: null,
   },
-  address: null
+  address: null,
+  description: null
 } as const;

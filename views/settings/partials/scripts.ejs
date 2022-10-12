@@ -26,7 +26,8 @@
                     phone: $('#contactPhone').val(),
                     email: $('#contactEmail').val(),
                 },
-                address: $('#address').val()
+                address: $('#address').val(),
+                description: $('#description').val()
             };
 
             $.ajax({
@@ -36,7 +37,7 @@
                 success: () => {
                     Swal.fire(
                         'Success',
-                        'Settings updated successfully',
+                        'Settings updated successfully. Please restart the application for changes to take effect.',
                         'success'
                     ).then(() => location.reload());
                 },
@@ -61,6 +62,14 @@
 
         $('#fileSelect').on('change', async function(e) {
             const iconFile = this.files[0];
+            if (iconFile.size > 3072 * 1024) {
+                Swal.fire(
+                    'Error',
+                    `Maximum upload size reached: 3MB. Please use another image`,
+                    'error'
+                );
+                return;
+            }
             const dataUrl = await toBase64Image(iconFile);
             $('#logo').val(dataUrl);
             $('#displayLogo').attr('src', dataUrl);
@@ -74,6 +83,7 @@
             reader.readAsDataURL(file);
             reader.onload = () => resolve(reader.result);
             reader.onerror = error => reject(error);
+            console.log(file);
         });
     }
 </script>

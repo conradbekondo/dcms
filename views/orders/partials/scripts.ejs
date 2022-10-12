@@ -17,6 +17,75 @@
     });
     const numberFormatter = new Intl.NumberFormat(['fr-CM', 'fr-CM']);
 
+    function setupActionHandlersFor(element) {
+        element.click(function(e) {
+            e.preventDefault();
+            const orderId = element.data('id');
+            if (orderId === null || orderId === undefined || orderId <= 0) return;
+            $.ajax({
+                url: '/orders/for_receipt/' + orderId,
+                method: 'GET',
+                success: function({
+                    order
+                }) {
+                    updateReceipt(order);
+                    $('#receiptModal').modal('show');
+                },
+                error: function(err) {
+                    let msg;
+                    if (err.status == 0) {
+                        msg = 'Could not reach server';
+                    } else if (err.status == 404) {
+                        msg = 'Order not found';
+                    } else {
+                        msg = 'An error occurred';
+                    }
+                    Swal.fire({
+                        title: 'Error',
+                        text: msg,
+                        icon: 'error'
+                    });
+                }
+            })
+        })
+    }
+
+    function setupActionHandlers() {
+        $('.dropdown-item.print').each(function() {
+            $(this).click(function(e) {
+                e.preventDefault();
+
+                const orderId = $(this).data('id');
+                if (orderId === null || orderId === undefined || orderId <= 0) return;
+                $.ajax({
+                    url: '/orders/for_receipt/' + orderId,
+                    method: 'GET',
+                    success: function({
+                        order
+                    }) {
+                        updateReceipt(order);
+                        $('#receiptModal').modal('show');
+                    },
+                    error: function(err) {
+                        let msg;
+                        if (err.status == 0) {
+                            msg = 'Could not reach server';
+                        } else if (err.status == 404) {
+                            msg = 'Order not found';
+                        } else {
+                            msg = 'An error occurred';
+                        }
+                        Swal.fire({
+                            title: 'Error',
+                            text: msg,
+                            icon: 'error'
+                        });
+                    }
+                });
+            })
+        });
+    }
+
     function updateReceipt(order) {
         $('#receiptModal .modal-title').text(`Invoice Receipt - ${order.code}`);
         $('#receiptInvoiceId').text(`#${new Intl.NumberFormat(['en-CM', 'fr-CM'], {minimumIntegerDigits: 3, maximumFractionDigits: 0, useGrouping: false}).format(order.invoice.id)}`)
@@ -81,7 +150,28 @@
     }
 
     $(document).ready(function() {
-        $('#table').DataTable();
+        $('#table').DataTable({
+            searching: true,
+            pageLength: 50,
+            order: [
+                [8, 'desc']
+            ],
+            language: {
+                paginate: {
+                    previous: '<i class="fa-solid fa-chevron-left"></i>',
+                    next: '<i class="fa-solid fa-chevron-right"></li>'
+                }
+            },
+            drawCallback: function() {
+                setupActionHandlers();
+                $('#table_paginate').addClass('pagination pagination-sm');
+                $('#table_paginate span:nth-child(2)').addClass('d-flex justify-content-around')
+                $('a.paginate_button:not(.current)').wrap(`<div class="d-inline page-item"></div>`)
+                $('a.paginate_button:is(.current)').wrap(`<div class="d-inline page-item active"></div>`)
+                $('a.paginate_button').addClass('page-link')
+
+            }
+        });
         $('#print-receipt').click(function() {
             printJS({
                 printable: 'printable-content',
@@ -120,39 +210,7 @@
                 }
             })
         });
-        $('.dropdown-item.print').each(function() {
-            $(this).click(function(e) {
-                e.preventDefault();
-
-                const orderId = $(this).data('id');
-                if (orderId === null || orderId === undefined || orderId <= 0) return;
-                $.ajax({
-                    url: '/orders/for_receipt/' + orderId,
-                    method: 'GET',
-                    success: function({
-                        order
-                    }) {
-                        updateReceipt(order);
-                        $('#receiptModal').modal('show');
-                    },
-                    error: function(err) {
-                        let msg;
-                        if (err.status == 0) {
-                            msg = 'Could not reach server';
-                        } else if (err.status == 404) {
-                            msg = 'Order not found';
-                        } else {
-                            msg = 'An error occurred';
-                        }
-                        Swal.fire({
-                            title: 'Error',
-                            text: msg,
-                            icon: 'error'
-                        });
-                    }
-                })
-            })
-        });
+        // setupActionHandlers();
 
         $('.dropdown-item.delete').each(function() {
             $(this).click(function(e) {
@@ -200,7 +258,6 @@
                     url: '/orders/for_update/' + orderId,
                     method: 'GET',
                     success: ({
-
                         invoice
                     }) => {
                         $('#orderIdInput').val(orderId);
@@ -219,7 +276,9 @@
                             discount: parseFloat(invoice.discount),
                             markAsDelivered: invoice.markAsDelivered === undefined || invoice.markAsDelivered === null ? false : invoice.markAsDelivered == 'true'
                         };
-                        pristineUpdatingInvoiceAmountPaid = updatingInvoice.amountPaid;
+                        remainder = updatingInvoice.netPayable - updatingInvoice.amountPaid;
+                        updatingInvoice.amountPaid = 0;
+                        minPrice = updatingInvoice.amountPaid;
                         $('#invoiceUpdateFormModal').modal({
                             backdrop: 'static'
                         });
@@ -233,12 +292,10 @@
             $(this).click(function(e) {
                 const currentAmountPaid = parseFloat($('#invoiceFormAmountPaid').val());
                 const amountToBeAdded = parseFloat($(this).text().split(' ').join(''));
-                if (currentAmountPaid + amountToBeAdded
-
-                    <
-                    pristineUpdatingInvoiceAmountPaid) {
-                    $('#invoiceFormAmountPaid').val(pristineUpdatingInvoiceAmountPaid);
-                } else $('#invoiceFormAmountPaid').val(currentAmountPaid + amountToBeAdded);
+                const sum = currentAmountPaid + amountToBeAdded;
+                if (sum < minPrice || sum > remainder) {
+                    $('#invoiceFormAmountPaid').val(normalize(sum, minPrice, remainder));
+                } else $('#invoiceFormAmountPaid').val(sum);
                 $('#invoiceFormAmountPaid').change();
             });
         });
@@ -256,8 +313,8 @@
         $('#invoiceFormAmountPaid').on('input change', function(e) {
             const value = parseFloat($(this).val());
             const _isNan = isNaN(value);
-            if (_isNan) {
-                $(this).val(0);
+            if (_isNan || value < minPrice || value > remainder) {
+                $(this).val(normalize(value, minPrice, remainder));
                 $(this).trigger('input');
                 return;
             }
@@ -276,7 +333,7 @@
             amountPaid: 0
         };
 
-        let pristineUpdatingInvoiceAmountPaid;
+        let minPrice, remainder;
         let updatingInvoice = {
             ...defaultInvoice
         };
@@ -289,6 +346,7 @@
             $('.modal-body dl dd:nth-child(8)').text(currencyFormatter.format(updatingInvoice.discount));
             $('.modal-body dl dd:nth-child(10)').text(currencyFormatter.format(updatingInvoice.total));
             $('.modal-body dl dd:nth-child(12)').text(currencyFormatter.format(updatingInvoice.netPayable));
+            $('.modal-body dl dd:nth-child(14)').text(currencyFormatter.format(updatingInvoice.netPayable - remainder));
             document.getElementById('markDelivered').checked = updatingInvoice.markAsDelivered;
 
             const now = new Date();
@@ -298,7 +356,9 @@
             $('#dueDate').attr('min', minDate);
             document.getElementById('dueDate').valueAsDate = new Date(updatingInvoice.dueDate);
             $('#invoiceFormPaymentType').val(updatingInvoice.paymentType);
-            $('#invoiceFormAmountPaid').val(updatingInvoice.amountPaid);
+            $('#invoiceFormAmountPaid').val(remainder);
+            $('#invoiceFormAmountPaid').attr('min', minPrice);
+            $('#invoiceFormAmountPaid').attr('max', remainder);
             computeBilling();
         }
 
@@ -308,7 +368,7 @@
             const total = updatingInvoice.total;
             const amountPaid = updatingInvoice.amountPaid;
             const netPayable = updatingInvoice.netPayable;
-            const outstanding = netPayable - amountPaid;
+            const outstanding = remainder - amountPaid;
             const clientName = updatingInvoice.clientNames;
             if (netPayable == 0) {
                 $('.money-btns .btn-outline-primary').each(function() {

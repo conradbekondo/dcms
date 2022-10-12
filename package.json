@@ -1,6 +1,6 @@
 {
     "name": "dcms",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Dry Cleaner Management System",
     "author": "QuickDo",
     "private": true,
@@ -115,6 +115,6 @@
             "main": "dist/window.js"
         },
         "copyright": "Copyright @2022 QuickDo",
-        "buildVersion": "1.0.1"
+        "buildVersion": "1.0.2"
     }
 }
