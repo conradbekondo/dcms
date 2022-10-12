@@ -162,36 +162,41 @@ const currencyFormatter = new Intl.NumberFormat(['en-CM', 'fr-CM'], {style: 'cur
                                         </div>
                                     </div>
                                     <%}%>
+                                        <div class="row py-0 mb-1">
+                                            <div class="col-12">
+                                                <h3 class="font-weight-bold <%= data.config.description && data.config.description != '' ? 'm-0' : 'mb-2' %>">
+                                                    <%= data.config.companyName %>
+                                                </h3>
+                                                <% if(data.config.description && data.config.description != '') {%>
+                                                    <p class="small d-block  mb-2">
+                                                        <%=data.config.description%>
+                                                    </p>
+                                                    <%}%>
+                                            </div>
+                                        </div>
                                         <div class="row align-items-start">
                                             <div class="col-6">
                                                 <div class="d-flex justify-content-start align-items-center">
                                                     <div>
-                                                        <h3 class="font-weight-bold <%= data.config.description && data.config.description != '' ? 'm-0' : 'mb-2' %>">
-                                                            <%= data.config.companyName %>
-                                                        </h3>
-                                                        <% if(data.config.description && data.config.description != '') {%>
-                                                            <p class="small d-block  mb-2">
-                                                                <%=data.config.description%>
-                                                            </p>
-                                                            <%}%>
-                                                                <% if (data.config.contact) { %>
-                                                                    <% if (data.config.contact.phone && data.config.contact.phone != '') {%>
-                                                                        <p class="small p-0 m-0">Tel:
-                                                                            <%= data.config.contact.phone %>
+
+                                                        <% if (data.config.contact) { %>
+                                                            <% if (data.config.contact.phone && data.config.contact.phone != '') {%>
+                                                                <p class="small p-0 m-0">Tel:
+                                                                    <%= data.config.contact.phone %>
+                                                                </p>
+                                                                <%}%>
+
+                                                                    <% if (data.config.contact.email && data.config.contact.email != '') {%>
+                                                                        <p class="small py-1 m-0">Email:
+                                                                            <%= data.config.contact.email %>
                                                                         </p>
                                                                         <%}%>
-
-                                                                            <% if (data.config.contact.email && data.config.contact.email != '') {%>
-                                                                                <p class="small py-1 m-0">Email:
-                                                                                    <%= data.config.contact.email %>
-                                                                                </p>
-                                                                                <%}%>
+                                                                            <%}%>
+                                                                                <% if (data.config.address && data.config.address != '') {%>
+                                                                                    <p class="small p-0 m-0">Address:
+                                                                                        <%= data.config.address %>
+                                                                                    </p>
                                                                                     <%}%>
-                                                                                        <% if (data.config.address && data.config.address != '') {%>
-                                                                                            <p class="small p-0 m-0">Address:
-                                                                                                <%= data.config.address %>
-                                                                                            </p>
-                                                                                            <%}%>
                                                     </div>
                                                 </div>
                                             </div>

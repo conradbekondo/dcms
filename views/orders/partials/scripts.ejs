@@ -17,37 +17,32 @@
     });
     const numberFormatter = new Intl.NumberFormat(['fr-CM', 'fr-CM']);
 
-    function setupActionHandlersFor(element) {
-        element.click(function(e) {
-            e.preventDefault();
-            const orderId = element.data('id');
-            if (orderId === null || orderId === undefined || orderId <= 0) return;
-            $.ajax({
-                url: '/orders/for_receipt/' + orderId,
-                method: 'GET',
-                success: function({
-                    order
-                }) {
-                    updateReceipt(order);
-                    $('#receiptModal').modal('show');
-                },
-                error: function(err) {
-                    let msg;
-                    if (err.status == 0) {
-                        msg = 'Could not reach server';
-                    } else if (err.status == 404) {
-                        msg = 'Order not found';
-                    } else {
-                        msg = 'An error occurred';
-                    }
-                    Swal.fire({
-                        title: 'Error',
-                        text: msg,
-                        icon: 'error'
-                    });
+    function initPrinting(orderId) {
+        $.ajax({
+            url: '/orders/for_receipt/' + orderId,
+            method: 'GET',
+            success: function({
+                order
+            }) {
+                updateReceipt(order);
+                $('#receiptModal').modal('show');
+            },
+            error: function(err) {
+                let msg;
+                if (err.status == 0) {
+                    msg = 'Could not reach server';
+                } else if (err.status == 404) {
+                    msg = 'Order not found';
+                } else {
+                    msg = 'An error occurred';
                 }
-            })
-        })
+                Swal.fire({
+                    title: 'Error',
+                    text: msg,
+                    icon: 'error'
+                });
+            }
+        });
     }
 
     function setupActionHandlers() {
@@ -57,31 +52,7 @@
 
                 const orderId = $(this).data('id');
                 if (orderId === null || orderId === undefined || orderId <= 0) return;
-                $.ajax({
-                    url: '/orders/for_receipt/' + orderId,
-                    method: 'GET',
-                    success: function({
-                        order
-                    }) {
-                        updateReceipt(order);
-                        $('#receiptModal').modal('show');
-                    },
-                    error: function(err) {
-                        let msg;
-                        if (err.status == 0) {
-                            msg = 'Could not reach server';
-                        } else if (err.status == 404) {
-                            msg = 'Order not found';
-                        } else {
-                            msg = 'An error occurred';
-                        }
-                        Swal.fire({
-                            title: 'Error',
-                            text: msg,
-                            icon: 'error'
-                        });
-                    }
-                });
+                initPrinting(orderId);
             })
         });
     }
@@ -186,6 +157,7 @@
         $('#updateInvoiceForm').validate();
         $('#updateInvoiceForm').submit(function(e) {
             e.preventDefault();
+            console.log(e.originalEvent);
             const orderId = $('#orderIdInput').val();
             if (!orderId) return;
             const data = {...updatingInvoice
@@ -199,7 +171,14 @@
                         title: 'Success',
                         text: 'Invoice updated successfully',
                         icon: 'success'
-                    }).then(() => location.reload());
+                    }).then(() => {
+                        if (e.originalEvent.submitter.textContent.includes('Print')) {
+                            $('#invoiceUpdateFormModal').modal('hide');
+                            initPrinting(orderId);
+                        } else {
+                            location.reload();
+                        }
+                    });
                 },
                 error: err => {
                     Swal.fire({

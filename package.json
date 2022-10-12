@@ -14,7 +14,7 @@
         "start": "nest start",
         "dev": "nest start --watch",
         "start:dev": "nest start --watch",
-        "electron:dev": "nodemon --watch src --ext ts --ignore src/**/*.spec.ts --exec \"yarn build&&electron dist/window.js\"",
+        "electron:dev": "nodemon --watch src,views --ext ts,ejs --ignore src/**/*.spec.ts --exec \"yarn build&&electron dist/window.js\"",
         "start:debug": "nest start --debug --watch",
         "start:prod": "set NODE_ENV=production&&node dist/main",
         "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
